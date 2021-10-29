@@ -1,3 +1,4 @@
+# It's from https://github.com/cocodataset/panopticapi/blob/master/panoptic_coco_categories.json
 COCO_CATEGORIES = [
     {"color": [220, 20, 60], "isthing": 1, "id": 1, "name": "person"},
     {"color": [119, 11, 32], "isthing": 1, "id": 2, "name": "bicycle"},
@@ -207,9 +208,9 @@ def _get_coco_instances_meta():
     thing_dataset_id_to_contiguous_id = {k: i for i, k in enumerate(thing_ids)}
     thing_classes = [k["name"] for k in COCO_CATEGORIES if k["isthing"] == 1]
     ret = {
-        "thing_dataset_id_to_contiguous_id": thing_dataset_id_to_contiguous_id,
-        "thing_classes": thing_classes,
-        "thing_colors": thing_colors,
+        "all_dataset_id_to_contiguous_id": thing_dataset_id_to_contiguous_id,
+        "all_classes": thing_classes,
+        "all_colors": thing_colors,
     }
     return ret
 
@@ -241,3 +242,13 @@ def _get_voc_fewshot_instances_meta():
         "base_classes": PASCAL_VOC_BASE_CATEGORIES,
     }
     return ret
+
+
+def _get_builtin_metadata(dataset_name):
+    if dataset_name == "coco":
+        return _get_coco_instances_meta()
+    elif dataset_name == "coco_fewshot":
+        return _get_coco_fewshot_instances_meta()
+    elif dataset_name == "voc_fewshot":
+        return _get_voc_fewshot_instances_meta()
+    raise KeyError("No built-in metadata for dataset {}".format(dataset_name))
