@@ -25,6 +25,7 @@ import datasets.transforms as T
 
 class CocoDetection(TvCocoDetection):
     def __init__(self, img_folder, ann_file, transforms, return_masks, cache_mode=False, local_rank=0, local_size=1):
+        # target transformers: return_masks
         super(CocoDetection, self).__init__(img_folder, ann_file,
                                             cache_mode=cache_mode, local_rank=local_rank, local_size=local_size)
         self._transforms = transforms
@@ -155,6 +156,7 @@ def make_coco_transforms(image_set):
 
 
 def build(image_set, args):
+    # image_set = train / val, args = args
     root = Path(args.coco_path)
     assert root.exists(), f'provided COCO path {root} does not exist'
     mode = 'instances'
