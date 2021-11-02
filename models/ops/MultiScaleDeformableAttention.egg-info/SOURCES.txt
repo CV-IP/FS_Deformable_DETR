@@ -1,7 +1,7 @@
 setup.py
-/opt/tiger/minist/Deformable-DETR/models/ops/src/vision.cpp
-/opt/tiger/minist/Deformable-DETR/models/ops/src/cpu/ms_deform_attn_cpu.cpp
-/opt/tiger/minist/Deformable-DETR/models/ops/src/cuda/ms_deform_attn_cuda.cu
+/opt/tiger/minist/FS_Deformable_DETR/models/ops/src/vision.cpp
+/opt/tiger/minist/FS_Deformable_DETR/models/ops/src/cpu/ms_deform_attn_cpu.cpp
+/opt/tiger/minist/FS_Deformable_DETR/models/ops/src/cuda/ms_deform_attn_cuda.cu
 MultiScaleDeformableAttention.egg-info/PKG-INFO
 MultiScaleDeformableAttention.egg-info/SOURCES.txt
 MultiScaleDeformableAttention.egg-info/dependency_links.txt

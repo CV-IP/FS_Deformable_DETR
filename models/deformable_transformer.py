@@ -21,6 +21,21 @@ from models.ops.modules import MSDeformAttn
 
 
 class DeformableTransformer(nn.Module):
+    '''
+        d_model=args.hidden_dim,                        256
+        nhead=args.nheads,                              8
+        num_encoder_layers=args.enc_layers,             6
+        num_decoder_layers=args.dec_layers,             6
+        dim_feedforward=args.dim_feedforward,           1024
+        dropout=args.dropout,                           
+        activation="relu",
+        return_intermediate_dec=True,
+        num_feature_levels=args.num_feature_levels,     4
+        dec_n_points=args.dec_n_points,                 4
+        enc_n_points=args.enc_n_points,                 4
+        two_stage=args.two_stage,                       True
+        two_stage_num_proposals=args.num_queries)       100
+    '''
     def __init__(self, d_model=256, nhead=8,
                  num_encoder_layers=6, num_decoder_layers=6, dim_feedforward=1024, dropout=0.1,
                  activation="relu", return_intermediate_dec=False,

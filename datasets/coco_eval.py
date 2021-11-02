@@ -26,10 +26,13 @@ import pycocotools.mask as mask_util
 
 from util.misc import all_gather
 
+from datasets.FSOD_settings.get_fsod_data_matadata import coco_base_class_id, coco_novel_class_id, _get_builtin_metadata
+
 
 class CocoEvaluator(object):
-    def __init__(self, coco_gt, iou_types):
+    def __init__(self, coco_gt, iou_types, dataset_name = None):
         assert isinstance(iou_types, (list, tuple))
+        assert dataset_name in [None, 'coco_all', 'coco_base', 'coco_novel'], 'datset_name is not regular param'
         coco_gt = copy.deepcopy(coco_gt)
         self.coco_gt = coco_gt
 
@@ -40,13 +43,26 @@ class CocoEvaluator(object):
 
         self.img_ids = []
         self.eval_imgs = {k: [] for k in iou_types}
+        self.metadata = _get_builtin_metadata('coco_fewshot')
+        if dataset_name is None:
+            self.catid = None
+            self.split = 'all'
+            
+        elif dataset_name == 'coco_base':
+            self.catid = coco_base_class_id
+            self.split = 'base'
+        else:
+            self.catid = coco_novel_class_id
+            self.split = 'novel'
+        
 
     def update(self, predictions):
         img_ids = list(np.unique(list(predictions.keys())))
         self.img_ids.extend(img_ids)
-
+        # print(self.iou_types)
         for iou_type in self.iou_types:
             results = self.prepare(predictions, iou_type)
+            # print('rsults num: {}'.format(len(results)))
 
             # suppress pycocotools prints
             with open(os.devnull, 'w') as devnull:
@@ -56,6 +72,9 @@ class CocoEvaluator(object):
 
             coco_eval.cocoDt = coco_dt
             coco_eval.params.imgIds = list(img_ids)
+            if self.catid is not None:
+                coco_eval.params.catIds = self.catid
+
             img_ids, eval_imgs = evaluate(coco_eval)
 
             self.eval_imgs[iou_type].append(eval_imgs)
@@ -76,7 +95,8 @@ class CocoEvaluator(object):
 
     def prepare(self, predictions, iou_type):
         if iou_type == "bbox":
-            return self.prepare_for_coco_detection(predictions)
+            # return self.prepare_for_coco_detection(predictions)
+            return self.prepare_for_fsod_coco_detection(predictions)
         elif iou_type == "segm":
             return self.prepare_for_coco_segmentation(predictions)
         elif iou_type == "keypoints":
@@ -109,7 +129,12 @@ class CocoEvaluator(object):
         return coco_results
 
     def prepare_for_fsod_coco_detection(self, predictions):
-        
+        # stephen add:
+        id_map_key = '{}_dataset_id_to_contiguous_id'.format(self.split)
+        id_map = self.metadata[id_map_key]
+        reverse_id_mapping = {
+            v: k for k, v in id_map.items()
+        }
         coco_results = []
         for original_id, prediction in predictions.items():
             if len(prediction) == 0:
@@ -124,7 +149,8 @@ class CocoEvaluator(object):
                 [
                     {
                         "image_id": original_id,
-                        "category_id": labels[k],
+                        # "category_id": labels[k],
+                        "category_id": reverse_id_mapping[labels[k]],
                         "bbox": box,
                         "score": scores[k],
                     }
