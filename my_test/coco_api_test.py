@@ -1,10 +1,18 @@
 from pycocotools.coco import COCO
 
 anno_path = '/opt/tiger/minist/datasets/coco/cocosplit/cocosplit/datasplit/5k.json'
+anno_path = '/opt/tiger/minist/datasets/coco/cocosplit_self/seed0/full_box_5shot_trainval.json'
+# anno_path = '/opt/tiger/minist/datasets/coco/cocosplit/seed0/full_box_1shot_airplane_trainval.json'
+# anno_path = '/opt/tiger/minist/datasets/coco/cocosplit/seed0/full_box_1shot_bed_trainval.json'
 
 coco = COCO(anno_path)
-
-
+print(len(coco.anns))
+# count = 0
+# for k, v in coco.catToImgs.items():
+#     if len(v) == 1 :
+#         # print(k, len(v))
+#         count= count + 1
+# print(count)
 
 img_ids = list(sorted(coco.imgs.keys()))
 

@@ -70,7 +70,9 @@ class BackboneBase(nn.Module):
         super().__init__()
         for name, parameter in backbone.named_parameters():
             if not train_backbone or 'layer2' not in name and 'layer3' not in name and 'layer4' not in name:
-                parameter.requires_grad_(False)
+                parameter.requires_grad_(False) # frozen paramaters
+
+
         if return_interm_layers:
             # return_layers = {"layer1": "0", "layer2": "1", "layer3": "2", "layer4": "3"}
             return_layers = {"layer2": "0", "layer3": "1", "layer4": "2"}
@@ -85,7 +87,7 @@ class BackboneBase(nn.Module):
     def forward(self, tensor_list: NestedTensor):
         xs = self.body(tensor_list.tensors)
         out: Dict[str, NestedTensor] = {}
-        for name, x in xs.items():
+        for name, x in xs.items(): # name = '0', '1', '2'
             m = tensor_list.mask
             assert m is not None
             mask = F.interpolate(m[None].float(), size=x.shape[-2:]).to(torch.bool)[0]
@@ -105,7 +107,7 @@ class Backbone(BackboneBase):
             pretrained=is_main_process(), norm_layer=norm_layer)
         assert name not in ('resnet18', 'resnet34'), "number of channels are hard coded"
         super().__init__(backbone, train_backbone, return_interm_layers)
-        if dilation:
+        if dilation: # 扩张
             self.strides[-1] = self.strides[-1] // 2
 
 
@@ -132,7 +134,8 @@ class Joiner(nn.Sequential):
 def build_backbone(args):
     position_embedding = build_position_encoding(args)
     train_backbone = args.lr_backbone > 0
-    return_interm_layers = args.masks or (args.num_feature_levels > 1)
+    return_interm_layers = args.masks or (args.num_feature_levels > 1) # 4 > 1, True
     backbone = Backbone(args.backbone, train_backbone, return_interm_layers, args.dilation)
+    # ('resnet50', True, True, )
     model = Joiner(backbone, position_embedding)
     return model

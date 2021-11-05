@@ -50,24 +50,24 @@ class DeformableDETR(nn.Module):
         super().__init__()
         self.num_queries = num_queries
         self.transformer = transformer
-        hidden_dim = transformer.d_model
+        hidden_dim = transformer.d_model # 256
         self.class_embed = nn.Linear(hidden_dim, num_classes)
         self.bbox_embed = MLP(hidden_dim, hidden_dim, 4, 3)
-        self.num_feature_levels = num_feature_levels
+        self.num_feature_levels = num_feature_levels # 4
         if not two_stage:
             self.query_embed = nn.Embedding(num_queries, hidden_dim*2)
         if num_feature_levels > 1:
-            num_backbone_outs = len(backbone.strides)
-            input_proj_list = []
+            num_backbone_outs = len(backbone.strides) # 3
+            input_proj_list = [] # 对于backbone输出的不同通道数的特征图映射到hidden_dim , 通过一个conv2d + GroupNorm, list 的长度对应特征图的数量，3
             for _ in range(num_backbone_outs):
                 in_channels = backbone.num_channels[_]
                 input_proj_list.append(nn.Sequential(
                     nn.Conv2d(in_channels, hidden_dim, kernel_size=1),
                     nn.GroupNorm(32, hidden_dim),
                 ))
-            for _ in range(num_feature_levels - num_backbone_outs):
+            for _ in range(num_feature_levels - num_backbone_outs): # 4 - 3
                 input_proj_list.append(nn.Sequential(
-                    nn.Conv2d(in_channels, hidden_dim, kernel_size=3, stride=2, padding=1),
+                    nn.Conv2d(in_channels, hidden_dim, kernel_size=3, stride=2, padding=1), # 2048， 特征图缩小到原来的一半。
                     nn.GroupNorm(32, hidden_dim),
                 ))
                 in_channels = hidden_dim
@@ -79,12 +79,13 @@ class DeformableDETR(nn.Module):
                     nn.GroupNorm(32, hidden_dim),
                 )])
         self.backbone = backbone
-        self.aux_loss = aux_loss
+        self.aux_loss = aux_loss # True
         self.with_box_refine = with_box_refine
         self.two_stage = two_stage
 
         prior_prob = 0.01
         bias_value = -math.log((1 - prior_prob) / prior_prob)
+        # self.class_embed = nn.Linear(hidden_dim, num_classes)
         self.class_embed.bias.data = torch.ones(num_classes) * bias_value
         nn.init.constant_(self.bbox_embed.layers[-1].weight.data, 0)
         nn.init.constant_(self.bbox_embed.layers[-1].bias.data, 0)
@@ -137,7 +138,7 @@ class DeformableDETR(nn.Module):
             srcs.append(self.input_proj[l](src))
             masks.append(mask)
             assert mask is not None
-        if self.num_feature_levels > len(srcs):
+        if self.num_feature_levels > len(srcs): # 4 > 3
             _len_srcs = len(srcs)
             for l in range(_len_srcs, self.num_feature_levels):
                 if l == _len_srcs:
@@ -448,20 +449,20 @@ def build(args):
         num_classes = 250
     device = torch.device(args.device)
 
-    backbone = build_backbone(args)
+    backbone = build_backbone(args) # return backbone(x) , pos
 
     transformer = build_deforamble_transformer(args)
     model = DeformableDETR(
-        backbone,
+        backbone, # nn.Sequential
         transformer,
-        num_classes=num_classes,
-        num_queries=args.num_queries,
-        num_feature_levels=args.num_feature_levels,
+        num_classes=num_classes, # 60, 80
+        num_queries=args.num_queries, # 100, 300
+        num_feature_levels=args.num_feature_levels, # 4
         aux_loss=args.aux_loss,
         with_box_refine=args.with_box_refine,
         two_stage=args.two_stage,
     )
-    if args.masks:
+    if args.masks: # False
         model = DETRsegm(model, freeze_detr=(args.frozen_weights is not None))
     matcher = build_matcher(args)
     weight_dict = {'loss_ce': args.cls_loss_coef, 'loss_bbox': args.bbox_loss_coef}
@@ -472,9 +473,9 @@ def build(args):
     # TODO this is a hack
     if args.aux_loss:
         aux_weight_dict = {}
-        for i in range(args.dec_layers - 1):
+        for i in range(args.dec_layers - 1): # 5
             aux_weight_dict.update({k + f'_{i}': v for k, v in weight_dict.items()})
-        aux_weight_dict.update({k + f'_enc': v for k, v in weight_dict.items()})
+        aux_weight_dict.update({k + f'_enc': v for k, v in weight_dict.items()}) # enc
         weight_dict.update(aux_weight_dict)
 
     losses = ['labels', 'boxes', 'cardinality']

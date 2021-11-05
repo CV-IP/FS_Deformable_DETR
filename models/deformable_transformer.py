@@ -34,7 +34,7 @@ class DeformableTransformer(nn.Module):
         dec_n_points=args.dec_n_points,                 4
         enc_n_points=args.enc_n_points,                 4
         two_stage=args.two_stage,                       True
-        two_stage_num_proposals=args.num_queries)       100
+        two_stage_num_proposals=args.num_queries)       300
     '''
     def __init__(self, d_model=256, nhead=8,
                  num_encoder_layers=6, num_decoder_layers=6, dim_feedforward=1024, dropout=0.1,
@@ -43,7 +43,7 @@ class DeformableTransformer(nn.Module):
                  two_stage=False, two_stage_num_proposals=300):
         super().__init__()
 
-        self.d_model = d_model
+        self.d_model = d_model 
         self.nhead = nhead
         self.two_stage = two_stage
         self.two_stage_num_proposals = two_stage_num_proposals
@@ -58,7 +58,7 @@ class DeformableTransformer(nn.Module):
                                                           num_feature_levels, nhead, dec_n_points)
         self.decoder = DeformableTransformerDecoder(decoder_layer, num_decoder_layers, return_intermediate_dec)
 
-        self.level_embed = nn.Parameter(torch.Tensor(num_feature_levels, d_model))
+        self.level_embed = nn.Parameter(torch.Tensor(num_feature_levels, d_model)) # 4, 256
 
         if two_stage:
             self.enc_output = nn.Linear(d_model, d_model)
@@ -146,7 +146,7 @@ class DeformableTransformer(nn.Module):
         mask_flatten = []
         lvl_pos_embed_flatten = []
         spatial_shapes = []
-        for lvl, (src, mask, pos_embed) in enumerate(zip(srcs, masks, pos_embeds)):
+        for lvl, (src, mask, pos_embed) in enumerate(zip(srcs, masks, pos_embeds)): # num feature levels
             bs, c, h, w = src.shape
             spatial_shape = (h, w)
             spatial_shapes.append(spatial_shape)
@@ -176,7 +176,7 @@ class DeformableTransformer(nn.Module):
             enc_outputs_class = self.decoder.class_embed[self.decoder.num_layers](output_memory)
             enc_outputs_coord_unact = self.decoder.bbox_embed[self.decoder.num_layers](output_memory) + output_proposals
 
-            topk = self.two_stage_num_proposals
+            topk = self.two_stage_num_proposals # 100, 300 same as query nums
             topk_proposals = torch.topk(enc_outputs_class[..., 0], topk, dim=1)[1]
             topk_coords_unact = torch.gather(enc_outputs_coord_unact, 1, topk_proposals.unsqueeze(-1).repeat(1, 1, 4))
             topk_coords_unact = topk_coords_unact.detach()
