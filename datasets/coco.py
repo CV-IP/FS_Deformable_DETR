@@ -6,6 +6,7 @@
 # Modified from DETR (https://github.com/facebookresearch/detr)
 # Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
 # ------------------------------------------------------------------------
+import os
 
 """
 COCO dataset which returns image_id for evaluation.
@@ -163,6 +164,16 @@ def make_coco_transforms(image_set):
 
 def build(image_set, args):
     # image_set = train / val, args = args
+    seed = ''
+    shot = ''
+    if 'novel' in image_set:
+        image_set = 'coco_novel_train'
+        dataset_name = args.dataset_name
+        seed = dataset_name.split('_')[3]
+        shot = dataset_name.split('_')[4]
+        assert int(seed) in range(10) and int(shot) in [1,2,3,5,10,30]
+        
+
     root = Path(args.coco_path)
     assert root.exists(), f'provided COCO path {root} does not exist'
     mode = 'instances'
@@ -170,11 +181,13 @@ def build(image_set, args):
         "train": (root / "train2017", root / "annotations" / f'{mode}_train2017.json'),
         "val": (root / "val2017", root / "annotations" / f'{mode}_val2017.json'),
         "coco_base_train": (root / "JPEG", root / "cocosplit" / "datasplit" / "trainvalno5k.json"),
-        "coco_base_val": (root / "JPEG", root / "cocosplit" / "datasplit" / "5k.json")
+        "coco_val": (root / "JPEG", root / "cocosplit" / "datasplit" / "5k.json"),
+        "coco_novel_train" : (root / "JPEG", os.path.join(root, "cocosplit_self","seed"+ seed, "full_box_{}shot_trainval.json".format(shot)))
         
     }
 
     img_folder, ann_file = PATHS[image_set]
+    print(ann_file)
     dataset = CocoDetection(img_folder, ann_file, transforms=make_coco_transforms(image_set), return_masks=args.masks,
                             cache_mode=args.cache_mode, local_rank=get_local_rank(), local_size=get_local_size(), dataset_name=args.dataset_name)
     return dataset

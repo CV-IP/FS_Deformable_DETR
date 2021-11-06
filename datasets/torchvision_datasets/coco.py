@@ -111,8 +111,11 @@ class FsCocoDetection(VisionDataset):
         super(FsCocoDetection, self).__init__(root, transforms, transform, target_transform)
         self.dataset_name = dataset_name
         self.metadata = _get_builtin_metadata('coco_fewshot')
-        
-        id_map_key = '{}_dataset_id_to_contiguous_id'.format(dataset_name.split('_')[-1])
+        if 'base' in self.dataset_name:
+            split = 'base'
+        else:
+            split = 'all'
+        id_map_key = '{}_dataset_id_to_contiguous_id'.format(split)
         self.id_map = self.metadata[id_map_key]
 
         from pycocotools.coco import COCO
@@ -124,16 +127,21 @@ class FsCocoDetection(VisionDataset):
 
         self.ids = []
         # assert len(img_ids) == len(ann_ids), 'length of img_ids : {},  ann_ids : {},  Not Equal !!!'.format(len(img_ids), len(ann_ids))
-        for i, img_id in enumerate(img_ids):
-            ann_ids = self.coco.getAnnIds(imgIds=img_id)
-            anns = self.coco.loadAnns(ann_ids)
-            positive = False # 该图片是否包含对应训练集中的类， all / base / novel
-            for ann in anns:
-                if ann['category_id'] in self.id_map:
-                    positive = True
-                    break
-            if positive or len(ann_ids) == 0:
-               self.ids.append(img_ids[i]) 
+        if self.dataset_name == 'coco_base' :
+            for i, img_id in enumerate(img_ids):
+                ann_ids = self.coco.getAnnIds(imgIds=img_id)
+                anns = self.coco.loadAnns(ann_ids)
+                positive = False # 该图片是否包含对应训练集中的类， all / base / novel
+                for ann in anns:
+                    if ann['category_id'] in self.id_map:
+                        positive = True
+                        break
+                if positive or len(ann_ids) == 0:
+                    self.ids.append(img_ids[i]) 
+        else :
+            self.ids = list(sorted(self.coco.imgs.keys()))
+
+        print('{} dataset nums : {}'.format(self.dataset_name, len(self.ids)))
 
 
         self.cache_mode = cache_mode

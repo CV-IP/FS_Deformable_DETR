@@ -209,6 +209,11 @@ coco_base_class_id = [
         ]
 coco_novel_class_id = [1, 2, 3, 4, 5, 6, 7, 9, 16, 17, 18, 19, 20, 21,
                         44, 62, 63, 64, 67, 72]
+coco_all_class_id = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 13, 14, 15, 16, 17, 18, 
+            19, 20, 21, 22, 23, 24, 25, 27, 28, 31, 32, 33, 34, 35, 36, 37, 38, 
+            39, 40, 41, 42, 43, 44, 46, 47, 48, 49, 50, 51, 52, 53, 54, 55, 56, 
+            57, 58, 59, 60, 61, 62, 63, 64, 65, 67, 70, 72, 73, 74, 75, 76, 77, 
+            78, 79, 80, 81, 82, 84, 85, 86, 87, 88, 89, 90]
 
 def _get_coco_instances_meta():
     thing_ids = [k["id"] for k in COCO_CATEGORIES if k["isthing"] == 1]
@@ -226,9 +231,10 @@ def _get_coco_instances_meta():
 
 
 def _get_coco_fewshot_instances_meta():
-    ret = _get_coco_instances_meta()
+    # ret = _get_coco_instances_meta()
+    ret = {}
     novel_ids = [k["id"] for k in COCO_NOVEL_CATEGORIES if k["isthing"] == 1]
-    novel_dataset_id_to_contiguous_id = {k: i for i, k in enumerate(novel_ids)}
+    novel_dataset_id_to_contiguous_id = {k: (i + 60) for i, k in enumerate(novel_ids)}
     novel_classes = [
         k["name"] for k in COCO_NOVEL_CATEGORIES if k["isthing"] == 1
     ]
@@ -237,11 +243,13 @@ def _get_coco_fewshot_instances_meta():
     ]
     base_ids = [k["id"] for k in base_categories]
     base_dataset_id_to_contiguous_id = {k: i for i, k in enumerate(base_ids)}
+
     base_classes = [k["name"] for k in base_categories]
     ret["novel_dataset_id_to_contiguous_id"] = novel_dataset_id_to_contiguous_id
     ret["novel_classes"] = novel_classes
     ret["base_dataset_id_to_contiguous_id"] = base_dataset_id_to_contiguous_id
     ret["base_classes"] = base_classes
+    ret['all_dataset_id_to_contiguous_id'] = {**novel_dataset_id_to_contiguous_id, **base_dataset_id_to_contiguous_id}
     return ret
 
 
@@ -262,3 +270,8 @@ def _get_builtin_metadata(dataset_name):
     elif dataset_name == "voc_fewshot":
         return _get_voc_fewshot_instances_meta()
     raise KeyError("No built-in metadata for dataset {}".format(dataset_name))
+
+
+if __name__ == "__main__":
+    ret = _get_coco_fewshot_instances_meta()
+    print(ret)

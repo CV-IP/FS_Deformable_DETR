@@ -29,8 +29,9 @@ from models import build_model
 def get_args_parser():
     parser = argparse.ArgumentParser('Deformable DETR Detector', add_help=False)
     # stephen add argumens:
-    parser.add_argument('--dataset_name', default='coco_base', type=str)
+    parser.add_argument('--dataset_name', default='coco_base', type=str, help='coco_base, coco_all, coco_novel_seed_{s}_{k}_shot')
     parser.add_argument('--num_classes', default='60', type=int)
+    parser.add_argument('--eval_dataset', default='coco_all', type = str, help = 'coco_base, coco_all, coco_novel')
 
 
     parser.add_argument('--lr', default=2e-4, type=float)
@@ -158,8 +159,8 @@ def main(args):
     n_parameters = sum(p.numel() for p in model.parameters() if p.requires_grad)
     print('number of params:', n_parameters)
 
-    dataset_train = build_dataset(image_set='coco_base_train', args=args)
-    dataset_val = build_dataset(image_set='coco_base_val', args=args)
+    dataset_train = build_dataset(image_set=args.dataset_name, args=args)
+    dataset_val = build_dataset(image_set='coco_val', args=args)
 
     if args.distributed:
         if args.cache_mode:
@@ -265,13 +266,15 @@ def main(args):
             args.start_epoch = checkpoint['epoch'] + 1
         # check the resumed model
         if not args.eval:
+            '''
             test_stats, coco_evaluator = evaluate(
-                model, criterion, postprocessors, data_loader_val, base_ds, device, args.output_dir, args.dataset_name
+                model, criterion, postprocessors, data_loader_val, base_ds, device, args.output_dir, args.eval_dataset
             )
+            '''
     
     if args.eval:
         test_stats, coco_evaluator = evaluate(model, criterion, postprocessors,
-                                              data_loader_val, base_ds, device, args.output_dir, args.dataset_name)
+                                              data_loader_val, base_ds, device, args.output_dir, args.eval_dataset)
         if args.output_dir:
             utils.save_on_master(coco_evaluator.coco_eval["bbox"].eval, output_dir / "eval.pth")
         return
@@ -299,7 +302,7 @@ def main(args):
                 }, checkpoint_path)
 
         test_stats, coco_evaluator = evaluate(
-            model, criterion, postprocessors, data_loader_val, base_ds, device, args.output_dir, args.dataset_name
+            model, criterion, postprocessors, data_loader_val, base_ds, device, args.output_dir, args.eval_dataset
         )
 
         log_stats = {**{f'train_{k}': v for k, v in train_stats.items()},
