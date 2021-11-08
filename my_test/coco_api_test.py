@@ -1,11 +1,24 @@
 from pycocotools.coco import COCO
 
-anno_path = '/opt/tiger/minist/datasets/coco/cocosplit/cocosplit/datasplit/5k.json'
-anno_path = '/opt/tiger/minist/datasets/coco/cocosplit_self/seed0/full_box_5shot_trainval.json'
+anno_path2 = '/opt/tiger/minist/datasets/coco/cocosplit/datasplit/5k.json'
+anno_path1 = '/opt/tiger/minist/datasets/coco/cocosplit_self/seed0/full_box_1shot_trainval.json'
+# anno_path2 = '/opt/tiger/minist/datasets/coco/cocosplit/cocosplit/datasplit/5k.json'
+
 # anno_path = '/opt/tiger/minist/datasets/coco/cocosplit/seed0/full_box_1shot_airplane_trainval.json'
 # anno_path = '/opt/tiger/minist/datasets/coco/cocosplit/seed0/full_box_1shot_bed_trainval.json'
 
-coco = COCO(anno_path)
+coco_30 = COCO(anno_path1)
+coco_5k = COCO(anno_path2)
+
+print(len(coco_30.anns), len(coco_30.imgs))
+
+print(len(coco_5k.anns), len(coco_5k.imgs))
+
+intersect = [ann_id for ann_id in coco_30.anns if ann_id in coco_5k.anns]
+print(len(intersect))
+
+
+'''
 print(len(coco.anns))
 # count = 0
 # for k, v in coco.catToImgs.items():
@@ -36,5 +49,6 @@ print(type(target))
 print(len(target))
 print(target[0])
 # print(target['labels'])
+'''
 
 
