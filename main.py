@@ -30,7 +30,13 @@ from models import build_model
 def get_args_parser():
     parser = argparse.ArgumentParser('Deformable DETR Detector', add_help=False)
     # stephen add argumens:
-    parser.add_argument('--dataset_name', default='coco_base', type=str, help='coco_base, coco_all, coco_novel_seed_{s}_{k}_shot')
+    parser.add_argument('--dataset_name', default='coco_base', type=str, help='coco_base, coco_all, coco_{novel / all}_seed_{s}_{k}_shot')
+    '''
+    使用dataset_name 来决定是否过滤相应类别
+        coco_base  : only fetch 60 base class from tranvalno5k.json
+        coco_novel_seed_{s}_{k}_shot : only fetch 20 novel class from coco_novel_seed_{s}_{k}_shot.json
+        coco_all_seed_{s}_{k}_shot : all 80 class , no filter.
+    '''
     parser.add_argument('--num_classes', default='60', type=int)
     parser.add_argument('--eval_dataset', default='coco_base', type = str, help = 'coco_base, coco_all, coco_novel')
 

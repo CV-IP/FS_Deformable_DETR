@@ -9,13 +9,14 @@
 """
 Copy-Paste from torchvision, but add utility of caching images on memory
 """
-from sys import meta_path
+from sys import meta_path, exit
 from torchvision.datasets.vision import VisionDataset
 from PIL import Image
 import os
 import os.path
 import tqdm
 from io import BytesIO
+
 
 from datasets.FSOD_settings.get_fsod_data_matadata import _get_builtin_metadata
 
@@ -104,19 +105,24 @@ class FsCocoDetection(VisionDataset):
     def __init__(self, root, annFile, transform=None, target_transform=None, transforms=None,
                  cache_mode=False, local_rank=0, local_size=1, dataset_name = 'coco_all'):
         '''
-        dataset_name = 'coco_all / coco_base / coco_novel'
+        dataset_name = 'coco_base, coco_all, coco_{novel / all}_seed_{s}_{k}_shot'
 
         '''
         
         super(FsCocoDetection, self).__init__(root, transforms, transform, target_transform)
         self.dataset_name = dataset_name
         self.metadata = _get_builtin_metadata('coco_fewshot')
-        if 'base' in self.dataset_name:
-            split = 'base'
-        else:
-            split = 'all'
-        id_map_key = '{}_dataset_id_to_contiguous_id'.format(split)
+        id_map_key = 'all_dataset_id_to_contiguous_id'
+        if 'shot' in self.dataset_name :
+            if 'novel' in self.dataset_name:
+                # coco_novel_seed_{s}_{k}_shot
+                id_map_key = 'novel_dataset_id_to_contiguous_id'
+        elif self.dataset_name == 'coco_base':
+            id_map_key = 'base_dataset_id_to_contiguous_id'
+        
         self.id_map = self.metadata[id_map_key]
+        print('id map')
+        print(self.id_map)
 
         from pycocotools.coco import COCO
         self.coco = COCO(annFile)
@@ -127,7 +133,12 @@ class FsCocoDetection(VisionDataset):
 
         self.ids = []
         # assert len(img_ids) == len(ann_ids), 'length of img_ids : {},  ann_ids : {},  Not Equal !!!'.format(len(img_ids), len(ann_ids))
-        if self.dataset_name == 'coco_base' :
+        # if self.dataset_name == 'coco_base' :
+        if 'shot' in self.dataset_name:
+            # 不需要对训练集进行过滤
+            self.ids = list(sorted(self.coco.imgs.keys()))
+        else :
+            # 需要过滤，留下只是base或者是novel的类别。
             for i, img_id in enumerate(img_ids):
                 ann_ids = self.coco.getAnnIds(imgIds=img_id)
                 anns = self.coco.loadAnns(ann_ids)
@@ -138,11 +149,8 @@ class FsCocoDetection(VisionDataset):
                         break
                 if positive or len(ann_ids) == 0:
                     self.ids.append(img_ids[i]) 
-        else :
-            self.ids = list(sorted(self.coco.imgs.keys()))
 
         print('{} dataset nums : {}'.format(self.dataset_name, len(self.ids)))
-
 
         self.cache_mode = cache_mode
         self.local_rank = local_rank
@@ -182,6 +190,7 @@ class FsCocoDetection(VisionDataset):
         target = []
         for anno in target_all:
             if anno["category_id"] in self.id_map:
+                # ori class_id 2 continious class_id
                 anno["category_id"] = self.id_map[anno["category_id"]]
                 target.append(anno)
 

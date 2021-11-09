@@ -16,7 +16,7 @@ deformable-detr:
 
 def deformable_detr_model_surgery(ckpt_path, save_dir = '/opt/tiger/minist/FS_Deformable_DETR/surgery_model', all_class_nums = 80):
     ckpt = torch.load(ckpt_path)
-    ckpt_name = ckpt_path.split('/')[-1]
+    ckpt_name = ckpt_path.split('/')[-1].split('.')[0] + '_' + str(all_class_nums) + '_classes.pth'
     prior_prob = 0.01
     bias_value = -math.log((1 - prior_prob) / prior_prob)
     class_embed_bias = torch.ones(all_class_nums) * bias_value
@@ -54,8 +54,9 @@ def show_weight_param(ckpt_path):
 if __name__ == '__main__':
     ckpt_path = '/opt/tiger/minist/FS_Deformable_DETR/exps/r50_deformable_detr_plus_iterative_bbox_refinement_plus_plus_two_stage_441/checkpoint0049.pth'
     save_dir = '/opt/tiger/minist/FS_Deformable_DETR/surgery_model'
-    deformable_detr_model_surgery(ckpt_path, save_dir, all_class_nums = 80)
-    save_path = os.path.join(save_dir, ckpt_path.split('/')[-1])
+    # deformable_detr_model_surgery(ckpt_path, save_dir, all_class_nums = 20)
+    ckpt_name = ckpt_path.split('/')[-1].split('.')[0] + '_' + str(20) + '_classes.pth'
+    save_path = os.path.join(save_dir, ckpt_name)
     show_weight_param(save_path)
     
 
