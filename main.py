@@ -13,6 +13,7 @@ import datetime
 import json
 import random
 import time
+import os
 from pathlib import Path
 
 import numpy as np
@@ -142,6 +143,7 @@ def main(args):
 
 
     # stephen add 
+    best_ap = 0.0
     
 
     device = torch.device(args.device)
@@ -235,6 +237,9 @@ def main(args):
         model_without_ddp.detr.load_state_dict(checkpoint['model'])
 
     output_dir = Path(args.output_dir)
+
+    # stephen add :
+    best_checkpoint_path = os.path.join(output_dir, 'best_checkpoint.pth')
     if args.resume:
         if args.resume.startswith('https'):
             checkpoint = torch.hub.load_state_dict_from_url(
@@ -309,7 +314,19 @@ def main(args):
                      **{f'test_{k}': v for k, v in test_stats.items()},
                      'epoch': epoch,
                      'n_parameters': n_parameters}
+        '''
+        # stephen add : save best mAP checkpoint
+        if log_stats['test_coco_eval_bbox'][0] > best_ap:
+            best_ap  = log_stats['test_coco_eval_bbox'][0]
+            utils.save_on_master({
+                'model': model_without_ddp.state_dict(),
+                'optimizer': optimizer.state_dict(),
+                'lr_scheduler': lr_scheduler.state_dict(),
+                'epoch': epoch,
+                'args': args,
+            }, best_checkpoint_path)
 
+        '''
         if args.output_dir and utils.is_main_process():
             with (output_dir / "log.txt").open("a") as f:
                 f.write(json.dumps(log_stats) + "\n")
