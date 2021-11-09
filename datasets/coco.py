@@ -136,6 +136,11 @@ def make_coco_transforms(image_set):
     ])
 
     scales = [480, 512, 544, 576, 608, 640, 672, 704, 736, 768, 800]
+    
+    '''
+    由于数据增强的原因，train set 必须带有 train 或者  val
+
+    '''
 
     # if image_set == 'train':
     if 'train' in image_set:
@@ -167,11 +172,13 @@ def build(image_set, args):
     seed = ''
     shot = ''
     if 'shot' in image_set:
-        image_set = 'coco_novel'
+        image_set = 'coco_novel_train'
         dataset_name = args.dataset_name
         seed = dataset_name.split('_')[3]
         shot = dataset_name.split('_')[4]
         assert int(seed) in range(10) and int(shot) in [1,2,3,5,10,30]
+    if image_set == 'coco_base':
+        image_set = 'coco_base_train'
         
 
     root = Path(args.coco_path)
@@ -180,9 +187,9 @@ def build(image_set, args):
     PATHS = {
         "train": (root / "train2017", root / "annotations" / f'{mode}_train2017.json'),
         "val": (root / "val2017", root / "annotations" / f'{mode}_val2017.json'),
-        "coco_base": (root / "JPEG", root / "cocosplit" / "datasplit" / "trainvalno5k.json"),
+        "coco_base_train": (root / "JPEG", root / "cocosplit" / "datasplit" / "trainvalno5k.json"),
         "coco_val": (root / "JPEG", root / "cocosplit" / "datasplit" / "5k.json"),
-        "coco_novel" : (root / "JPEG", os.path.join(root, "cocosplit_self","seed"+ seed, "full_box_{}shot_trainval.json".format(shot)))
+        "coco_novel_train" : (root / "JPEG", os.path.join(root, "cocosplit_self","seed"+ seed, "full_box_{}shot_trainval.json".format(shot)))
         
     }
 
