@@ -32,16 +32,17 @@ GPUS_PER_NODE=8 ./tools/run_dist_launch.sh 8 ./configs/r50_deformable_detr.sh \
 # finue-tune
 
 GPUS_PER_NODE=8  ./tools/run_dist_launch.sh 8 configs/r50_deformable_detr_plus_iterative_bbox_refinement_plus_plus_two_stage.sh \
+    --dataset_name coco_novel_seed_0_10_shot \
+    --num_classes 20 \
     --eval_dataset coco_all \
     --output_dir exps/coco_seed_0_1_shot \
     --lr_backbone 0 \
     --num_queries 100 \
-    --num_classes 80 --batch_size 4 \
-    --dataset_name coco_novel_seed_0_1_shot \
     --epochs 50 \
+    --batch_size 4 \
     --lr 2e-4 \
     --lr_drop 40 \
-    --resume surgery_model/checkpoint0049_base_441_100q.pth \
+    --resume surgery_model/checkpoint0049_20_classes_resnet50_100q.pth \
     
     >> nohup_coco_base_1105_seed0_1shot.out 2>&1 &
 

@@ -320,7 +320,7 @@ def main(args):
                      **{f'test_{k}': v for k, v in test_stats.items()},
                      'epoch': epoch,
                      'n_parameters': n_parameters}
-        '''
+        # '''
         # stephen add : save best mAP checkpoint
         if log_stats['test_coco_eval_bbox'][0] > best_ap:
             best_ap  = log_stats['test_coco_eval_bbox'][0]
@@ -332,7 +332,7 @@ def main(args):
                 'args': args,
             }, best_checkpoint_path)
 
-        '''
+        # '''
         if args.output_dir and utils.is_main_process():
             with (output_dir / "log.txt").open("a") as f:
                 f.write(json.dumps(log_stats) + "\n")
