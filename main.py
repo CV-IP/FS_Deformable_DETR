@@ -146,7 +146,7 @@ def main(args):
 
     if args.frozen_weights is not None:
         assert args.masks, "Frozen training is meant for segmentation only"
-    print(args)
+    # print(args)
 
 
     # stephen add 

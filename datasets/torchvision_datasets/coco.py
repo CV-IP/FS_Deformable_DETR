@@ -114,8 +114,8 @@ class FsCocoDetection(VisionDataset):
         self.dataset_name = dataset_name
         self.metadata = _get_builtin_metadata('coco_fewshot')
         id_map_key = 'all_dataset_id_to_contiguous_id'
-        if 'val' in self.dataset_name :
-            filter_kind = None
+        # if 'val' in self.dataset_name :
+        #     filter_kind = None
         if filter_kind is not None:
             assert filter_kind in ['novel', 'base']
             id_map_key = '{}_dataset_id_to_contiguous_id'.format(filter_kind)
@@ -134,7 +134,7 @@ class FsCocoDetection(VisionDataset):
         self.ids = []
         # assert len(img_ids) == len(ann_ids), 'length of img_ids : {},  ann_ids : {},  Not Equal !!!'.format(len(img_ids), len(ann_ids))
         # if self.dataset_name == 'coco_base' :
-        if filter_kind is None:
+        if filter_kind is None or 'val' in self.dataset_name :
             # 如果是验证集或者不设置过滤，不过滤
             self.ids = list(sorted(self.coco.imgs.keys()))
         else :
