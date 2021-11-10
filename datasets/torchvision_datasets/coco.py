@@ -134,7 +134,7 @@ class FsCocoDetection(VisionDataset):
         self.ids = []
         # assert len(img_ids) == len(ann_ids), 'length of img_ids : {},  ann_ids : {},  Not Equal !!!'.format(len(img_ids), len(ann_ids))
         # if self.dataset_name == 'coco_base' :
-        if 'shot' in self.dataset_name:
+        if 'all' in self.dataset_name:
             # 不需要对训练集进行过滤
             self.ids = list(sorted(self.coco.imgs.keys()))
         else :

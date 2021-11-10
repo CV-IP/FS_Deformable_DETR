@@ -50,7 +50,7 @@ class CocoEvaluator(object):
         elif eval_dataset == 'coco_base':
             self.catid = coco_base_class_id
             self.eval_dataset = 'base'
-        else: # coco_novel_seed_{}_{}_shot
+        else: # coco_novel_seed_{}_{}_shot coco_novel
             self.catid = coco_novel_class_id
             self.eval_dataset = 'novel'
         
@@ -129,7 +129,7 @@ class CocoEvaluator(object):
 
     def prepare_for_fsod_coco_detection(self, predictions):
         # stephen add:
-        id_map_key = '{}_dataset_id_to_contiguous_id'.format('all')
+        id_map_key = '{}_dataset_id_to_contiguous_id'.format(self.eval_dataset)
         # print(self.eval_dataset, id_map_key)
         id_map = self.metadata[id_map_key]
         reverse_id_mapping = {

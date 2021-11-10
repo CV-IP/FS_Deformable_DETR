@@ -234,7 +234,7 @@ def _get_coco_fewshot_instances_meta():
     # ret = _get_coco_instances_meta()
     ret = {}
     novel_ids = [k["id"] for k in COCO_NOVEL_CATEGORIES if k["isthing"] == 1]
-    novel_dataset_id_to_contiguous_id = {k: (i + 60) for i, k in enumerate(novel_ids)}
+    novel_dataset_id_to_contiguous_id = {k: i for i, k in enumerate(novel_ids)}
     novel_classes = [
         k["name"] for k in COCO_NOVEL_CATEGORIES if k["isthing"] == 1
     ]
@@ -249,7 +249,8 @@ def _get_coco_fewshot_instances_meta():
     ret["novel_classes"] = novel_classes
     ret["base_dataset_id_to_contiguous_id"] = base_dataset_id_to_contiguous_id
     ret["base_classes"] = base_classes
-    ret['all_dataset_id_to_contiguous_id'] = {**novel_dataset_id_to_contiguous_id, **base_dataset_id_to_contiguous_id}
+    inc_novel_dataset_id_to_contiguous_id = {k : (v+60) for k, v in novel_dataset_id_to_contiguous_id.items()}
+    ret['all_dataset_id_to_contiguous_id'] = {**inc_novel_dataset_id_to_contiguous_id, **base_dataset_id_to_contiguous_id}
     return ret
 
 
