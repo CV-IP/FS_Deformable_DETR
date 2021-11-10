@@ -12,24 +12,30 @@ GPUS_PER_NODE=8 nohup ./tools/run_dist_launch.sh 8 ./configs/r50_deformable_detr
 
 base train:
 
-GPUS_PER_NODE=8 ./tools/run_dist_launch.sh 8 configs/r50_deformable_detr_plus_iterative_bbox_refinement_plus_plus_two_stage.sh --num_classes 60 \
+GPUS_PER_NODE=8 ./tools/run_dist_launch.sh 8 configs/r50_deformable_detr_plus_iterative_bbox_refinement_plus_plus_two_stage.sh \
+    --num_classes 60 \
     --dataset_name coco_base_train \
-    --eval_dataset coco_novel \
-    --output_dir exps/coco_base_300_q_resnet101 \
+    --eval_dataset coco_base \
+    --filter_kind base \
+    --output_dir exps/coco_base_100_q_resnet50_1110 \
     --batch_size 4 \
-    --backbone resnet101
-    --resume exps/r50_deformable_detr_plus_iterative_bbox_refinement_plus_plus_two_stage/eval/latest.pth \
+
     >> nohup_coco_base_1105_300query.out 2>&1 &
-
-
-GPUS_PER_NODE=8 ./tools/run_dist_launch.sh 8 ./configs/r50_deformable_detr.sh \
-    --num_classes 60 --batch_size 4 --two_stage --with_box_refine \
-    --resume exps/r50_deformable_detr/checkpoint0004.pth \
-    >> nohup_coco_base_1103.out 2>&1 &
+    
+    --resume exps/r50_deformable_detr_plus_iterative_bbox_refinement_plus_plus_two_stage/eval/latest.pth \
 
 
 
-# finue-tune
+# finue-tune 
+
+GPUS_PER_NODE=8 ./tools/run_dist_launch.sh 8 configs/r50_deformable_detr_plus_iterative_bbox_refinement_plus_plus_two_stage.sh   \
+    --num_classes 80     \
+    --dataset_name coco_all_seed_0_10_shot     \
+    --eval_dataset coco_all   \
+    --output_dir exps/coco_novel_100_q_resnet50_seed0_10shot     \
+    --batch_size 4 \
+    --resume surgery_model/checkpoint0049_base_441_100q.pth \
+    >> nohup_coco_base_1105_seed0_1shot.out 2>&1 &
 
 GPUS_PER_NODE=8  ./tools/run_dist_launch.sh 8 configs/r50_deformable_detr_plus_iterative_bbox_refinement_plus_plus_two_stage.sh \
     --dataset_name coco_novel_seed_0_10_shot \

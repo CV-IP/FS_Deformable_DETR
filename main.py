@@ -39,6 +39,7 @@ def get_args_parser():
     '''
     parser.add_argument('--num_classes', default='60', type=int)
     parser.add_argument('--eval_dataset', default='coco_base', type = str, help = 'coco_base, coco_all, coco_novel')
+    parser.add_argument('--filter_kind', default=None, type=str, help='filter dataset')
 
 
     parser.add_argument('--lr', default=2e-4, type=float)

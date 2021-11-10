@@ -103,9 +103,10 @@ class FsCocoDetection(VisionDataset):
     """
 
     def __init__(self, root, annFile, transform=None, target_transform=None, transforms=None,
-                 cache_mode=False, local_rank=0, local_size=1, dataset_name = 'coco_all'):
+                 cache_mode=False, local_rank=0, local_size=1, dataset_name = 'coco_all', filter_kind = None):
         '''
-        dataset_name = 'coco_base, coco_all, coco_{novel / all}_seed_{s}_{k}_shot'
+        dataset_name = 'coco_base_train, coco_all_, coco_{novel / all}_seed_{s}_{k}_shot'
+        filter_kind = None(不过滤) ， base, novel
 
         '''
         
@@ -113,12 +114,11 @@ class FsCocoDetection(VisionDataset):
         self.dataset_name = dataset_name
         self.metadata = _get_builtin_metadata('coco_fewshot')
         id_map_key = 'all_dataset_id_to_contiguous_id'
-        if 'shot' in self.dataset_name :
-            if 'novel' in self.dataset_name:
-                # coco_novel_seed_{s}_{k}_shot
-                id_map_key = 'novel_dataset_id_to_contiguous_id'
-        elif self.dataset_name == 'coco_base':
-            id_map_key = 'base_dataset_id_to_contiguous_id'
+        if 'val' in self.dataset_name :
+            filter_kind = None
+        if filter_kind is not None:
+            assert filter_kind in ['novel', 'base']
+            id_map_key = '{}_dataset_id_to_contiguous_id'.format(filter_kind)
         
         self.id_map = self.metadata[id_map_key]
         print('id map')
@@ -134,8 +134,8 @@ class FsCocoDetection(VisionDataset):
         self.ids = []
         # assert len(img_ids) == len(ann_ids), 'length of img_ids : {},  ann_ids : {},  Not Equal !!!'.format(len(img_ids), len(ann_ids))
         # if self.dataset_name == 'coco_base' :
-        if 'all' in self.dataset_name:
-            # 不需要对训练集进行过滤
+        if filter_kind is None:
+            # 如果是验证集或者不设置过滤，不过滤
             self.ids = list(sorted(self.coco.imgs.keys()))
         else :
             # 需要过滤，留下只是base或者是novel的类别。
@@ -150,7 +150,7 @@ class FsCocoDetection(VisionDataset):
                 if positive or len(ann_ids) == 0:
                     self.ids.append(img_ids[i]) 
 
-        print('{} dataset nums : {}'.format(self.dataset_name, len(self.ids)))
+        print('dataset_name : {}, image nums : {}, anno nums : {}'.format(self.dataset_name, len(self.ids), len(self.coco.anns)))
 
         self.cache_mode = cache_mode
         self.local_rank = local_rank

@@ -28,10 +28,10 @@ import datasets.transforms as T
 
 
 class CocoDetection(FsCocoDetection):
-    def __init__(self, img_folder, ann_file, transforms, return_masks, cache_mode=False, local_rank=0, local_size=1, dataset_name = 'coco_all'):
+    def __init__(self, img_folder, ann_file, transforms, return_masks, cache_mode=False, local_rank=0, local_size=1, dataset_name = 'coco_all', filter_kind = None):
         # target transformers: return_masks
         super(CocoDetection, self).__init__(img_folder, ann_file,
-                                            cache_mode=cache_mode, local_rank=local_rank, local_size=local_size, dataset_name = dataset_name)
+                                            cache_mode=cache_mode, local_rank=local_rank, local_size=local_size, dataset_name = dataset_name, filter_kind=filter_kind)
 
         self._transforms = transforms
         self.prepare = ConvertCocoPolysToMask(return_masks)
@@ -143,19 +143,7 @@ def make_coco_transforms(image_set):
     '''
 
     # if image_set == 'train':
-    if 'train' in image_set:
-        return T.Compose([
-            T.RandomHorizontalFlip(),
-            T.RandomSelect(
-                T.RandomResize(scales, max_size=1333),
-                T.Compose([
-                    T.RandomResize([400, 500, 600]),
-                    T.RandomSizeCrop(384, 600),
-                    T.RandomResize(scales, max_size=1333),
-                ])
-            ),
-            normalize,
-        ])
+    
 
     # if image_set == 'val':
     if 'val' in image_set :
@@ -163,22 +151,37 @@ def make_coco_transforms(image_set):
             T.RandomResize([800], max_size=1333),
             normalize,
         ])
+    
+    # if 'train' in image_set:
+    return T.Compose([
+        T.RandomHorizontalFlip(),
+        T.RandomSelect(
+            T.RandomResize(scales, max_size=1333),
+            T.Compose([
+                T.RandomResize([400, 500, 600]),
+                T.RandomSizeCrop(384, 600),
+                T.RandomResize(scales, max_size=1333),
+            ])
+        ),
+        normalize,
+    ])
 
-    raise ValueError(f'unknown {image_set}')
+    # raise ValueError(f'unknown {image_set}')
 
 
 def build(image_set, args):
     # image_set = train / val, args = args
+    map_key = image_set
     seed = ''
     shot = ''
     if 'shot' in image_set:
-        image_set = 'coco_novel_train'
+        map_key = 'coco_novel_train'
         dataset_name = args.dataset_name
         seed = dataset_name.split('_')[3]
         shot = dataset_name.split('_')[4]
         assert int(seed) in range(10) and int(shot) in [1,2,3,5,10,30]
-    if image_set == 'coco_base':
-        image_set = 'coco_base_train'
+    # if image_set == 'coco_base':
+    #     map_key = 'coco_base_train'
         
 
     root = Path(args.coco_path)
@@ -190,11 +193,10 @@ def build(image_set, args):
         "coco_base_train": (root / "JPEG", root / "cocosplit" / "datasplit" / "trainvalno5k.json"),
         "coco_val": (root / "JPEG", root / "cocosplit" / "datasplit" / "5k.json"),
         "coco_novel_train" : (root / "JPEG", os.path.join(root, "cocosplit_self","seed"+ seed, "full_box_{}shot_trainval.json".format(shot)))
-        
     }
 
-    img_folder, ann_file = PATHS[image_set]
+    img_folder, ann_file = PATHS[map_key]
     print(ann_file)
     dataset = CocoDetection(img_folder, ann_file, transforms=make_coco_transforms(image_set), return_masks=args.masks,
-                            cache_mode=args.cache_mode, local_rank=get_local_rank(), local_size=get_local_size(), dataset_name=args.dataset_name)
+                            cache_mode=args.cache_mode, local_rank=get_local_rank(), local_size=get_local_size(), dataset_name=image_set, filter_kind = args.filter_kind)
     return dataset
