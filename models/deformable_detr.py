@@ -50,6 +50,12 @@ class DeformableDETR(nn.Module):
         super().__init__()
         self.num_queries = num_queries
         self.transformer = transformer
+
+        # stephen add , frozen transformer
+        for name, parameter in self.transformer.named_parameters():
+            parameter.requires_grad_(False) # frozen paramaters
+
+        
         hidden_dim = transformer.d_model # 256
         self.class_embed = nn.Linear(hidden_dim, num_classes)
         self.bbox_embed = MLP(hidden_dim, hidden_dim, 4, 3)

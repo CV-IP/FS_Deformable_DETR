@@ -27,6 +27,10 @@ GPUS_PER_NODE=8 ./tools/run_dist_launch.sh 8 configs/r50_deformable_detr_plus_it
 
 
 # finue-tune 
+--lr_backbone 0 : freeze backbone
+
+
+
 80 class :
 GPUS_PER_NODE=8 ./tools/run_dist_launch.sh 8 configs/r50_deformable_detr_plus_iterative_bbox_refinement_plus_plus_two_stage.sh   \
     --lr_backbone 0 \

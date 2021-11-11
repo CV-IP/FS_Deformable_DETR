@@ -1,0 +1,30 @@
+2021,1111
+
+GPUS_PER_NODE=8 nohup ./tools/run_dist_launch.sh 8 configs/r50_deformable_detr_plus_iterative_bbox_refinement_plus_plus_two_stage.sh       \
+    --lr_backbone 0     --num_classes 20        --filter_kind novel     --dataset_name coco_all_seed_0_10_shot         \
+    --eval_dataset coco_novel       --output_dir exps/coco_novel_100_q_resnet50_seed0_10shot         \
+    --batch_size 4  --epochs 200 --lr_drop 50 --lr 2e-5 --resume surgery_model/checkpoint0049_20_classes_resnet50_100q.pth  \
+    >  nohup_coco_novel_seed0_10shot_resnet50_1111_resume.out 2>&1 &
+
+
+command：
+GPUS_PER_NODE=8 nohup ./tools/run_dist_launch.sh 8 configs/r50_deformable_detr_plus_iterative_bbox_refinement_plus_plus_two_stage.sh       \
+    --lr_backbone 0     --num_classes 20        --filter_kind novel     --dataset_name coco_all_seed_0_10_shot         \
+    --eval_dataset coco_novel       --output_dir exps/coco_novel_100_q_resnet50_seed0_10shot         \
+    --batch_size 4  --epochs 200 --lr_drop 50 --lr 2e-4 --resume surgery_model/checkpoint0049_20_classes_resnet50_100q.pth  \
+    >  nohup_coco_novel_seed0_10shot_resnet50_1111_resume.out 2>&1 &
+
+    log file : 
+    freeze backbone and transformer
+    表现：收敛很慢，分类损失下降慢，100epoch map 0.016
+
+command :
+GPUS_PER_NODE=8 nohup ./tools/run_dist_launch.sh 8    configs/r50_deformable_detr_plus_iterative_bbox_refinement_plus_plus_two_stage.sh       \
+    --lr_backbone 0     --num_classes 20        --filter_kind novel     --dataset_name coco_all_seed_0_10_shot         \
+    --eval_dataset coco_novel       --output_dir exps/coco_novel_100_q_resnet50_seed0_10shot         --batch_size 4  \
+    --epochs 200 --lr_drop 50 --resume surgery_model/checkpoint0049_20_classes_resnet50_100q.pth  \
+    >  nohup_coco_novel_seed0_10shot_resnet50_no_freeze_1111_resume.out 2>&1 &
+
+    freeze backbone , not transformer
+    表现： 收敛速度可观，但是达到60 epoch左右，map0.11 ，直到90epoch， 基本不变，怀疑可能是50epoch之后学习率减少导致不变。
+    想法： 在finetune阶段使用更强的数据增强，查看是否会涨点。 
