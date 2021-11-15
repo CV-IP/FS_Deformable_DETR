@@ -6,7 +6,6 @@ GPUS_PER_NODE=8 nohup ./tools/run_dist_launch.sh 8 configs/r50_deformable_detr_p
     --batch_size 4  --epochs 200 --lr_drop 50 --lr 2e-5 --resume surgery_model/checkpoint0049_20_classes_resnet50_100q.pth  \
     >  nohup_coco_novel_seed0_10shot_resnet50_1111_resume.out 2>&1 &
 
-
 command 1：
 GPUS_PER_NODE=8 nohup ./tools/run_dist_launch.sh 8 configs/r50_deformable_detr_plus_iterative_bbox_refinement_plus_plus_two_stage.sh       \
     --lr_backbone 0     --num_classes 20        --filter_kind novel     --dataset_name coco_all_seed_0_10_shot         \
@@ -17,11 +16,23 @@ GPUS_PER_NODE=8 nohup ./tools/run_dist_launch.sh 8 configs/r50_deformable_detr_p
     log file : 
     freeze backbone and transformer
     表现：收敛很慢，分类损失下降慢，100epoch map 0.016, epoch 100 停止训练，尝试使用更大的学习率
+
 command 2：
-GPUS_PER_NODE=8 nohup ./tools/run_dist_launch.sh 8 configs/r50_deformable_detr_plus_iterative_bbox_refinement_plus_plus_two_stage.sh       \
-    --lr_backbone 0     --num_classes 20        --filter_kind novel     --dataset_name coco_all_seed_0_10_shot         \
-    --eval_dataset coco_novel       --output_dir exps/test         \
-    --batch_size 4  --epochs 200 --lr_drop 50 --lr 2e-3 --resume exps/coco_novel_100_q_resnet50_seed0_10shot/best_checkpoint.pth 
+    GPUS_PER_NODE=8 ./tools/run_dist_launch.sh 8 configs/r50_deformable_detr_plus_iterative_bbox_refinement_plus_plus_two_stage.sh  \           --lr_backbone 0     --num_classes 20        --filter_kind novel     --dataset_name coco_all_seed_0_10_shot             \
+    --eval_dataset coco_novel       --output_dir exps/test             --batch_size 4  --epochs 200 --lr_drop 100 --lr 2e-3 \
+    --resume exps/coco_novel_100_q_resnet50_seed0_10shot/best_checkpoint.pth 
+
+    freeze backbone and transformer
+    表现：收敛较快，30 epoch左右 best map 0.139, 之后开始下降。
+    下一步调整， lr_drop 设置为 40， 接着对该步结果进行微调。初始lr设置为2e-4
+
+command 3:
+    GPUS_PER_NODE=8 ./tools/run_dist_launch.sh 8 configs/r50_deformable_detr_plus_iterative_bbox_refinement_plus_plus_two_stage.sh  \      --lr_backbone 0     --num_classes 20        --filter_kind novel     --dataset_name coco_all_seed_0_10_shot             \
+    --eval_dataset coco_novel       --output_dir exps/coco_novel_seed0_10shot   --batch_size 4  --epochs 100 --lr_drop 40 --lr 2e-4 \
+    --resume --output_dir exps/test/best_checkpoint.pth
+    freeze backbone and transformer
+    表现：收敛较快，25 epoch左右 best map 0.138,相比于前一阶段的2e-3 的lr，mAP没有继续提高。训练的class error 为0， 已经完全拟合。
+    基于上述表现，判断lr应该设置为2e-3， lr_drop 40, 训练epoch 50 / 60。
 
 
 
