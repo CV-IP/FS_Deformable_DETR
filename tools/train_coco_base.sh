@@ -12,15 +12,15 @@ GPUS_PER_NODE=8 nohup ./tools/run_dist_launch.sh 8 ./configs/r50_deformable_detr
 
 base train:
 
-GPUS_PER_NODE=8 ./tools/run_dist_launch.sh 8 configs/r50_deformable_detr_plus_iterative_bbox_refinement_plus_plus_two_stage.sh \
+GPUS_PER_NODE=8 nohup ./tools/run_dist_launch.sh 8 configs/r50_deformable_detr_plus_iterative_bbox_refinement_plus_plus_two_stage.sh \
     --num_classes 60 \
     --dataset_name coco_base_train \
     --eval_dataset coco_base \
     --filter_kind base \
-    --output_dir exps/coco_base_100_q_resnet50_1111 \
+    --output_dir exps/coco_base_100_q_resnet50_1115 \
     --batch_size 4 \
     --num_queries 100 \
-    >> nohup_coco_base_1111_100query_resnet50.out 2>&1 &
+    >> nohup_coco_base_1115_100query_resnet50.out 2>&1 &
     
     --resume exps/r50_deformable_detr_plus_iterative_bbox_refinement_plus_plus_two_stage/eval/latest.pth \
 

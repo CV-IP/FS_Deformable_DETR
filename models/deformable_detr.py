@@ -35,7 +35,7 @@ def _get_clones(module, N):
 class DeformableDETR(nn.Module):
     """ This is the Deformable DETR module that performs object detection """
     def __init__(self, backbone, transformer, num_classes, num_queries, num_feature_levels,
-                 aux_loss=True, with_box_refine=False, two_stage=False):
+                 aux_loss=True, with_box_refine=False, two_stage=False, freeze_transformer = False):
         """ Initializes the model.
         Parameters:
             backbone: torch module of the backbone to be used. See backbone.py
@@ -52,8 +52,9 @@ class DeformableDETR(nn.Module):
         self.transformer = transformer
 
         # stephen add , frozen transformer
-        for name, parameter in self.transformer.named_parameters():
-            parameter.requires_grad_(False) # frozen paramaters
+        if freeze_transformer :
+            for name, parameter in self.transformer.named_parameters():
+                parameter.requires_grad_(False) # frozen paramaters
 
         
         hidden_dim = transformer.d_model # 256
@@ -467,6 +468,7 @@ def build(args):
         aux_loss=args.aux_loss,
         with_box_refine=args.with_box_refine,
         two_stage=args.two_stage,
+        freeze_transformer=args.freeze_transformer
     )
     if args.masks: # False
         model = DETRsegm(model, freeze_detr=(args.frozen_weights is not None))

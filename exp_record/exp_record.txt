@@ -47,3 +47,18 @@ GPUS_PER_NODE=8 nohup ./tools/run_dist_launch.sh 8    configs/r50_deformable_det
     freeze backbone , not transformer
     表现： 收敛速度可观，但是达到60 epoch左右，map0.11 ，直到90epoch， 基本不变，怀疑可能是50epoch之后学习率减少导致不变。
     想法： 在finetune阶段使用更强的数据增强，查看是否会涨点。 
+
+
+
+20211116:   
+    重新训练base：
+    command :
+    GPUS_PER_NODE=8 nohup ./tools/run_dist_launch.sh 8 configs/r50_deformable_detr_plus_iterative_bbox_refinement_plus_plus_two_stage.sh     \
+    --num_classes 60     --dataset_name coco_base_train     --eval_dataset coco_base     --filter_kind base     \
+    --output_dir exps/coco_base_100_q_resnet50_1116     --batch_size 4     --num_queries 100     \
+    >> nohup_coco_base_1116_100query_resnet50.out 2>&1 &
+
+
+
+实验数据：
+    coco_base_100_q_resnet50_1115 ： 没有打开transformer，所以无效。
