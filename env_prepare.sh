@@ -13,3 +13,7 @@ pip install -r requirements.txt
 
 git remote rm origin
 git remote add origin git@github.com:StephenStorm/FS_Deformable_DETR.git
+
+mkdir data
+cd data
+ls -s 

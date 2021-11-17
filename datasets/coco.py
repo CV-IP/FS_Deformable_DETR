@@ -190,8 +190,8 @@ def build(image_set, args):
     PATHS = {
         "train": (root / "train2017", root / "annotations" / f'{mode}_train2017.json'),
         "val": (root / "val2017", root / "annotations" / f'{mode}_val2017.json'),
-        "coco_base_train": (root / "JPEG", root / "cocosplit" / "datasplit" / "trainvalno5k.json"),
-        "coco_val": (root / "JPEG", root / "cocosplit" / "datasplit" / "5k.json"),
+        "coco_base_train": (root / "JPEG", root / "cocosplit_self" / "datasplit" / "trainvalno5k.json"),
+        "coco_val": (root / "JPEG", root / "cocosplit_self" / "datasplit" / "5k.json"),
         "coco_novel_train" : (root / "JPEG", os.path.join(root, "cocosplit_self","seed"+ seed, "full_box_{}shot_trainval.json".format(shot)))
     }
 

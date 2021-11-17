@@ -58,7 +58,23 @@ GPUS_PER_NODE=8 nohup ./tools/run_dist_launch.sh 8    configs/r50_deformable_det
     --output_dir exps/coco_base_100_q_resnet50_1116     --batch_size 4     --num_queries 100     \
     >> nohup_coco_base_1116_100query_resnet50.out 2>&1 &
 
+    未训练完，机器被kill掉。
+
+20211117:
+    训练单阶段det：
+    command：
+    GPUS_PER_NODE=8 nohup ./tools/run_dist_launch.sh 8 configs/r50_deformable_detr_plus_iterative_bbox_refinement.sh     \
+    --num_classes 60     --dataset_name coco_base_train     --eval_dataset coco_base     --filter_kind base     \
+    --output_dir exps/coco_base_100_q_resnet50_1117_one_stage     --batch_size 4     --num_queries 100     \
+    > nohup_coco_base_1117_100query_resnet50_one_stage.out 2>&1 &
 
 
 实验数据：
     coco_base_100_q_resnet50_1115 ： 没有打开transformer，所以无效。
+
+
+
+test tmp command :
+    GPUS_PER_NODE=8 ./tools/run_dist_launch.sh 8 configs/r50_deformable_detr_plus_iterative_bbox_refinement.sh     \
+    --num_classes 60     --dataset_name coco_base_train     --eval_dataset coco_base     --filter_kind base     \
+    --output_dir exps/coco_base_100_q_resnet50_1117_one_stage     --batch_size 4     --num_queries 100
