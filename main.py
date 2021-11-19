@@ -358,7 +358,7 @@ def main(args):
     total_time = time.time() - start_time
     total_time_str = str(datetime.timedelta(seconds=int(total_time)))
     print('Training time {}'.format(total_time_str))
-    print('best mAP : {}',format(best_ap))
+    print('best mAP : {}'.format(best_ap))
 
 
 if __name__ == '__main__':
