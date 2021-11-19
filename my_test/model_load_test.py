@@ -42,6 +42,7 @@ def deformable_detr_model_surgery(ckpt_path, save_dir = '/opt/tiger/minist/FS_De
     save_path = os.path.join(save_dir, ckpt_name)
     torch.save(ckpt, save_path)
     print('save new weight to {}'.format(save_path))
+    return save_path
 
 
 def show_weight_param(ckpt_path):
@@ -52,11 +53,10 @@ def show_weight_param(ckpt_path):
 
 
 if __name__ == '__main__':
-    ckpt_path = '/opt/tiger/minist/FS_Deformable_DETR/exps/r50_deformable_detr_plus_iterative_bbox_refinement_plus_plus_two_stage_441/checkpoint0049.pth'
+    ckpt_path = '/opt/tiger/minist/FS_Deformable_DETR/exps/coco_base_100_q_resnet50_1117_one_stage/best_checkpoint.pth'
     save_dir = '/opt/tiger/minist/FS_Deformable_DETR/surgery_model'
-    # deformable_detr_model_surgery(ckpt_path, save_dir, all_class_nums = 20)
-    ckpt_name = ckpt_path.split('/')[-1].split('.')[0] + '_' + str(20) + '_classes.pth'
-    save_path = os.path.join(save_dir, ckpt_name)
+    save_path = deformable_detr_model_surgery(ckpt_path, save_dir, all_class_nums = 20)
+    # ckpt_name = ckpt_path.split('/')[-1].split('.')[0] + '_' + str(20) + 'classes.pth'
     show_weight_param(save_path)
     
 
