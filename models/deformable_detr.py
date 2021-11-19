@@ -53,6 +53,8 @@ class DeformableDETR(nn.Module):
 
         # stephen add , frozen transformer
         if freeze_transformer :
+            print('*' * 60)
+            print('freeze transformer !!!')
             for name, parameter in self.transformer.named_parameters():
                 parameter.requires_grad_(False) # frozen paramaters
 
