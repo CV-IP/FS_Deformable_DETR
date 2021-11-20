@@ -55,7 +55,7 @@ def show_weight_param(ckpt_path):
 if __name__ == '__main__':
     ckpt_path = '/opt/tiger/minist/FS_Deformable_DETR/exps/coco_base_100_q_resnet50_1117_one_stage/best_checkpoint.pth'
     save_dir = '/opt/tiger/minist/FS_Deformable_DETR/surgery_model'
-    save_path = deformable_detr_model_surgery(ckpt_path, save_dir, all_class_nums = 20)
+    save_path = deformable_detr_model_surgery(ckpt_path, save_dir, all_class_nums = 80)
     # ckpt_name = ckpt_path.split('/')[-1].split('.')[0] + '_' + str(20) + 'classes.pth'
     show_weight_param(save_path)
     
