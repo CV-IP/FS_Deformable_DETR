@@ -1,5 +1,5 @@
 #! /usr/bin/python3
-for seed in 7 8 9
+for seed in 0 1 2 3 4 5 6 7 8 9
 do
     # for shot in  2 3 5 10 30
     for shot in 10 30
@@ -11,7 +11,7 @@ do
         --eval_dataset coco_all   \
         --output_dir exps/coco_all_resnet50_q100_twostage_bboxRefine/seed${seed}_${shot}shot     \
         --epochs 50 --batch_size 4 --lr 2e-4 --lr_drop 40 \
-        --resume surgery_model/base_resnet50_q100_twostage_bboxRefine_80_classes.pth \
         > log/coco_all_resnet50_q100_twostage_bboxRefine/seed${seed}_${shot}shot.log
+        --resume surgery_model/base_resnet50_q100_twostage_bboxRefine_80_classes.pth \
     done
 done

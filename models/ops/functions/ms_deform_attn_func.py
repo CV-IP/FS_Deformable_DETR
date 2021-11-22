@@ -41,10 +41,10 @@ class MSDeformAttnFunction(Function):
 def ms_deform_attn_core_pytorch(value, value_spatial_shapes, sampling_locations, attention_weights):
     # for debug and test only,
     # need to use cuda version instead
-    N_, S_, M_, D_ = value.shape
-    _, Lq_, M_, L_, P_, _ = sampling_locations.shape
-    value_list = value.split([H_ * W_ for H_, W_ in value_spatial_shapes], dim=1)
-    sampling_grids = 2 * sampling_locations - 1
+    N_, S_, M_, D_ = value.shape  # batchsize， key个数， head个数， 维度
+    _, Lq_, M_, L_, P_, _ = sampling_locations.shape    #Lq_: query个数， L_:level数， P_: 采样点个数 
+    value_list = value.split([H_ * W_ for H_, W_ in value_spatial_shapes], dim=1)   # 区分每个level的key
+    sampling_grids = 2 * sampling_locations - 1      # 因为需要使用grid_sample因此需要将采样点映射到-1，1之间
     sampling_value_list = []
     for lid_, (H_, W_) in enumerate(value_spatial_shapes):
         # N_, H_*W_, M_, D_ -> N_, H_*W_, M_*D_ -> N_, M_*D_, H_*W_ -> N_*M_, D_, H_, W_
@@ -59,3 +59,11 @@ def ms_deform_attn_core_pytorch(value, value_spatial_shapes, sampling_locations,
     attention_weights = attention_weights.transpose(1, 2).reshape(N_*M_, 1, Lq_, L_*P_)
     output = (torch.stack(sampling_value_list, dim=-2).flatten(-2) * attention_weights).sum(-1).view(N_, M_*D_, Lq_)
     return output.transpose(1, 2).contiguous()
+
+    '''
+    可以发现其本质是利用F.grid_sample函数进行采样，该函数使用时需要将采样点归一化到之间。
+    输入value对应着keys， value_spatial_shapes用于对value进行拆分，拆分成不同的level，在不同的level中进行采样，每个level采样n_head*n_point个向量。
+    这里想到之前《纯pytorch版本的deformable cnn的实现》进行采样的过程，其实循环部分也可以借鉴这里，直接将采样点并在一起进行采样。
+    attention_weights分别加权每一个D维的向量，总共相当于每个query的L_*P_个特征进行加权求和。
+    最终的输出是N * Lq_ * d_model, 其中d_model是总的特征的维度，Lq_是query的个数。
+    '''

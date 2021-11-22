@@ -66,13 +66,16 @@ GPUS_PER_NODE=8 nohup ./tools/run_dist_launch.sh 8    configs/r50_deformable_det
     >> exps/coco_base_100_q_resnet50_1120/nohup.out 2>&1 &
 
 
-20211121:   
+20211121(实际日期是1122):   
     重新训练base：
     command :
     GPUS_PER_NODE=8 nohup ./tools/run_dist_launch.sh 8 configs/r50_deformable_detr_plus_iterative_bbox_refinement_plus_plus_two_stage.sh     \
     --num_classes 60     --dataset_name coco_base_train     --eval_dataset coco_base     --filter_kind base     \
     --output_dir exps/coco_base_resnet50_q100_twostage_bboxRefine_20211121     --batch_size 4     --num_queries 100     \
     >> log/nohup_coco_base_resnet50_q100_twostage_bboxRefine_20211121.log 2>&1 &
+
+20211122:
+    突然发现之前的训练都没有freeze input_proj，也就是为了对齐不同阶段的特征图的一个映射变换组，组的大小为特征图的数量，也就是4
     
 
 

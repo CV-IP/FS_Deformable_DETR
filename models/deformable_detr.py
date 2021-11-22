@@ -61,10 +61,10 @@ class DeformableDETR(nn.Module):
         
         hidden_dim = transformer.d_model # 256
         self.class_embed = nn.Linear(hidden_dim, num_classes)
-        self.bbox_embed = MLP(hidden_dim, hidden_dim, 4, 3)
+        self.bbox_embed = MLP(hidden_dim, hidden_dim, 4, 3)   # (input_dim, hidden_dim, output_dim, num_layers)
         self.num_feature_levels = num_feature_levels # 4
         if not two_stage:
-            self.query_embed = nn.Embedding(num_queries, hidden_dim*2)
+            self.query_embed = nn.Embedding(num_queries, hidden_dim*2)# (num_embeddings, embedding_dims)
         if num_feature_levels > 1:
             num_backbone_outs = len(backbone.strides) # 3
             input_proj_list = [] # 对于backbone输出的不同通道数的特征图映射到hidden_dim , 通过一个conv2d + GroupNorm, list 的长度对应特征图的数量，3
@@ -88,8 +88,9 @@ class DeformableDETR(nn.Module):
                     nn.GroupNorm(32, hidden_dim),
                 )])
         self.backbone = backbone
-        self.aux_loss = aux_loss # True
+        self.aux_loss = aux_loss # True。#使用辅助loss，即每一层decoder均使用loss约束
         self.with_box_refine = with_box_refine
+        # 如果使用box refinement，那么前一层的输出会被用于下一层的reference_points
         self.two_stage = two_stage
 
         prior_prob = 0.01
@@ -103,6 +104,8 @@ class DeformableDETR(nn.Module):
             nn.init.constant_(proj[0].bias, 0)
 
         # if two-stage, the last class_embed and bbox_embed is for region proposal generation
+        # 是否使用两阶段，使用的话需要额外在encoder输出层预测proposal，否则如果box_refine则只需要在decoder的每一层预测，
+        #最原始的版本是decoder输出层加上一个box检测模块就足矣
         num_pred = (transformer.decoder.num_layers + 1) if two_stage else transformer.decoder.num_layers
         if with_box_refine:
             self.class_embed = _get_clones(self.class_embed, num_pred)
@@ -142,12 +145,13 @@ class DeformableDETR(nn.Module):
 
         srcs = []
         masks = []
-        for l, feat in enumerate(features):
+        for l, feat in enumerate(features): # # backbone 不同输出level的特征进行channel统一化
             src, mask = feat.decompose()
             srcs.append(self.input_proj[l](src))
             masks.append(mask)
             assert mask is not None
         if self.num_feature_levels > len(srcs): # 4 > 3
+            # 除了backbone的输出level外，额外的特征level，即额外卷积实现的变换需要进一步channel统一化，以及pos产生
             _len_srcs = len(srcs)
             for l in range(_len_srcs, self.num_feature_levels):
                 if l == _len_srcs:
@@ -163,12 +167,22 @@ class DeformableDETR(nn.Module):
 
         query_embeds = None
         if not self.two_stage:
+            # 如果不采用two_stage的话， query就是可学习的随机变量，two_stage的话，query是有encoder预测的topk个
             query_embeds = self.query_embed.weight
         hs, init_reference, inter_references, enc_outputs_class, enc_outputs_coord_unact = self.transformer(srcs, masks, pos, query_embeds)
 
         outputs_classes = []
         outputs_coords = []
+
+        '''
+        第三个循环是把所有需要的输出整理一下，例如使用辅助损失时需要的每层decoder的输出，
+        这里注意bbox_embed都是预测的相对reference_point的量，最终的outputs_coord是归一化后的绝对量，
+        通过inver_sigmoid和sigmoid的成对操作保证数值在0-1之间，为什么不直接sigmoid？那样相对值就可能比绝对值大很多，不在一个尺度，会导致收敛难等问题。
+        '''
+
+
         for lvl in range(hs.shape[0]):
+            # 只使用encoder的最后一层或者decoder的初始化pos
             if lvl == 0:
                 reference = init_reference
             else:
@@ -181,7 +195,7 @@ class DeformableDETR(nn.Module):
             else:
                 assert reference.shape[-1] == 2
                 tmp[..., :2] += reference
-            outputs_coord = tmp.sigmoid()
+            outputs_coord = tmp.sigmoid() # 输出的是解码后的box
             outputs_classes.append(outputs_class)
             outputs_coords.append(outputs_coord)
         outputs_class = torch.stack(outputs_classes)
@@ -192,9 +206,11 @@ class DeformableDETR(nn.Module):
             out['aux_outputs'] = self._set_aux_loss(outputs_class, outputs_coord)
 
         if self.two_stage:
+            # 如果两阶段的话，同时对encoder的预测进行约束
             enc_outputs_coord = enc_outputs_coord_unact.sigmoid()
             out['enc_outputs'] = {'pred_logits': enc_outputs_class, 'pred_boxes': enc_outputs_coord}
         return out
+        
 
     @torch.jit.unused
     def _set_aux_loss(self, outputs_class, outputs_coord):

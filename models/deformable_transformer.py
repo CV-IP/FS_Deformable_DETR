@@ -58,7 +58,7 @@ class DeformableTransformer(nn.Module):
                                                           num_feature_levels, nhead, dec_n_points)
         self.decoder = DeformableTransformerDecoder(decoder_layer, num_decoder_layers, return_intermediate_dec)
 
-        self.level_embed = nn.Parameter(torch.Tensor(num_feature_levels, d_model)) # 4, 256
+        self.level_embed = nn.Parameter(torch.Tensor(num_feature_levels, d_model)) # 4, 256 学习的是对于不同level进行额外位置编码的作用。
 
         if two_stage:
             self.enc_output = nn.Linear(d_model, d_model)
@@ -67,6 +67,7 @@ class DeformableTransformer(nn.Module):
             self.pos_trans_norm = nn.LayerNorm(d_model * 2)
         else:
             self.reference_points = nn.Linear(d_model, 2)
+        # reference_points对pos编码特征进行线性变换以得到初始可能的reference点
 
         self._reset_parameters()
 
@@ -119,6 +120,7 @@ class DeformableTransformer(nn.Module):
             _cur += (H_ * W_)
         output_proposals = torch.cat(proposals, 1)
         output_proposals_valid = ((output_proposals > 0.01) & (output_proposals < 0.99)).all(-1, keepdim=True)
+        # 筛选有效的proposal，将靠近边界的点舍弃
         output_proposals = torch.log(output_proposals / (1 - output_proposals))
         output_proposals = output_proposals.masked_fill(memory_padding_mask.unsqueeze(-1), float('inf'))
         output_proposals = output_proposals.masked_fill(~output_proposals_valid, float('inf'))
@@ -150,11 +152,11 @@ class DeformableTransformer(nn.Module):
             bs, c, h, w = src.shape
             spatial_shape = (h, w)
             spatial_shapes.append(spatial_shape)
-            src = src.flatten(2).transpose(1, 2)
-            mask = mask.flatten(1)
-            pos_embed = pos_embed.flatten(2).transpose(1, 2)
-            lvl_pos_embed = pos_embed + self.level_embed[lvl].view(1, 1, -1)
-            lvl_pos_embed_flatten.append(lvl_pos_embed)
+            src = src.flatten(2).transpose(1, 2)    # bs x c x h x w -> bs x c x hw -> bs x hw x c
+            mask = mask.flatten(1)                  # bs x hw
+            pos_embed = pos_embed.flatten(2).transpose(1, 2)    # bs x c x h x w -> bs x c x hw -> bs x hw x c
+            lvl_pos_embed = pos_embed + self.level_embed[lvl].view(1, 1, -1)     # bs x hw x c + 1 x 1 x c, 每一level提供一个可学习的编码
+            lvl_pos_embed_flatten.append(lvl_pos_embed)     # 分别flatten之后append，方便encoder调用，即所有的keys
             src_flatten.append(src)
             mask_flatten.append(mask)
         src_flatten = torch.cat(src_flatten, 1)
@@ -173,22 +175,22 @@ class DeformableTransformer(nn.Module):
             output_memory, output_proposals = self.gen_encoder_output_proposals(memory, mask_flatten, spatial_shapes)
 
             # hack implementation for two-stage Deformable DETR
-            enc_outputs_class = self.decoder.class_embed[self.decoder.num_layers](output_memory)
+            enc_outputs_class = self.decoder.class_embed[self.decoder.num_layers](output_memory) # 最后一个class_embed 来产生类别
             enc_outputs_coord_unact = self.decoder.bbox_embed[self.decoder.num_layers](output_memory) + output_proposals
 
             topk = self.two_stage_num_proposals # 100, 300 same as query nums
             topk_proposals = torch.topk(enc_outputs_class[..., 0], topk, dim=1)[1]
             topk_coords_unact = torch.gather(enc_outputs_coord_unact, 1, topk_proposals.unsqueeze(-1).repeat(1, 1, 4))
             topk_coords_unact = topk_coords_unact.detach()
-            reference_points = topk_coords_unact.sigmoid()
+            reference_points = topk_coords_unact.sigmoid()  # 相当于对proposal的微调
             init_reference_out = reference_points
             pos_trans_out = self.pos_trans_norm(self.pos_trans(self.get_proposal_pos_embed(topk_coords_unact)))
             query_embed, tgt = torch.split(pos_trans_out, c, dim=2)
         else:
-            query_embed, tgt = torch.split(query_embed, c, dim=1)
-            query_embed = query_embed.unsqueeze(0).expand(bs, -1, -1)
-            tgt = tgt.unsqueeze(0).expand(bs, -1, -1)
-            reference_points = self.reference_points(query_embed).sigmoid()
+            query_embed, tgt = torch.split(query_embed, c, dim=1)   # Lq x d_model
+            query_embed = query_embed.unsqueeze(0).expand(bs, -1, -1)   # bs x Lq x d_model     每个sample的query相同，参考位置也相同
+            tgt = tgt.unsqueeze(0).expand(bs, -1, -1)   # 初始的query
+            reference_points = self.reference_points(query_embed).sigmoid() # 每个query是学习到不同的参考位置
             init_reference_out = reference_points
 
         # decoder
@@ -248,7 +250,10 @@ class DeformableTransformerEncoder(nn.Module):
         super().__init__()
         self.layers = _get_clones(encoder_layer, num_layers)
         self.num_layers = num_layers
-
+    '''
+    这里有一个变量valid_ratios需要解释一下，query的个数是所有的像素位置，包括不同的level， 那么每个query都需要在不同的level上采点，
+    所以需要每个reference_point在每个level上映射后的点，所以这里的valid_ratios在计算时就是公式2里的函数。
+    '''
     @staticmethod
     def get_reference_points(spatial_shapes, valid_ratios, device):
         reference_points_list = []
@@ -310,6 +315,7 @@ class DeformableTransformerDecoderLayer(nn.Module):
     def forward(self, tgt, query_pos, reference_points, src, src_spatial_shapes, level_start_index, src_padding_mask=None):
         # self attention
         q = k = self.with_pos_embed(tgt, query_pos)
+        # multihead_attn(query, key, value)
         tgt2 = self.self_attn(q.transpose(0, 1), k.transpose(0, 1), tgt.transpose(0, 1))[0].transpose(0, 1)
         tgt = tgt + self.dropout2(tgt2)
         tgt = self.norm2(tgt)

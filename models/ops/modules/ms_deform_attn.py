@@ -31,10 +31,10 @@ class MSDeformAttn(nn.Module):
     def __init__(self, d_model=256, n_levels=4, n_heads=8, n_points=4):
         """
         Multi-Scale Deformable Attention Module
-        :param d_model      hidden dimension
-        :param n_levels     number of feature levels
-        :param n_heads      number of attention heads
-        :param n_points     number of sampling points per attention head per feature level
+        :param d_model      hidden dimension # 256
+        :param n_levels     number of feature levels # 4
+        :param n_heads      number of attention heads # 8
+        :param n_points     number of sampling points per attention head per feature level # 4
         """
         super().__init__()
         if d_model % n_heads != 0:
@@ -45,7 +45,7 @@ class MSDeformAttn(nn.Module):
             warnings.warn("You'd better set d_model in MSDeformAttn to make the dimension of each attention head a power of 2 "
                           "which is more efficient in our CUDA implementation.")
 
-        self.im2col_step = 64
+        self.im2col_step = 64 # cuda 加速
 
         self.d_model = d_model
         self.n_levels = n_levels
@@ -60,10 +60,12 @@ class MSDeformAttn(nn.Module):
         self._reset_parameters()
 
     def _reset_parameters(self):
+        # 这里初始化不同的权重，采样不同的偏置点时有些特殊，不同的level不同的point初始偏置bias不同
         constant_(self.sampling_offsets.weight.data, 0.)
         thetas = torch.arange(self.n_heads, dtype=torch.float32) * (2.0 * math.pi / self.n_heads)
         grid_init = torch.stack([thetas.cos(), thetas.sin()], -1)
         grid_init = (grid_init / grid_init.abs().max(-1, keepdim=True)[0]).view(self.n_heads, 1, 1, 2).repeat(1, self.n_levels, self.n_points, 1)
+        # 相当于每个level每个point偏置对应的head进行编码
         for i in range(self.n_points):
             grid_init[:, :, i, :] *= i + 1
         with torch.no_grad():
@@ -80,15 +82,20 @@ class MSDeformAttn(nn.Module):
         :param query                       (N, Length_{query}, C)
         :param reference_points            (N, Length_{query}, n_levels, 2), range in [0, 1], top-left (0,0), bottom-right (1, 1), including padding area
                                         or (N, Length_{query}, n_levels, 4), add additional (w, h) to form reference boxes
+        # 每个query在不同的level的参考位置，即公式2的q
         :param input_flatten               (N, \sum_{l=0}^{L-1} H_l \cdot W_l, C)
+        # 把不同的level特征flatten一起，所有key的个数，即所有level的像素点个数之和
         :param input_spatial_shapes        (n_levels, 2), [(H_0, W_0), (H_1, W_1), ..., (H_{L-1}, W_{L-1})]
+        # 每个level的尺寸
         :param input_level_start_index     (n_levels, ), [0, H_0*W_0, H_0*W_0+H_1*W_1, H_0*W_0+H_1*W_1+H_2*W_2, ..., H_0*W_0+H_1*W_1+...+H_{L-1}*W_{L-1}]
+        # 每个level的开始索引， 相当于不同的level进行序列排序后的索引
         :param input_padding_mask          (N, \sum_{l=0}^{L-1} H_l \cdot W_l), True for padding elements, False for non-padding elements
-
+        # bool，每个位置是否mask
         :return output                     (N, Length_{query}, C)
         """
-        N, Len_q, _ = query.shape
-        N, Len_in, _ = input_flatten.shape
+
+        N, Len_q, _ = query.shape  # batch size, query的个数
+        N, Len_in, _ = input_flatten.shape   # Len_in是所有key的个数
         assert (input_spatial_shapes[:, 0] * input_spatial_shapes[:, 1]).sum() == Len_in
 
         value = self.value_proj(input_flatten)
@@ -96,20 +103,27 @@ class MSDeformAttn(nn.Module):
             value = value.masked_fill(input_padding_mask[..., None], float(0))
         value = value.view(N, Len_in, self.n_heads, self.d_model // self.n_heads)
         sampling_offsets = self.sampling_offsets(query).view(N, Len_q, self.n_heads, self.n_levels, self.n_points, 2)
+        # 每个query产生对应不同head不同level的偏置
         attention_weights = self.attention_weights(query).view(N, Len_q, self.n_heads, self.n_levels * self.n_points)
+        # 每个偏置向量的权重
         attention_weights = F.softmax(attention_weights, -1).view(N, Len_q, self.n_heads, self.n_levels, self.n_points)
+        # 对属于同一个query的来自与不同level的offset后向量权重在每个head分别归一化
         # N, Len_q, n_heads, n_levels, n_points, 2
         if reference_points.shape[-1] == 2:
             offset_normalizer = torch.stack([input_spatial_shapes[..., 1], input_spatial_shapes[..., 0]], -1)
             sampling_locations = reference_points[:, :, None, :, None, :] \
                                  + sampling_offsets / offset_normalizer[None, None, None, :, None, :]
+            # 采样位置 / 宽高， 归一化。
         elif reference_points.shape[-1] == 4:
             sampling_locations = reference_points[:, :, None, :, None, :2] \
                                  + sampling_offsets / self.n_points * reference_points[:, :, None, :, None, 2:] * 0.5
         else:
             raise ValueError(
                 'Last dim of reference_points must be 2 or 4, but get {} instead.'.format(reference_points.shape[-1]))
+        # MSDeformAttnFunction函数是调用的cuda编写的采样且求和的过程。我们可以通过其pytorch版
         output = MSDeformAttnFunction.apply(
             value, input_spatial_shapes, input_level_start_index, sampling_locations, attention_weights, self.im2col_step)
+        # 最终的输出是N * Lq_ * d_model
         output = self.output_proj(output)
+        # N * Len_q * d_model
         return output
