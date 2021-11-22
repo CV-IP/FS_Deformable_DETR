@@ -1,4 +1,7 @@
 # pwd: minist
+
+git clone -b fs_deformable_detr https://github.com/StephenStorm/FS_Deformable_DETR.git
+
 cd ..
 mkdir packages
 cd packages
