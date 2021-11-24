@@ -118,7 +118,13 @@ GPUS_PER_NODE=8 nohup ./tools/run_dist_launch.sh 8    configs/r50_deformable_det
     --num_classes 60     --dataset_name coco_base_train     --eval_dataset coco_base     --filter_kind base     \
     --output_dir exps/coco_base_100_q_resnet50_1122     --batch_size 4     --num_queries 300     \
     >> exps/coco_base_300_q_resnet50_1122/nohup.out 2>&1 &
-    
+20211124:
+    训练300q， resnet101 base two stage model
+    GPUS_PER_NODE=8 nohup ./tools/run_dist_launch.sh 8 configs/r50_deformable_detr_plus_iterative_bbox_refinement_plus_plus_two_stage.sh     \
+    --backbone resnet101  --num_queries 300 \
+    --num_classes 60     --dataset_name coco_base_train     --eval_dataset coco_base     --filter_kind base     \
+    --output_dir exps/coco_base_300_q_resnet101_1124     --batch_size 4       \
+    >> exps/coco_base_300_q_resnet101_1124/nohup.out 2>&1 &
 
 
 实验数据：
