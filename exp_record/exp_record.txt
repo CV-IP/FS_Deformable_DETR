@@ -1,3 +1,29 @@
+twostage base model:
+    1. 2021-11-09 11:48 hdfs://haruna/home/byte_arnold_lq_vc/user/zhanglibin.buaa/exps/r50_deformable_detr_plus_iterative_bbox_refinement_plus_plus_two_stage_441
+    难以复现出来，不知道改动了哪里导致的
+    2. 2021-11-24 02:41 hdfs://haruna/home/byte_arnold_lq_vc/user/zhanglibin.buaa/exps/coco_base_resnet50_q100_twostage_bboxRefine_20211121_0.436
+    3. 2021-11-22 03:54 hdfs://haruna/home/byte_arnold_lq_vc/user/zhanglibin.buaa/exps/coco_base_100_q_resnet50_1120_0.437
+    4. 2021-11-16 08:33 hdfs://haruna/home/byte_arnold_lq_vc/user/zhanglibin.buaa/exps/coco_base_100_q_resnet50_1115
+    4. 2021-11-16 08:34 hdfs://haruna/home/byte_arnold_lq_vc/user/zhanglibin.buaa/exps/coco_base_300_q_resnet101
+
+one stage base model:
+1. 2021-11-22 04:42 hdfs://haruna/home/byte_arnold_lq_vc/user/zhanglibin.buaa/exps/coco_base_100_q_resnet50_1117_one_stage_0.4229
+
+
+two stage novel :
+    1. do not save, but save log
+two stage all :
+    1. do not save, but save log
+
+one stage all :
+    1. 2021-11-21 11:06 hdfs://haruna/home/byte_arnold_lq_vc/user/zhanglibin.buaa/exps/coco_all_resnet50_q100_onestage_bboxRefine
+one stage novel:
+    1. 2021-11-20 08:05 hdfs://haruna/home/byte_arnold_lq_vc/user/zhanglibin.buaa/exps/coco_novel_resnet50_q100_onestage_bboxRefine
+
+
+
+
+
 2021,1111
 
 GPUS_PER_NODE=8 nohup ./tools/run_dist_launch.sh 8 configs/r50_deformable_detr_plus_iterative_bbox_refinement_plus_plus_two_stage.sh       \
