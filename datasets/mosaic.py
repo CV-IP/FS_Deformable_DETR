@@ -170,7 +170,7 @@ class MosaicDetection(Dataset):
             #     and random.random() < self.mixup_prob
             # ):
             #     mosaic_img, mosaic_labels = self.mixup(mosaic_img, mosaic_labels, self.input_dim)
-            mix_img, padded_labels = self.preproc(mosaic_img, mosaic_labels, self.input_dim)
+            # mix_img, padded_labels = self.preproc(mosaic_img, mosaic_labels, self.input_dim)
             # img_info = (mix_img.shape[1], mix_img.shape[0])
 
             # return mix_img, padded_labels, img_info, np.array([idx])
@@ -180,7 +180,7 @@ class MosaicDetection(Dataset):
                 for i in range(nums):
                     if mosaic_labels[i, -1] != 0.0:
                         cv2.rectangle(mosaic_img, 
-                            (int(mosaic_labels[i, 0] ), int(mosaic_labels[i, 2] )),  # top left
+                            (int(mosaic_labels[i, 0] ), int(mosaic_labels[i, 1] )),  # top left
                             (int(mosaic_labels[i, 2] ), int(mosaic_labels[i, 3] )),  # bottom right
                             (0, 0, 255),  # color
                             1 # thickness

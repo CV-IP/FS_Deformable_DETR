@@ -66,6 +66,7 @@ class TrainTransform:
         if len(boxes) == 0:
             targets = np.zeros((self.max_labels, 5), dtype=np.float32)
             image, r_o = preproc(image, input_dim)
+            # c, h, w
             return image, targets
 
         image_o = image.copy()
@@ -221,7 +222,7 @@ def random_perspective(
             xy = (xy[:, :2] / xy[:, 2:3]).reshape(n, 8)  # rescale
         else:  # affine
             xy = xy[:, :2].reshape(n, 8)
-
+        # xy.shape : n * 8
         # create new boxes
         x = xy[:, [0, 2, 4, 6]]
         y = xy[:, [1, 3, 5, 7]]
