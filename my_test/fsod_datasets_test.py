@@ -17,12 +17,18 @@ if __name__ == "__main__":
     img_root = '/opt/tiger/minist/datasets/coco/JPEG'
     transforms = make_coco_transforms('train')
     coco5k = CocoDetection(img_root, anno_path, transforms = None, return_masks = False, dataset_name='coco_base')
+    image, target = coco5k[0]
+    # print(image.shape)
+    print(target)
     mosaic_coco5k = MosaicDetection(coco5k, preproc=TrainTransform(max_labels=200) )
     print(len(coco5k))
     img, target = mosaic_coco5k[0]
+    print(type(img), type(target))
+    print(img.shape, target.shape)
+    
     # print(img.shape)
     # print(target)
-    
+
     # bboxes = target['boxes']
     # classes = target['labels']
     # _label = torch.cat([bboxes, classes.view(-1, 1).float()], dim = 1)

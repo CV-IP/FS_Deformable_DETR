@@ -99,11 +99,11 @@ class TrainTransform:
         labels_t = np.expand_dims(labels_t, 1)
 
         targets_t = np.hstack((labels_t, boxes_t))
-        padded_labels = np.zeros((self.max_labels, 5))
-        padded_labels[range(len(targets_t))[: self.max_labels]] = targets_t[
-            : self.max_labels
-        ]
-        padded_labels = np.ascontiguousarray(padded_labels, dtype=np.float32)
+        # padded_labels = np.zeros((self.max_labels, 5))
+        # padded_labels[range(len(targets_t))[: self.max_labels]] = targets_t[
+        #     : self.max_labels
+        # ]
+        padded_labels = np.ascontiguousarray(targets_t, dtype=np.float32)
         return image_t, padded_labels
 
 
@@ -156,7 +156,9 @@ def random_perspective(
     shear=10,
     perspective=0.0,
     border=(0, 0),
+    iscrowds = None
 ):
+    assert targets.shape[0] == iscrowds.shape[0], 'targets.shape : {}, iscrowds.shape : {}'.format(targets.shape, iscrowds.shape)
     # targets = [cls, xyxy]
     # print('type target: {}'.format(type(targets)) # np.ndarray
     height = img.shape[0] + border[0] * 2  # shape(h,w,c)
@@ -236,6 +238,7 @@ def random_perspective(
         i = box_candidates(box1=targets[:, :4].T * s, box2=xy.T)
         targets = targets[i]
         targets[:, :4] = xy[i]
+        iscrowds = iscrowds[i]
 
-    return img, targets
+    return img, targets, iscrowds
 
