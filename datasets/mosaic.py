@@ -164,39 +164,39 @@ class MosaicDetection(Dataset):
             # -----------------------------------------------------------------
             # CopyPaste: https://arxiv.org/abs/2012.07177
             # -----------------------------------------------------------------
-            # if (
-            #     self.enable_mixup
-            #     and not len(mosaic_labels) == 0
-            #     and random.random() < self.mixup_prob
-            # ):
-            #     mosaic_img, mosaic_labels = self.mixup(mosaic_img, mosaic_labels, self.input_dim)
-            # mix_img, padded_labels = self.preproc(mosaic_img, mosaic_labels, self.input_dim)
+            if (
+                self.enable_mixup
+                and not len(mosaic_labels) == 0
+                and random.random() < self.mixup_prob
+            ):
+                mosaic_img, mosaic_labels = self.mixup(mosaic_img, mosaic_labels, self.input_dim)# check
+            mix_img, padded_labels = self.preproc(mosaic_img, mosaic_labels, self.input_dim)
             # img_info = (mix_img.shape[1], mix_img.shape[0])
 
             # return mix_img, padded_labels, img_info, np.array([idx])
             # padded_labels[:, 3:] = padded_labels[:, 1:3] + padded_labels[:, 3:]
-            if True:
-                nums, col = mosaic_labels.shape
-                for i in range(nums):
-                    if mosaic_labels[i, -1] != 0.0:
-                        cv2.rectangle(mosaic_img, 
-                            (int(mosaic_labels[i, 0] ), int(mosaic_labels[i, 1] )),  # top left
-                            (int(mosaic_labels[i, 2] ), int(mosaic_labels[i, 3] )),  # bottom right
-                            (0, 0, 255),  # color
-                            1 # thickness
-                        )
             # if True:
-            #     nums, col = padded_labels.shape
+            #     nums, col = mosaic_labels.shape
             #     for i in range(nums):
-            #         if padded_labels[i, -1] != 0.0:
+            #         if mosaic_labels[i, -1] != 0.0:
             #             cv2.rectangle(mosaic_img, 
-            #                 (int(padded_labels[i, 1] - padded_labels[i, 3]), int(padded_labels[i, 2] - padded_labels[i, 4])),  # top left
-            #                 (int(padded_labels[i, 1] + padded_labels[i, 3]), int(padded_labels[i, 2] + padded_labels[i, 4])),  # bottom right
+            #                 (int(mosaic_labels[i, 0] ), int(mosaic_labels[i, 1] )),  # top left
+            #                 (int(mosaic_labels[i, 2] ), int(mosaic_labels[i, 3] )),  # bottom right
             #                 (0, 0, 255),  # color
             #                 1 # thickness
             #             )
+            if True:
+                nums, col = padded_labels.shape
+                for i in range(nums):
+                    if padded_labels[i, -1] != 0.0:
+                        cv2.rectangle(mix_img, 
+                            (int(padded_labels[i, 1] - padded_labels[i, 3] / 2), int(padded_labels[i, 2] - padded_labels[i, 4] / 2)),  # top left
+                            (int(padded_labels[i, 1] + padded_labels[i, 3] / 2), int(padded_labels[i, 2] + padded_labels[i, 4] / 2)),  # bottom right
+                            (0, 0, 255),  # color
+                            1 # thickness
+                        )
 
-            cv2.imwrite('/opt/tiger/minist/FS_Deformable_DETR/data/mixup.jpg', mosaic_img[:, :, ::-1])
+            cv2.imwrite('/opt/tiger/minist/FS_Deformable_DETR/data/mixup.jpg', mix_img[:, :, ::-1])
             # return mix_img, padded_labels
             return None, None
 
