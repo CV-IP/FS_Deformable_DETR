@@ -138,7 +138,6 @@ class MosaicDetection(Dataset):
                     labels[:, 2] = scale * _labels[:, 2] + padw
                     labels[:, 3] = scale * _labels[:, 3] + padh
                 mosaic_labels.append(labels)
-                iscrowds.append(iscrowd)
 
             if len(mosaic_labels):
                 mosaic_labels = np.concatenate(mosaic_labels, 0)
@@ -175,13 +174,24 @@ class MosaicDetection(Dataset):
             ):
                 mosaic_img, mosaic_labels, iscrowds = self.mixup(mosaic_img, mosaic_labels, self.input_dim, iscrowds=iscrowds)# check
             mix_img, padded_labels = self.preproc(mosaic_img, mosaic_labels, self.input_dim)
+            padded_labels = torch.from_numpy(padded_labels)
             # print(mix_img.shape) # (640, 640, 3) (h,w,c)
             mix_img = F.to_tensor(mix_img)
-            print(mix_img.shape) # (3, 640, 640) (c,h,w)
-            print(type(padded_labels))
+            # print(mix_img.shape) # (3, 640, 640) (c,h,w)
+            # print(type(padded_labels)) # ndarray
             print(iscrowds.shape)
             print(padded_labels.shape)
 
+            target = {
+                'boxes' : padded_labels[:, 1:],
+                'labels' : padded_labels[:, 0].int(),
+                'image_id' : None,
+                'area' : None,
+                'iscrowd' : iscrowds,
+                'orig_size' : None,
+                'size': mix_img.shape[1:]
+            }
+            print(target)
             # return mix_img, padded_labels, img_info, np.array([idx])
             # padded_labels[:, 3:] = padded_labels[:, 1:3] + padded_labels[:, 3:]
             # if True:
@@ -208,7 +218,7 @@ class MosaicDetection(Dataset):
 
             cv2.imwrite('/opt/tiger/minist/FS_Deformable_DETR/data/mixup.jpg', mix_img[:, :, ::-1])
             '''
-            return mix_img, torch.from_numpy(padded_labels)
+            return mix_img, target
 
         else:
             self._dataset._input_dim = self.input_dim
