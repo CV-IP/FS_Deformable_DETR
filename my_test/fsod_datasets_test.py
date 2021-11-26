@@ -2,7 +2,8 @@
 
 
 from datasets.coco import CocoDetection, make_coco_transforms
-from datasets.mosaic import MosaicDetection, TrainTransform
+from datasets.mosaic import MosaicDetection
+from datasets.mosaic_utils import TrainTransform
 import torch 
 import torchvision.transforms.functional as F
 
@@ -19,8 +20,9 @@ if __name__ == "__main__":
     mosaic_coco5k = MosaicDetection(coco5k, preproc=TrainTransform(max_labels=200) )
     print(len(coco5k))
     img, target = mosaic_coco5k[0]
-    print(img.shape)
-    print(target)
+    # print(img.shape)
+    # print(target)
+    
     # bboxes = target['boxes']
     # classes = target['labels']
     # _label = torch.cat([bboxes, classes.view(-1, 1).float()], dim = 1)

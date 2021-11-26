@@ -157,8 +157,10 @@ def random_perspective(
     border=(0, 0),
 ):
     # targets = [cls, xyxy]
+    # print('type target: {}'.format(type(targets)) # np.ndarray
     height = img.shape[0] + border[0] * 2  # shape(h,w,c)
     width = img.shape[1] + border[1] * 2
+    # print('width : {}, height: {}'.format(width, height)) # 
 
     # Center
     C = np.eye(3)

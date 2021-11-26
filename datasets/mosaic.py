@@ -8,12 +8,13 @@ import cv2
 import numpy as np
 import torch
 from torch.utils.data.dataset import Dataset
-from datasets.mosaic_utils import preproc, random_perspective, xyxy2cxcywh, augment_hsv, adjust_box_anns, box_candidates, _mirror
+from datasets.mosaic_utils import random_perspective, adjust_box_anns, box_candidates
 
 
 
 def get_mosaic_coordinate(mosaic_image, mosaic_index, xc, yc, w, h, input_h, input_w):
     # TODO update doc
+    # small_coord present the crop area in ori img
     # index0 to top left part of image
     if mosaic_index == 0:
         x1, y1, x2, y2 = max(xc - w, 0), max(yc - h, 0), xc, yc
@@ -98,21 +99,24 @@ class MosaicDetection(Dataset):
                 # img, _labels, _, _ = self._dataset.__getitem__(index)
                 img, target = self._dataset.__getitem__(index)
                 img = np.asarray(img)
-                print('in mosaic.py , img shape {}'.format(img.shape))
+                
                 bboxes = target['boxes']
                 classes = target['labels']
                 _labels = torch.cat([bboxes, classes.view(-1, 1).float()], dim = 1).numpy()
+                print('in mosaic.py , img shape {}， labels size : {}'.format(img.shape, _labels.shape))
                 # img, _labels : n * 5, n 个框，每一行，前四个是还未norm的box坐标（xyxy），第五个是class_label
                 h0, w0 = img.shape[:2]  # orig hw
                 scale = min(1. * input_h / h0, 1. * input_w / w0)
                 # print(img.empty())
-                cv2.imwrite('/opt/tiger/minist/FS_Deformable_DETR/test.jpg', img[:, :, ::-1])
+                # cv2.imwrite('/opt/tiger/minist/FS_Deformable_DETR/test.jpg', img[:, :, ::-1])
                 print(h0, w0, scale)
                 img = cv2.resize(
                     img, (int(w0 * scale), int(h0 * scale)), interpolation=cv2.INTER_LINEAR
                 )
+                
                 # generate output mosaic image
                 (h, w, c) = img.shape[:3]
+                print(h, w, c)
                 if i_mosaic == 0:
                     mosaic_img = np.full((input_h * 2, input_w * 2, c), 114, dtype=np.uint8)
 
@@ -140,6 +144,12 @@ class MosaicDetection(Dataset):
                 np.clip(mosaic_labels[:, 2], 0, 2 * input_w, out=mosaic_labels[:, 2])
                 np.clip(mosaic_labels[:, 3], 0, 2 * input_h, out=mosaic_labels[:, 3])
 
+            for label in mosaic_labels:
+                    cv2.rectangle(mosaic_img, (int(label[0]), int(label[1]) ), (int(label[2]), int(label[3])), (255,0,0), 1)
+            cv2.imwrite('/opt/tiger/minist/FS_Deformable_DETR/data/mosaic.jpg', mosaic_img[:, :, ::-1])
+            print('before random_perspective label:')
+            print(mosaic_labels)
+                
             mosaic_img, mosaic_labels = random_perspective(
                 mosaic_img,
                 mosaic_labels,
@@ -154,17 +164,41 @@ class MosaicDetection(Dataset):
             # -----------------------------------------------------------------
             # CopyPaste: https://arxiv.org/abs/2012.07177
             # -----------------------------------------------------------------
-            if (
-                self.enable_mixup
-                and not len(mosaic_labels) == 0
-                and random.random() < self.mixup_prob
-            ):
-                mosaic_img, mosaic_labels = self.mixup(mosaic_img, mosaic_labels, self.input_dim)
+            # if (
+            #     self.enable_mixup
+            #     and not len(mosaic_labels) == 0
+            #     and random.random() < self.mixup_prob
+            # ):
+            #     mosaic_img, mosaic_labels = self.mixup(mosaic_img, mosaic_labels, self.input_dim)
             mix_img, padded_labels = self.preproc(mosaic_img, mosaic_labels, self.input_dim)
-            img_info = (mix_img.shape[1], mix_img.shape[0])
+            # img_info = (mix_img.shape[1], mix_img.shape[0])
 
             # return mix_img, padded_labels, img_info, np.array([idx])
-            return mix_img, padded_labels
+            # padded_labels[:, 3:] = padded_labels[:, 1:3] + padded_labels[:, 3:]
+            if True:
+                nums, col = mosaic_labels.shape
+                for i in range(nums):
+                    if mosaic_labels[i, -1] != 0.0:
+                        cv2.rectangle(mosaic_img, 
+                            (int(mosaic_labels[i, 0] ), int(mosaic_labels[i, 2] )),  # top left
+                            (int(mosaic_labels[i, 2] ), int(mosaic_labels[i, 3] )),  # bottom right
+                            (0, 0, 255),  # color
+                            1 # thickness
+                        )
+            # if True:
+            #     nums, col = padded_labels.shape
+            #     for i in range(nums):
+            #         if padded_labels[i, -1] != 0.0:
+            #             cv2.rectangle(mosaic_img, 
+            #                 (int(padded_labels[i, 1] - padded_labels[i, 3]), int(padded_labels[i, 2] - padded_labels[i, 4])),  # top left
+            #                 (int(padded_labels[i, 1] + padded_labels[i, 3]), int(padded_labels[i, 2] + padded_labels[i, 4])),  # bottom right
+            #                 (0, 0, 255),  # color
+            #                 1 # thickness
+            #             )
+
+            cv2.imwrite('/opt/tiger/minist/FS_Deformable_DETR/data/mixup.jpg', mosaic_img[:, :, ::-1])
+            # return mix_img, padded_labels
+            return None, None
 
         else:
             self._dataset._input_dim = self.input_dim
@@ -250,56 +284,4 @@ class MosaicDetection(Dataset):
             origin_img = 0.5 * origin_img + 0.5 * padded_cropped_img.astype(np.float32)
 
         return origin_img.astype(np.uint8), origin_labels
-
-
-
-class TrainTransform:
-    def __init__(self, max_labels=50, flip_prob=0.5, hsv_prob=1.0):
-        self.max_labels = max_labels
-        self.flip_prob = flip_prob
-        self.hsv_prob = hsv_prob
-
-    def __call__(self, image, targets, input_dim):
-        boxes = targets[:, :4].copy()
-        labels = targets[:, 4].copy()
-        if len(boxes) == 0:
-            targets = np.zeros((self.max_labels, 5), dtype=np.float32)
-            image, r_o = preproc(image, input_dim)
-            return image, targets
-
-        image_o = image.copy()
-        targets_o = targets.copy()
-        height_o, width_o, _ = image_o.shape
-        boxes_o = targets_o[:, :4]
-        labels_o = targets_o[:, 4]
-        # bbox_o: [xyxy] to [c_x,c_y,w,h]
-        boxes_o = xyxy2cxcywh(boxes_o)
-
-        if random.random() < self.hsv_prob:
-            augment_hsv(image)
-        image_t, boxes = _mirror(image, boxes, self.flip_prob)
-        height, width, _ = image_t.shape
-        image_t, r_ = preproc(image_t, input_dim)
-        # boxes [xyxy] 2 [cx,cy,w,h]
-        boxes = xyxy2cxcywh(boxes)
-        boxes *= r_
-
-        mask_b = np.minimum(boxes[:, 2], boxes[:, 3]) > 1
-        boxes_t = boxes[mask_b]
-        labels_t = labels[mask_b]
-
-        if len(boxes_t) == 0:
-            image_t, r_o = preproc(image_o, input_dim)
-            boxes_o *= r_o
-            boxes_t = boxes_o
-            labels_t = labels_o
-
-        labels_t = np.expand_dims(labels_t, 1)
-
-        targets_t = np.hstack((labels_t, boxes_t))
-        padded_labels = np.zeros((self.max_labels, 5))
-        padded_labels[range(len(targets_t))[: self.max_labels]] = targets_t[
-            : self.max_labels
-        ]
-        padded_labels = np.ascontiguousarray(padded_labels, dtype=np.float32)
-        return image_t, padded_labels
+    
