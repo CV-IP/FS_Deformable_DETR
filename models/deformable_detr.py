@@ -180,7 +180,7 @@ class DeformableDETR(nn.Module):
         通过inver_sigmoid和sigmoid的成对操作保证数值在0-1之间，为什么不直接sigmoid？那样相对值就可能比绝对值大很多，不在一个尺度，会导致收敛难等问题。
         '''
 
-
+        # 每一层的输出都会计算出当前层的output_class, 和 outputs_coord
         for lvl in range(hs.shape[0]):
             # 只使用encoder的最后一层或者decoder的初始化pos
             if lvl == 0:
@@ -200,7 +200,8 @@ class DeformableDETR(nn.Module):
             outputs_coords.append(outputs_coord)
         outputs_class = torch.stack(outputs_classes)
         outputs_coord = torch.stack(outputs_coords)
-
+        
+        # 最后一层的类别和框才是最终的类别。
         out = {'pred_logits': outputs_class[-1], 'pred_boxes': outputs_coord[-1]}
         if self.aux_loss:
             out['aux_outputs'] = self._set_aux_loss(outputs_class, outputs_coord)

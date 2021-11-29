@@ -99,6 +99,10 @@ class DeformableTransformer(nn.Module):
         return pos
 
     def gen_encoder_output_proposals(self, memory, memory_padding_mask, spatial_shapes):
+        '''
+        memory: output of encoder , (N, len_q, d_model)
+
+        '''
         N_, S_, C_ = memory.shape
         base_scale = 4.0
         proposals = []
