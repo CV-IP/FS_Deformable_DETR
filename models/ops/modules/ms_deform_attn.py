@@ -95,14 +95,14 @@ class MSDeformAttn(nn.Module):
         """
 
         N, Len_q, _ = query.shape  # batch size, query的个数
-        N, Len_in, _ = input_flatten.shape   # Len_in是所有key的个数
+        N, Len_in, _ = input_flatten.shape   # Len_in是所有key的个数 , 也是所有特征图的像素数之和。（N, Len_in ,256)
         assert (input_spatial_shapes[:, 0] * input_spatial_shapes[:, 1]).sum() == Len_in
 
         value = self.value_proj(input_flatten)
         if input_padding_mask is not None:
-            value = value.masked_fill(input_padding_mask[..., None], float(0))
-        value = value.view(N, Len_in, self.n_heads, self.d_model // self.n_heads)
-        sampling_offsets = self.sampling_offsets(query).view(N, Len_q, self.n_heads, self.n_levels, self.n_points, 2)
+            value = value.masked_fill(input_padding_mask[..., None], float(0)) 
+        value = value.view(N, Len_in, self.n_heads, self.d_model // self.n_heads) # (N, len_in, 8， 32)
+        sampling_offsets = self.sampling_offsets(query).view(N, Len_q, self.n_heads, self.n_levels, self.n_points, 2) # 相对于采样点的偏移？
         # 每个query产生对应不同head不同level的偏置
         attention_weights = self.attention_weights(query).view(N, Len_q, self.n_heads, self.n_levels * self.n_points)
         # 每个偏置向量的权重
@@ -111,7 +111,8 @@ class MSDeformAttn(nn.Module):
         # N, Len_q, n_heads, n_levels, n_points, 2
         if reference_points.shape[-1] == 2:
             offset_normalizer = torch.stack([input_spatial_shapes[..., 1], input_spatial_shapes[..., 0]], -1)
-            sampling_locations = reference_points[:, :, None, :, None, :] \
+            # sampling_locations : 采样点的归一化坐标
+            sampling_locations = reference_points[:, :, None, :, None, :] \ 
                                  + sampling_offsets / offset_normalizer[None, None, None, :, None, :]
             # 采样位置 / 宽高， 归一化。
         elif reference_points.shape[-1] == 4:
