@@ -318,10 +318,16 @@ def main(args):
                     'epoch': epoch,
                     'args': args,
                 }, checkpoint_path)
-
-        test_stats, coco_evaluator = evaluate(
-            model, criterion, postprocessors, data_loader_val, base_ds, device, args.output_dir, args.eval_dataset
-        )
+        is_eval = ( ((epoch + 1) >= 15 ) and (epoch + 1) % 5 == 0) or ((epoch + 1) >= 30)
+        # is_eval = True
+        if not is_eval:
+            test_stats = {'is_eval': is_eval}
+            coco_evaluator = None
+        else :
+            test_stats, coco_evaluator = evaluate(
+                model, criterion, postprocessors, data_loader_val, base_ds, device, args.output_dir, args.eval_dataset
+            )
+        
 
         log_stats = {**{f'train_{k}': v for k, v in train_stats.items()},
                      **{f'test_{k}': v for k, v in test_stats.items()},
@@ -329,7 +335,7 @@ def main(args):
                      'n_parameters': n_parameters}
         # '''
         # stephen add : save best mAP checkpoint
-        if log_stats['test_coco_eval_bbox'][0] > best_ap:
+        if is_eval and log_stats['test_coco_eval_bbox'][0] > best_ap:
             best_ap  = log_stats['test_coco_eval_bbox'][0]
             utils.save_on_master({
                 'model': model_without_ddp.state_dict(),

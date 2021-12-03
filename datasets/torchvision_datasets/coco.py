@@ -114,8 +114,7 @@ class FsCocoDetection(VisionDataset):
         self.dataset_name = dataset_name
         self.metadata = _get_builtin_metadata('coco_fewshot')
         id_map_key = 'all_dataset_id_to_contiguous_id'
-        # if 'val' in self.dataset_name :
-        #     filter_kind = None
+
         if filter_kind is not None:
             assert filter_kind in ['novel', 'base']
             id_map_key = '{}_dataset_id_to_contiguous_id'.format(filter_kind)
