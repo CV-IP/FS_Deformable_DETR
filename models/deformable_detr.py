@@ -35,7 +35,7 @@ def _get_clones(module, N):
 class DeformableDETR(nn.Module):
     """ This is the Deformable DETR module that performs object detection """
     def __init__(self, backbone, transformer, num_classes, num_queries, num_feature_levels,
-                 aux_loss=True, with_box_refine=False, two_stage=False, freeze_transformer = False):
+                 aux_loss=True, with_box_refine=False, two_stage=False):
         """ Initializes the model.
         Parameters:
             backbone: torch module of the backbone to be used. See backbone.py
@@ -50,13 +50,12 @@ class DeformableDETR(nn.Module):
         super().__init__()
         self.num_queries = num_queries
         self.transformer = transformer
-
         # stephen add , frozen transformer
-        if freeze_transformer :
-            print('*' * 60)
-            print('freeze transformer !!!')
-            for name, parameter in self.transformer.named_parameters():
-                parameter.requires_grad_(False) # frozen paramaters
+        # if freeze_transformer :
+        #     print('*' * 60)
+        #     print('freeze transformer !!!')
+        #     for name, parameter in self.transformer.named_parameters():
+        #         parameter.requires_grad_(False) # frozen paramaters
 
         
         hidden_dim = transformer.d_model # 256
@@ -469,6 +468,7 @@ class MLP(nn.Module):
 
 
 def build(args):
+    freeze_exclude = ['enc_output', 'enc_output_norm', 'pos_trans', 'pos_trans_norm', 'class_embed', 'bbox_embed']
     # num_classes = 20 if args.dataset_file != 'coco' else 91
     num_classes = args.num_classes
     if args.dataset_file == "coco_panoptic":
@@ -487,8 +487,16 @@ def build(args):
         aux_loss=args.aux_loss,
         with_box_refine=args.with_box_refine,
         two_stage=args.two_stage,
-        freeze_transformer=args.freeze_transformer
+        # freeze_transformer=args.freeze_transformer
     )
+    if args.freeze_transformer :
+        for name, param in model.named_parameters():
+            if any(key_word in name for key_word in freeze_exclude) :
+                pass
+            else :
+                param.requires_grad = False
+
+
     if args.masks: # False
         model = DETRsegm(model, freeze_detr=(args.frozen_weights is not None))
     matcher = build_matcher(args)

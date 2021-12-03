@@ -203,7 +203,7 @@ def main(args):
         return out
 
     for n, p in model_without_ddp.named_parameters():
-        print(n)
+        print(n, p.requires_grad)
 
     param_dicts = [
         {

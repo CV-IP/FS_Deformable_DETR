@@ -112,7 +112,7 @@ class MSDeformAttn(nn.Module):
         if reference_points.shape[-1] == 2:
             offset_normalizer = torch.stack([input_spatial_shapes[..., 1], input_spatial_shapes[..., 0]], -1)
             # sampling_locations : 采样点的归一化坐标
-            sampling_locations = reference_points[:, :, None, :, None, :] \ 
+            sampling_locations = reference_points[:, :, None, :, None, :] \
                                  + sampling_offsets / offset_normalizer[None, None, None, :, None, :]
             # 采样位置 / 宽高， 归一化。
         elif reference_points.shape[-1] == 4:

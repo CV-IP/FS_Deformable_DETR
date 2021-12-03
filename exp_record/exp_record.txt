@@ -129,6 +129,8 @@ GPUS_PER_NODE=8 nohup ./tools/run_dist_launch.sh 8    configs/r50_deformable_det
     >> exps/coco_base_300_q_resnet101_1124/nohup.out 2>&1 &
     exp: 2021-11-26 06:27 hdfs://haruna/home/byte_arnold_lq_vc/user/zhanglibin.buaa/exps/coco_base_300_q_resnet101_1124
     mAP : 0.44435922595377897
+20211202:
+    微调双阶段网络，相比之前的实验只开放decoder中的box_embed 和class
 
 
 实验数据：
