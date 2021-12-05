@@ -10,10 +10,10 @@ do
         --filter_kind novel \
         --dataset_name coco_all_seed_${seed}_${shot}_shot     \
         --eval_dataset coco_novel   \
-        --output_dir exps/coco_novel_resnet50_q300_twostage_bboxRefine_newFreeze_drop15/seed${seed}_${shot}shot     \
+        --output_dir exps/coco_novel_resnet50_q100_twostage_bboxRefine_freeze_encoutput_drop15/seed${seed}_${shot}shot     \
         --epochs 35 --batch_size 4 --lr 2e-3 --lr_drop 15 \
         --resume surgery_model/base_resnet50_q100_twostage_bboxRefine_20_classes.pth \
-        > log/coco_novel_resnet50_q300_twostage_bboxRefine_newFreeze_drop15/seed${seed}_${shot}shot.log
+        > log/coco_novel_resnet50_q100_twostage_bboxRefine_freeze_encoutput_drop15/seed${seed}_${shot}shot.log
 
     done
 done

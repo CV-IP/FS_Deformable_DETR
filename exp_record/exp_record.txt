@@ -213,5 +213,9 @@ q 100
     10 shot ： maybe 20 drop
 
 
-q 300
-    
+20211203:
+    log/coco_novel_resnet50_q100_twostage_bboxRefine_freeze_encoutput_drop15
+    freeze param: freeze_exclude = ['input_proj', 'enc_output', 'enc_output_norm', 'pos_trans', 'pos_trans_norm', 'class_embed', 'bbox_embed']
+20211204:
+    log/oco_novel_resnet50_q100_twostage_bboxRefine_freeze_encoutput_drop15
+    freeze param : freeze_exclude = ['input_proj', 'pos_trans', 'pos_trans_norm', 'class_embed', 'bbox_embed']
