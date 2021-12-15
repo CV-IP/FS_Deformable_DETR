@@ -146,9 +146,9 @@ test tmp command :
 test command :
 
 GPUS_PER_NODE=8 nohup ./tools/run_dist_launch.sh 8    configs/r50_deformable_detr_plus_iterative_bbox_refinement_plus_plus_two_stage.sh       \
-    --lr_backbone 0     --num_classes 20        --filter_kind novel     --dataset_name coco_all_seed_0_10_shot         \
+    --num_classes 80       --dataset_name coco_all_seed_0_30_shot         \
     --eval_dataset coco_novel       --output_dir exps/test         --batch_size 4  \
-    --epochs 50 --lr_drop 10 --resume surgery_model/base_resnet50_q100_twostage_bboxRefine_20_classes.pth  \
+    --epochs 50 --lr_drop 40 --resume surgery_model/base_resnet50_q100_twostage_bboxRefine_80_classes.pth  \
     >  nohup_test.out 2>&1 &
 
 
@@ -219,3 +219,14 @@ q 100
 20211204:
     log/coco_novel_resnet50_q100_twostage_bboxRefine_freeze_encoutput_drop15
     freeze param : freeze_exclude = ['input_proj', 'pos_trans', 'pos_trans_norm', 'class_embed', 'bbox_embed']
+20211215: 不冻结任何参数
+    GPUS_PER_NODE=8 ./tools/run_dist_launch.sh 8 configs/r50_deformable_detr_plus_iterative_bbox_refinement_plus_plus_two_stage.sh \
+        --num_queries 100 \
+        --num_classes 80    \
+        --dataset_name coco_all_seed_${seed}_${shot}_shot     \
+        --eval_dataset coco_novel   \
+        --output_dir exps/coco_train_all_eval_novel_resnet50_q100_twostage_bboxRefine_no_freeze/seed${seed}_${shot}shot     \
+        --epochs 50 --batch_size 4 --lr 2e-4 --lr_drop 40 \
+        --resume exps/coco_train_all_eval_novel_resnet50_q100_twostage_bboxRefine_no_freeze/seed${seed}_${shot}shot/checkpoint.pth  \
+        >> log/coco_train_all_eval_novel_resnet50_q100_twostage_bboxRefine_no_freeze/seed${seed}_${shot}shot.log
+    

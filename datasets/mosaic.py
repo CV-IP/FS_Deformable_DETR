@@ -176,6 +176,7 @@ class MosaicDetection(Dataset):
             mix_img, padded_labels = self.preproc(mosaic_img, mosaic_labels, self.input_dim)
             padded_labels = torch.from_numpy(padded_labels)
             # print(mix_img.shape) # (640, 640, 3) (h,w,c)
+            cv2.imwrite('/opt/tiger/bytedetection/tools/tmp/mixup.jpg', mix_img[:, :, ::-1])
             mix_img = F.to_tensor(mix_img)
             # print(mix_img.shape) # (3, 640, 640) (c,h,w)
             # print(type(padded_labels)) # ndarray

@@ -13,8 +13,8 @@ class ToTensor(object):
         return F.to_tensor(img), target
 
 if __name__ == "__main__":
-    anno_path = '/opt/tiger/minist/datasets/coco/cocosplit_self/datasplit/5k.json'
-    img_root = '/opt/tiger/minist/datasets/coco/JPEG'
+    anno_path = 'data/coco/cocosplit_self/datasplit/5k.json'
+    img_root = 'data/coco/JPEG'
     transforms = make_coco_transforms('train')
     coco5k = CocoDetection(img_root, anno_path, transforms = None, return_masks = False, dataset_name='coco_base')
     image, target = coco5k[0]
@@ -24,7 +24,7 @@ if __name__ == "__main__":
     print(len(coco5k))
     img, target = mosaic_coco5k[0]
     print(type(img), type(target))
-    print(img.shape, target.shape)
+    # print(img.shape, target.shape)
     
     # print(img.shape)
     # print(target)
