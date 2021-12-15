@@ -286,13 +286,13 @@ def main(args):
         if not args.eval:
             '''
             test_stats, coco_evaluator = evaluate(
-                model, criterion, postprocessors, data_loader_val, base_ds, device, args.output_dir, args.eval_dataset
+                model, criterion, postprocessors, data_loader_val, base_ds, device, args.output_dir, args.eval_dataset, args.num_classes
             )
             '''
     
     if args.eval:
         test_stats, coco_evaluator = evaluate(model, criterion, postprocessors,
-                                              data_loader_val, base_ds, device, args.output_dir, args.eval_dataset)
+                                              data_loader_val, base_ds, device, args.output_dir, args.eval_dataset. args.num_classes)
         if args.output_dir:
             utils.save_on_master(coco_evaluator.coco_eval["bbox"].eval, output_dir / "eval.pth")
         return
@@ -325,7 +325,7 @@ def main(args):
             coco_evaluator = None
         else :
             test_stats, coco_evaluator = evaluate(
-                model, criterion, postprocessors, data_loader_val, base_ds, device, args.output_dir, args.eval_dataset
+                model, criterion, postprocessors, data_loader_val, base_ds, device, args.output_dir, args.eval_dataset, args.num_classes
             )
         
 

@@ -1,0 +1,3 @@
+20211214
+    coco_eval 增加类别参数，用来区别coco_novel进行评估时的索引序号，可以是后20类（train class_num = 80), 也可以是前20（train class_num = 20)
+    

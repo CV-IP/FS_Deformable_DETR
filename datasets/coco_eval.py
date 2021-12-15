@@ -30,9 +30,13 @@ from datasets.FSOD_settings.get_fsod_data_matadata import coco_base_class_id, co
 
 
 class CocoEvaluator(object):
-    def __init__(self, coco_gt, iou_types, eval_dataset = None):
+    def __init__(self, coco_gt, iou_types, eval_dataset = None, class_nums = 80):
         assert isinstance(iou_types, (list, tuple))
         # assert dataset_name in [None, 'coco_all', 'coco_base', 'coco_novel'], 'datset_name is not regular param'
+        # stephen add:
+        self.class_nums = class_nums
+
+        
         coco_gt = copy.deepcopy(coco_gt)
         self.coco_gt = coco_gt
 
@@ -130,7 +134,11 @@ class CocoEvaluator(object):
     def prepare_for_fsod_coco_detection(self, predictions):
         # stephen add:
         # id_map_key = '{}_dataset_id_to_contiguous_id'.format(self.eval_dataset)
-        id_map_key = 'all_dataset_id_to_contiguous_id'
+        id_map_key = None
+        if self.class_nums == 80:
+            id_map_key = 'all_dataset_id_to_contiguous_id'
+        else:
+            id_map_key = 'novel_dataset_id_to_contiguous_id'
         # print(self.eval_dataset, id_map_key)
         id_map = self.metadata[id_map_key]
         reverse_id_mapping = {
