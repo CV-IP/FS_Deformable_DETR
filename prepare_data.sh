@@ -2,6 +2,9 @@
 # cd datasets
 # mkdir coco
 # cd coco
+
+hdfs dfs -get  hdfs://haruna/home/byte_arnold_lq_vc/user/zhanglibin.buaa/exps/surgery_model
+
 hdfs dfs -get hdfs://haruna/home/byte_arnold_lq_vc/user/zhanglibin.buaa/datasets/train2014.zip
 hdfs dfs -get hdfs://haruna/home/byte_arnold_lq_vc/user/zhanglibin.buaa/datasets/val2014.zip
 unzip train2014
