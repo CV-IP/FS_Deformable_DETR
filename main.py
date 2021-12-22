@@ -284,11 +284,11 @@ def main(args):
         # '''
         # check the resumed model
         if not args.eval:
-            '''
+            # '''
             test_stats, coco_evaluator = evaluate(
                 model, criterion, postprocessors, data_loader_val, base_ds, device, args.output_dir, args.eval_dataset, args.num_classes
             )
-            '''
+            # '''
     
     if args.eval:
         test_stats, coco_evaluator = evaluate(model, criterion, postprocessors,
@@ -318,7 +318,7 @@ def main(args):
                     'epoch': epoch,
                     'args': args,
                 }, checkpoint_path)
-        is_eval = ( ((epoch + 1) >= 15 ) and (epoch + 1) % 5 == 0) or ((epoch + 1) >= 30)
+        is_eval = ( ((epoch + 1) >= 15 ) and (epoch + 1) % 5 == 0) or (args.epochs - (epoch + 1) <= 15)
         # is_eval = True
         if not is_eval:
             test_stats = {'is_eval': is_eval}
