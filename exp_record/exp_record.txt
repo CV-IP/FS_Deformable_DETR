@@ -229,4 +229,10 @@ q 100
         --epochs 50 --batch_size 4 --lr 2e-4 --lr_drop 40 \
         --resume exps/coco_train_all_eval_novel_resnet50_q100_twostage_bboxRefine_no_freeze/seed${seed}_${shot}shot/checkpoint.pth  \
         >> log/coco_train_all_eval_novel_resnet50_q100_twostage_bboxRefine_no_freeze/seed${seed}_${shot}shot.log
+
+20211220:
+    不冻结encoder，冻结backbone， decoder seed0_30shot: best mAP 0.191 train_all_val_novel.(机器被kill，没有保存实验记录) 80 epoch， lr_drop: 40
+    
+
+
     

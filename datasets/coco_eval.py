@@ -135,7 +135,7 @@ class CocoEvaluator(object):
         # stephen add:
         # id_map_key = '{}_dataset_id_to_contiguous_id'.format(self.eval_dataset)
         id_map_key = None
-        if self.class_nums == 80:
+        if self.class_nums == 80 or self.class_nums == 60:
             id_map_key = 'all_dataset_id_to_contiguous_id'
         else:
             id_map_key = 'novel_dataset_id_to_contiguous_id'
