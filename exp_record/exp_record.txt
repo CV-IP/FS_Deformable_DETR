@@ -232,7 +232,12 @@ q 100
 
 20211220:
     不冻结encoder，冻结backbone， decoder seed0_30shot: best mAP 0.191 train_all_val_novel.(机器被kill，没有保存实验记录) 80 epoch， lr_drop: 40
-    
+
+20211221:
+    base train: onestage, no iterative box:
+    log: FS_Deformable_DETR/log/coco_base_resnet50_q100_20211221.log
+    checkpoint: hdfs://haruna/home/byte_arnold_lq_vc/user/zhanglibin.buaa/exps/coco_base_resnet50_q100_20211221
+
 
 
     
