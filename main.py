@@ -318,7 +318,7 @@ def main(args):
                     'epoch': epoch,
                     'args': args,
                 }, checkpoint_path)
-        is_eval = ( ((epoch + 1) >= 15 ) and (epoch + 1) % 5 == 0) or (args.epochs - (epoch + 1) <= 15)
+        is_eval = ( ((epoch + 1) >= 80 ) and (epoch + 1) % 5 == 0) or (args.epochs - (epoch + 1) <= 15)
         # is_eval = True
         if not is_eval:
             test_stats = {'is_eval': is_eval}
