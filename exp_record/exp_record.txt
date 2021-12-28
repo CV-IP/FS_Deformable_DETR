@@ -238,6 +238,10 @@ q 100
     log: FS_Deformable_DETR/log/coco_base_resnet50_q100_20211221.log
     checkpoint: hdfs://haruna/home/byte_arnold_lq_vc/user/zhanglibin.buaa/exps/coco_base_resnet50_q100_20211221
 
-
+20211223:
+    finetune onestage no iterate, 
+    log: log/coco_train_all_eval_novel_resnet50_q100_onwstage_NobboxRefine_unfreeze_encoder_20211223
+    checkpoint: hdfs://haruna/home/byte_arnold_lq_vc/user/zhanglibin.buaa/exps/coco_train_all_eval_novel_resnet50_q100_onwstage_NobboxRefine_unfreeze_encoder_20211223
+    
 
     
