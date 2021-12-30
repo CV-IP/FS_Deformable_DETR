@@ -470,7 +470,7 @@ class MLP(nn.Module):
 def build(args):
     # freeze_exclude = ['input_proj', 'enc_output', 'enc_output_norm', 'pos_trans', 'pos_trans_norm', 'class_embed', 'bbox_embed']
     # freeze_exclude = ['input_proj', 'pos_trans', 'pos_trans_norm', 'class_embed', 'bbox_embed']
-    freeze_exclude = ['input_proj', 'class_embed', 'bbox_embed', 'encoder']
+    freeze_exclude = ['input_proj', 'class_embed', 'bbox_embed']
     # freeze_exclude = ['input_proj', 'class_embed', 'bbox_embed']
     # num_classes = 20 if args.dataset_file != 'coco' else 91
     num_classes = args.num_classes

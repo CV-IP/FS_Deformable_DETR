@@ -242,6 +242,15 @@ q 100
     finetune onestage no iterate, 
     log: log/coco_train_all_eval_novel_resnet50_q100_onwstage_NobboxRefine_unfreeze_encoder_20211223
     checkpoint: hdfs://haruna/home/byte_arnold_lq_vc/user/zhanglibin.buaa/exps/coco_train_all_eval_novel_resnet50_q100_onwstage_NobboxRefine_unfreeze_encoder_20211223
+
+20211229:
+    finetune onestage no iterate, only head
+    log: log/coco_train_all_eval_novel_resnet50_q100_onestage_NobboxRefine_freeze_head_20211229
+    {"shot": 10, "average mAP": 0.120047959744075,}
+    {"shot": 30, "average mAP": 0.1745185486343025,}
+    exps:
+        hdfs://haruna/home/byte_arnold_lq_vc/user/zhanglibin.buaa/exps/coco_train_all_eval_novel_resnet50_q100_onestage_NobboxRefine_freeze_head_20211229
+    
     
 
     
