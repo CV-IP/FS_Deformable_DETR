@@ -1,4 +1,0 @@
-# ninja log v5
-0	4909	1635389572972262036	/opt/tiger/minist/Deformable-DETR/models/ops/build/temp.linux-x86_64-3.7/opt/tiger/minist/Deformable-DETR/models/ops/src/cpu/ms_deform_attn_cpu.o	d9411cbb4094545
-0	15362	1635389583421326318	/opt/tiger/minist/Deformable-DETR/models/ops/build/temp.linux-x86_64-3.7/opt/tiger/minist/Deformable-DETR/models/ops/src/cuda/ms_deform_attn_cuda.o	3243126c181429f4
-0	17933	1635389585988342110	/opt/tiger/minist/Deformable-DETR/models/ops/build/temp.linux-x86_64-3.7/opt/tiger/minist/Deformable-DETR/models/ops/src/vision.o	6a293d672ffc563e

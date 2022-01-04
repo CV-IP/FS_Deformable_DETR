@@ -4,7 +4,7 @@ from glob import glob
 
 
 
-log_dir = '/opt/tiger/minist/FS_Deformable_DETR/log/coco_train_all_eval_novel_resnet50_q100_onestage_NobboxRefine_freeze_head_20211229'
+log_dir = '/opt/tiger/minist/FS_Deformable_DETR/log/coco_train_all_eval_novel_resnet50_q100_twostage_bboxRefine_freeze_head_20211221'
 res_file = os.path.join(log_dir, 'res.json')
 
 
