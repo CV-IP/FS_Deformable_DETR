@@ -1,42 +1,83 @@
 import os
+from random import shuffle
 import cv2
 import json
 import torch
-import logging
+
 import numpy as np
 from datasets.PCB.poolers import ROIPooler
 from datasets.PCB.layers import resnet101, ImageList
 from sklearn.metrics.pairwise import cosine_similarity
 
+from datasets import build_dataset
+from pathlib import Path
+import datasets.samplers as samplers
+from torch.utils.data import DataLoader
+import util.misc as utils
+# from defrcn.dataloader import build_detection_test_loader
 
-from defrcn.dataloader import build_detection_test_loader
 
 
-logger = logging.getLogger(__name__)
-
+'''
+settings in DeFRCN
+_CC.TEST.PCB_ENABLE = False
+_CC.TEST.PCB_MODELTYPE = 'resnet'             # res-like
+_CC.TEST.PCB_MODELPATH = ""
+_CC.TEST.PCB_ALPHA = 0.50
+_CC.TEST.PCB_UPPER = 1.0
+_CC.TEST.PCB_LOWER = 0.05
+'''
 
 class PrototypicalCalibrationBlock:
 
-    def __init__(self, cfg):
+    def __init__(self, args):
         super().__init__()
-        self.cfg = cfg
-        self.device = torch.device(cfg.MODEL.DEVICE)
-        self.alpha = self.cfg.TEST.PCB_ALPHA
+        # for fast adaption, not recommendation
+        self.args = args
+        self.device = torch.device(args.device)
+        self.alpha = self.args.pcb_alpha
 
         self.imagenet_model = self.build_model()
-        self.dataloader = build_detection_test_loader(self.cfg, self.cfg.DATASETS.TRAIN[0])
+        
+        '''
+        ## TODO
+        dataset_name = args.dataset_name
+        seed = dataset_name.split('_')[3]
+        shot = dataset_name.split('_')[4]
+        assert int(seed) in range(10) and int(shot) in [1,2,3,5,10,30]
+        root = Path(args.coco_path)
+        img_folder = os.path.join(root, "JPEG")
+        ann_file = os.path.join(root, "cocosplit_self","seed"+ seed, "full_box_{}shot_trainval.json".format(shot))
+        '''
+        self.dataset_train = build_dataset(image_set=args.dataset_name + '_val', args=args)
+        if args.distributed:
+            if args.cache_mode:
+                sampler_train = samplers.NodeDistributedSampler(self.dataset_train, shuffle=False)
+
+            else:
+                sampler_train = samplers.DistributedSampler(self.dataset_train, shuffle=False)
+        else:
+            sampler_train = torch.utils.data.RandomSampler(self.dataset_train)
+
+        batch_sampler_train = torch.utils.data.BatchSampler(sampler_train, args.batch_size, drop_last=True)
+
+        self.dataloader = DataLoader(self.dataset_train, batch_sampler=batch_sampler_train,
+                                   collate_fn=utils.collate_fn, num_workers=args.num_workers,
+                                   pin_memory=True)
+
+
         self.roi_pooler = ROIPooler(output_size=(1, 1), scales=(1 / 32,), sampling_ratio=(0), pooler_type="ROIAlignV2")
         self.prototypes = self.build_prototypes()
 
         self.exclude_cls = self.clsid_filter()
 
     def build_model(self):
-        logger.info("Loading ImageNet Pre-train Model from {}".format(self.cfg.TEST.PCB_MODELPATH))
-        if self.cfg.TEST.PCB_MODELTYPE == 'resnet':
+
+        if self.args.pcb_model_type == 'resnet':
             imagenet_model = resnet101()
         else:
             raise NotImplementedError
-        state_dict = torch.load(self.cfg.TEST.PCB_MODELPATH)
+        state_dict = torch.load(self.args.pcb_model_path)
         imagenet_model.load_state_dict(state_dict)
         imagenet_model = imagenet_model.to(self.device)
         imagenet_model.eval()
@@ -45,22 +86,14 @@ class PrototypicalCalibrationBlock:
     def build_prototypes(self):
 
         all_features, all_labels = [], []
-        for index in range(len(self.dataloader.dataset)):
-            inputs = [self.dataloader.dataset[index]]
-            assert len(inputs) == 1
-            # load support images and gt-boxes
-            img = cv2.imread(inputs[0]['file_name'])  # BGR
-            img_h, img_w = img.shape[0], img.shape[1]
-            ratio = img_h / inputs[0]['instances'].image_size[0]
-            inputs[0]['instances'].gt_boxes.tensor = inputs[0]['instances'].gt_boxes.tensor * ratio
-            boxes = [x["instances"].gt_boxes.to(self.device) for x in inputs]
+        for index in range(len(self.dataset_train)):
+            img, target = self.dataset_train[index]
+            boxes = target['boxes']
+            all_labels.append(target['labels'].cpu().data)
 
             # extract roi features
             features = self.extract_roi_features(img, boxes)
             all_features.append(features.cpu().data)
-
-            gt_classes = [x['instances'].gt_classes for x in inputs]
-            all_labels.append(gt_classes[0].cpu().data)
 
         # concat
         all_features = torch.cat(all_features, dim=0)
@@ -82,21 +115,22 @@ class PrototypicalCalibrationBlock:
 
         return prototypes_dict
 
-    def extract_roi_features(self, img, boxes):
+    def extract_roi_features(self, imgs, boxes):
         """
-        :param img:
-        :param boxes:
+        
+            
+        :param imgs: shape：BCHW
+            x (list[Tensor]): A list of feature maps of NCHW shape, with scales matching those
+            used to construct this module.
+        :param boxes: 是否需要归一化？
+            box_lists (list[Boxes] | list[RotatedBoxes]):
+            A list of N Boxes or N RotatedBoxes, where N is the number of images in the batch.
+            The box coordinates are defined on the original image and
+            will be scaled by the `scales` argument of :class:`ROIPooler`.
         :return:
         """
-
-        mean = torch.tensor([0.406, 0.456, 0.485]).reshape((3, 1, 1)).to(self.device)
-        std = torch.tensor([[0.225, 0.224, 0.229]]).reshape((3, 1, 1)).to(self.device)
-
-        img = img.transpose((2, 0, 1))
-        img = torch.from_numpy(img).to(self.device)
-        images = [(img / 255. - mean) / std]
-        images = ImageList.from_tensors(images, 0)
-        conv_feature = self.imagenet_model(images.tensor[:, [2, 1, 0]])[1]  # size: BxCxHxW
+        # conv_feature = self.imagenet_model(images.tensor[:, [2, 1, 0]])[1]  # size: BxCxHxW
+        conv_feature = self.imagenet_model(imgs)[1]  # size: BxCxHxW
 
         box_features = self.roi_pooler([conv_feature], boxes).squeeze(2).squeeze(2)
 
@@ -105,15 +139,22 @@ class PrototypicalCalibrationBlock:
         return activation_vectors
 
     def execute_calibration(self, inputs, dts):
+        '''
+        inputs: imgs, NCHW, input for model. model(inputs)
+        dts: res after postprocess in deformable_detr.py
+        '''
 
-        img = cv2.imread(inputs[0]['file_name'])
+        # img = cv2.imread(inputs[0]['file_name'])
 
-        ileft = (dts[0]['instances'].scores > self.cfg.TEST.PCB_UPPER).sum()
-        iright = (dts[0]['instances'].scores > self.cfg.TEST.PCB_LOWER).sum()
+        ileft = (dts[0]['instances'].scores > self.args.pcb_upper).sum()
+        iright = (dts[0]['instances'].scores > self.args.pcb_lower).sum()
         assert ileft <= iright
-        boxes = [dts[0]['instances'].pred_boxes[ileft:iright]]
 
-        features = self.extract_roi_features(img, boxes)
+        boxes = dts.[]
+        # boxes = [dts[0]['instances'].pred_boxes[ileft:iright]]
+
+        # features = self.extract_roi_features(img, boxes)
+        features = self.extract_roi_features(inputs, boxes)
 
         for i in range(ileft, iright):
             tmp_class = int(dts[0]['instances'].pred_classes[i])

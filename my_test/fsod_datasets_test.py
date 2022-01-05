@@ -20,10 +20,10 @@ if __name__ == "__main__":
     image, target = coco5k[0]
     # print(image.shape)
     print(target)
-    mosaic_coco5k = MosaicDetection(coco5k, preproc=TrainTransform(max_labels=200) )
-    print(len(coco5k))
-    img, target = mosaic_coco5k[0]
-    print(type(img), type(target))
+    # mosaic_coco5k = MosaicDetection(coco5k, preproc=TrainTransform(max_labels=200) )
+    # print(len(coco5k))
+    # img, target = mosaic_coco5k[0]
+    # print(type(img), type(target))
     # print(img.shape, target.shape)
     
     # print(img.shape)

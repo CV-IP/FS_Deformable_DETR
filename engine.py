@@ -21,6 +21,8 @@ from datasets.coco_eval import CocoEvaluator
 from datasets.panoptic_eval import PanopticEvaluator
 from datasets.data_prefetcher import data_prefetcher
 
+from datasets.PCB.calibration_layer import PrototypicalCalibrationBlock
+
 
 def train_one_epoch(model: torch.nn.Module, criterion: torch.nn.Module,
                     data_loader: Iterable, optimizer: torch.optim.Optimizer,
@@ -80,7 +82,7 @@ def train_one_epoch(model: torch.nn.Module, criterion: torch.nn.Module,
 
 
 @torch.no_grad()
-def evaluate(model, criterion, postprocessors, data_loader, base_ds, device, output_dir, dataset_name=None, class_nums = 80):
+def evaluate(model, criterion, postprocessors, data_loader, base_ds, device, output_dir, dataset_name=None, class_nums = 80, args = None):
     model.eval()
     criterion.eval()
 
@@ -91,6 +93,14 @@ def evaluate(model, criterion, postprocessors, data_loader, base_ds, device, out
     iou_types = tuple(k for k in ('segm', 'bbox') if k in postprocessors.keys())
     coco_evaluator = CocoEvaluator(base_ds, iou_types, dataset_name, class_nums)
     # coco_evaluator.coco_eval[iou_types[0]].params.iouThrs = [0, 0.1, 0.5, 0.75]
+    ### stephen add for PCB !!!
+    pcb = None
+    if args is not None and args.pcb_enable :
+        pcb = PrototypicalCalibrationBlock(args)
+
+
+
+
 
     panoptic_evaluator = None
     if 'panoptic' in postprocessors.keys():
@@ -124,6 +134,15 @@ def evaluate(model, criterion, postprocessors, data_loader, base_ds, device, out
         if 'segm' in postprocessors.keys():
             target_sizes = torch.stack([t["size"] for t in targets], dim=0)
             results = postprocessors['segm'](results, outputs, orig_target_sizes, target_sizes)
+        
+        ### insert PCB module !!!
+        if pcb is not None:
+            pcb.execute_calibration(samples, results)
+
+
+
+
+
         res = {target['image_id'].item(): output for target, output in zip(targets, results)}
         if coco_evaluator is not None:
             coco_evaluator.update(res)

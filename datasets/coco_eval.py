@@ -30,6 +30,10 @@ from datasets.FSOD_settings.get_fsod_data_matadata import coco_base_class_id, co
 
 
 class CocoEvaluator(object):
+    '''
+    添加了类别映射，将模型的按照顺序的80类别，映射为coco标签类别。
+
+    '''
     def __init__(self, coco_gt, iou_types, eval_dataset = None, class_nums = 80):
         assert isinstance(iou_types, (list, tuple))
         # assert dataset_name in [None, 'coco_all', 'coco_base', 'coco_novel'], 'datset_name is not regular param'

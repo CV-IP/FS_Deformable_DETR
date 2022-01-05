@@ -154,7 +154,7 @@ def make_coco_transforms(image_set):
             normalize,
         ])
     
-    # if 'train' in image_set:
+
     return T.Compose([
         T.RandomHorizontalFlip(),
         T.RandomSelect(

@@ -29,6 +29,14 @@ from models import build_model
 
 def get_args_parser():
     parser = argparse.ArgumentParser('Deformable DETR Detector', add_help=False)
+    # PCB args 
+    parser.add_argument('--pcb_enable', default=False, action='store_true', help='weather use pcb during eval')
+    parser.add_argument('--pcb_model_path', default='cuda',type=str, help='PCB resnet model imagenet pretrain weight path') 
+    parser.add_argument('--pcb_model_type', default='resnet',type=str, help='PCB model type, now only support resnet')
+    parser.add_argument('--pcb_upper', default=1.0, type=float, help='TODO')
+    parser.add_argument('--pcb_lower', default=0.05, type=float, help='TODO')
+    parser.add_argument('--pcb_alpha', default=0.5, type=float, help='TODO')
+    
     # stephen add argumens:
     parser.add_argument('--dataset_name', default='coco_base', type=str, help='coco_base, coco_all, coco_{novel / all}_seed_{s}_{k}_shot')
     '''

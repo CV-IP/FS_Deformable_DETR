@@ -186,7 +186,7 @@ class ROIPooler(nn.Module):
         Args:
             x (list[Tensor]): A list of feature maps of NCHW shape, with scales matching those
                 used to construct this module.
-            box_lists (list[Boxes] | list[RotatedBoxes]):
+            box_lists (list[Boxes] | list[RotatedBoxes]): Boxes M * 4
                 A list of N Boxes or N RotatedBoxes, where N is the number of images in the batch.
                 The box coordinates are defined on the original image and
                 will be scaled by the `scales` argument of :class:`ROIPooler`.

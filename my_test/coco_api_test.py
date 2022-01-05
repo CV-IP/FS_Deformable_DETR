@@ -9,13 +9,14 @@ anno_path1 = '/opt/tiger/minist/datasets/coco/cocosplit_self/seed0/full_box_1sho
 
 coco_30 = COCO(anno_path1)
 coco_5k = COCO(anno_path2)
+img, target = coco_30[0]
 
-print(len(coco_30.anns), len(coco_30.imgs))
+# print(len(coco_30.anns), len(coco_30.imgs))
 
-print(len(coco_5k.anns), len(coco_5k.imgs))
+# print(len(coco_5k.anns), len(coco_5k.imgs))
 
-intersect = [ann_id for ann_id in coco_30.anns if ann_id in coco_5k.anns]
-print(len(intersect))
+# intersect = [ann_id for ann_id in coco_30.anns if ann_id in coco_5k.anns]
+# print(len(intersect))
 
 
 '''
