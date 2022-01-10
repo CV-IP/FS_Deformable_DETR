@@ -49,6 +49,7 @@ class PrototypicalCalibrationBlock:
         img_folder = os.path.join(root, "JPEG")
         ann_file = os.path.join(root, "cocosplit_self","seed"+ seed, "full_box_{}shot_trainval.json".format(shot))
         '''
+        
         self.dataset_train = build_dataset(image_set=args.dataset_name + '_val', args=args)
         if args.distributed:
             if args.cache_mode:
@@ -59,7 +60,7 @@ class PrototypicalCalibrationBlock:
         else:
             sampler_train = torch.utils.data.RandomSampler(self.dataset_train)
 
-        batch_sampler_train = torch.utils.data.BatchSampler(sampler_train, args.batch_size, drop_last=True)
+        batch_sampler_train = torch.utils.data.BatchSampler(sampler_train, args.pcb_batch_size, drop_last=True)
 
         self.dataloader = DataLoader(self.dataset_train, batch_sampler=batch_sampler_train,
                                    collate_fn=utils.collate_fn, num_workers=args.num_workers,
@@ -69,10 +70,11 @@ class PrototypicalCalibrationBlock:
         self.roi_pooler = ROIPooler(output_size=(1, 1), scales=(1 / 32,), sampling_ratio=(0), pooler_type="ROIAlignV2")
         self.prototypes = self.build_prototypes()
 
-        self.exclude_cls = self.clsid_filter()
+        # self.exclude_cls = self.clsid_filter()
+        self.exclude_cls = []
 
     def build_model(self):
-
+        
         if self.args.pcb_model_type == 'resnet':
             imagenet_model = resnet101()
         else:
@@ -86,13 +88,38 @@ class PrototypicalCalibrationBlock:
     def build_prototypes(self):
 
         all_features, all_labels = [], []
-        for index in range(len(self.dataset_train)):
-            img, target = self.dataset_train[index]
-            boxes = target['boxes']
-            all_labels.append(target['labels'].cpu().data)
+        for samples, targets in self.dataloader:
+            samples = samples.tensors
+            print(samples.shape)
+            # print(targets) #列表，元素是 单个dataset的输出的target len(targets) = batch_size
+            '''
+            when batch_size = 2
+            [
+                {
+                    'boxes': tensor([[0.3049, 0.5058, 0.1351, 0.9103]]), 'labels': tensor([20]), 'image_id': tensor([41288]), 
+                    'area': tensor([87186.5000]), 'iscrowd': tensor([0]), 'orig_size': tensor([640, 393]), 'size': tensor([1302,  800])
+                }, 
+                {
+                    'boxes': tensor([[0.2349, 0.5081, 0.4007, 0.9482],[0.6682, 0.6131, 0.6604, 0.7394],[0.9473, 0.8674, 0.1054, 0.2653]]), 
+                    'labels': tensor([16, 17, 17]), 'image_id': tensor([193781]), 'area': tensor([109713.2656, 199557.7812,  14150.9287]), 
+                    'iscrowd': tensor([0, 0, 0]), 'orig_size': tensor([640, 480]), 'size': tensor([1066,  800])
+                }
+            ]
+            '''
+            # return
+            samples = samples.to(self.device)
+            targets = [{k: v.to(self.device) for k, v in t.items()} for t in targets]
+            
+
+
+
+
+            boxes = [target['boxes'] for target in targets]
+            for target in targets:
+                all_labels.append(target['labels'].cpu().data)
 
             # extract roi features
-            features = self.extract_roi_features(img, boxes)
+            features = self.extract_roi_features(samples, boxes)
             all_features.append(features.cpu().data)
 
         # concat

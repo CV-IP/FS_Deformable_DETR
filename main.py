@@ -36,6 +36,8 @@ def get_args_parser():
     parser.add_argument('--pcb_upper', default=1.0, type=float, help='TODO')
     parser.add_argument('--pcb_lower', default=0.05, type=float, help='TODO')
     parser.add_argument('--pcb_alpha', default=0.5, type=float, help='TODO')
+    parser.add_argument('--pcb_batch_size', default=2, type=int, help='batch size in pcb build proto with resnet101')
+
     
     # stephen add argumens:
     parser.add_argument('--dataset_name', default='coco_base', type=str, help='coco_base, coco_all, coco_{novel / all}_seed_{s}_{k}_shot')

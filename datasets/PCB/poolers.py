@@ -80,7 +80,9 @@ def convert_boxes_to_pooler_format(box_lists: List[Boxes]):
             where batch index is the index in [0, N) identifying which batch image the
             rotated box (x_ctr, y_ctr, width, height, angle_degrees) comes from.
     """
-    boxes = torch.cat([x.tensor for x in box_lists], dim=0)
+    # stephen comment out 
+    # boxes = torch.cat([x.tensor for x in box_lists], dim=0)
+    boxes = torch.cat([x for x in box_lists], dim=0)
     # __len__ returns Tensor in tracing.
     sizes = shapes_to_tensor([x.__len__() for x in box_lists], device=boxes.device)
     indices = torch.repeat_interleave(

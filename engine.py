@@ -137,10 +137,7 @@ def evaluate(model, criterion, postprocessors, data_loader, base_ds, device, out
         
         ### insert PCB module !!!
         if pcb is not None:
-            pcb.execute_calibration(samples, results)
-
-
-
+            results = pcb.execute_calibration(samples, results)
 
 
         res = {target['image_id'].item(): output for target, output in zip(targets, results)}
