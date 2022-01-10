@@ -12,18 +12,18 @@ conda activate deformable_detr
 
 conda install pytorch==1.5.1 torchvision==0.6.1 cudatoolkit=10.2 -c pytorch
 pip install -r requirements.txt
+pip install opencv-python sklearn
 
 
 git remote rm origin
 git remote add origin git@github.com:StephenStorm/FS_Deformable_DETR.git
 
 hdfs dfs -get  hdfs://haruna/home/byte_arnold_lq_vc/user/zhanglibin.buaa/exps/surgery_model
-
+cd surgery_model
+wget https://download.pytorch.org/models/resnet101-5d3b4d8f.pth
 mkdir data
 cd data
 ls -s 
-
-
 
 mkdir datasets
 cd datasets

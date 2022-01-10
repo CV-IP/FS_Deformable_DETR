@@ -142,6 +142,7 @@ class PrototypicalCalibrationBlock:
         '''
         inputs: imgs, NCHW, input for model. model(inputs)
         dts: res after postprocess in deformable_detr.py
+        dts：[scores, labels, bboxes]
         '''
 
         # img = cv2.imread(inputs[0]['file_name'])
@@ -150,8 +151,9 @@ class PrototypicalCalibrationBlock:
         iright = (dts[0]['instances'].scores > self.args.pcb_lower).sum()
         assert ileft <= iright
 
-        boxes = dts.[]
+
         # boxes = [dts[0]['instances'].pred_boxes[ileft:iright]]
+        boxes = [box for score, label, box in dts]
 
         # features = self.extract_roi_features(img, boxes)
         features = self.extract_roi_features(inputs, boxes)
