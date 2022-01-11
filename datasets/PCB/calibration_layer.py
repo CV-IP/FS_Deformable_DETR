@@ -93,10 +93,10 @@ class PrototypicalCalibrationBlock:
     def build_prototypes(self):
 
         all_features, all_labels = [], []
-        print(len(self.dataloader))
+        # print(len(self.dataloader))
         for samples, targets in self.dataloader:
             samples = samples.tensors
-            print(samples.shape)
+            # print(samples.shape)
             # print(targets) #列表，元素是 单个dataset的输出的target len(targets) = batch_size
             '''
             when batch_size = 2
@@ -125,11 +125,11 @@ class PrototypicalCalibrationBlock:
             all_features.append(features.cpu().data)
 
         
-        print(len(all_features), len(all_labels))
+        # print(len(all_features), len(all_labels))
         # concat
         all_features = torch.cat(all_features, dim=0)
         all_labels = torch.cat(all_labels, dim=0)
-        print(all_features.shape, all_labels.shape)
+        # print(all_features.shape, all_labels.shape)
         assert all_features.shape[0] == all_labels.shape[0]
 
         # calculate prototype
@@ -150,8 +150,6 @@ class PrototypicalCalibrationBlock:
 
     def extract_roi_features(self, imgs, boxes):
         """
-        
-            
         :param imgs: shape：BCHW
             x (list[Tensor]): A list of feature maps of NCHW shape, with scales matching those
             used to construct this module.
@@ -175,29 +173,30 @@ class PrototypicalCalibrationBlock:
         '''
         inputs: imgs, NCHW, input for model. model(inputs)
         dts: res after postprocess in deformable_detr.py
-        dts：[scores, labels, boxes]
+        dts ：[{scores: ,  labels:, boxes:}] list of dict
         '''
-
-        # img = cv2.imread(inputs[0]['file_name'])
-
-        ileft = (dts[0] > self.args.pcb_upper).sum()
-        iright = (dts[0] > self.args.pcb_lower).sum()
-        assert ileft <= iright
 
         # boxes = [dts[0]['instances'].pred_boxes[ileft:iright]]
         boxes = [s_l_b['boxes'] for s_l_b in dts]
 
         # features = self.extract_roi_features(img, boxes)
-        features = self.extract_roi_features(inputs, boxes)
-
-        for i in range(ileft, iright):
-            tmp_class = int(dts[0]['instances'].pred_classes[i])
-            if tmp_class in self.exclude_cls:
-                continue
-            tmp_cos = cosine_similarity(features[i - ileft].cpu().data.numpy().reshape((1, -1)),
-                                        self.prototypes[tmp_class].cpu().data.numpy())[0][0]
-            dts[0]['instances'].scores[i] = dts[0]['instances'].scores[i] * self.alpha + tmp_cos * (1 - self.alpha)
+        # print(inputs.tensors.shape, len(boxes))
+        features = self.extract_roi_features(inputs.tensors, boxes)
+        print(boxes[0].shape[0] + boxes[1].shape[0])
+        print('inputs shape: {}, dts length:{}, features shape : {}'.format(inputs.tensors.shape, len(dts), features.shape))
         return dts
+        for j in range(len(dts)): # batch-size
+            ileft = (dts[j]['scores'] > self.args.pcb_upper).sum()
+            iright = (dts[j]['scores'] > self.args.pcb_lower).sum()
+            assert ileft <= iright, 'ileft({}) > iright({})'.format(ileft, iright)
+            for i in range(ileft, iright):
+                tmp_class = int(dts[j]['labels'][i])
+                if tmp_class in self.exclude_cls:
+                    continue
+                tmp_cos = cosine_similarity(features[j][i - ileft].cpu().data.numpy().reshape((1, -1)),
+                                            self.prototypes[tmp_class].cpu().data.numpy())[0][0]
+                dts[0]['instances'].scores[i] = dts[0]['instances'].scores[i] * self.alpha + tmp_cos * (1 - self.alpha)
+            return dts
 
     def clsid_filter(self):
         eval_dataset = self.args.eval_dataset

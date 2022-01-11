@@ -100,7 +100,7 @@ class ROIPooler(nn.Module):
     def __init__(
         self,
         output_size,
-        scales,
+        scales, # 1 / 32.0
         sampling_ratio,
         pooler_type,
         canonical_box_size=224,
@@ -220,6 +220,7 @@ class ROIPooler(nn.Module):
             )
 
         pooler_fmt_boxes = convert_boxes_to_pooler_format(box_lists)
+        # print(pooler_fmt_boxes)
 
         if num_level_assignments == 1:
             return self.level_poolers[0](x[0], pooler_fmt_boxes)

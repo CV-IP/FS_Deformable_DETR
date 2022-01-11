@@ -140,7 +140,7 @@ def evaluate(model, criterion, postprocessors, data_loader, base_ds, device, out
 
         res = {target['image_id'].item(): output for target, output in zip(targets, results)}
         if coco_evaluator is not None:
-            coco_evaluator.update(res)
+            coco_evaluator.update(res) # remap ID here
 
         if panoptic_evaluator is not None:
             res_pano = postprocessors["panoptic"](outputs, target_sizes, orig_target_sizes)
