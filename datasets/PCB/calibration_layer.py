@@ -12,7 +12,7 @@ from sklearn.metrics.pairwise import cosine_similarity
 from datasets import build_dataset
 from pathlib import Path
 import datasets.samplers as samplers
-from torch.utils.data import DataLoader
+from torch.utils.data import DataLoader, dataset
 import util.misc as utils
 # from defrcn.dataloader import build_detection_test_loader
 
@@ -29,6 +29,11 @@ _CC.TEST.PCB_LOWER = 0.05
 '''
 
 class PrototypicalCalibrationBlock:
+    '''
+    base train do not need PCB
+
+
+    '''
 
     def __init__(self, args):
         super().__init__()
@@ -51,15 +56,15 @@ class PrototypicalCalibrationBlock:
         '''
         
         self.dataset_train = build_dataset(image_set=args.dataset_name + '_val', args=args)
-        if args.distributed:
-            if args.cache_mode:
-                sampler_train = samplers.NodeDistributedSampler(self.dataset_train, shuffle=False)
+        # if args.distributed:
+        #     if args.cache_mode:
+        #         sampler_train = samplers.NodeDistributedSampler(self.dataset_train, shuffle=False)
 
-            else:
-                sampler_train = samplers.DistributedSampler(self.dataset_train, shuffle=False)
-        else:
-            sampler_train = torch.utils.data.RandomSampler(self.dataset_train)
-
+        #     else:
+        #         sampler_train = samplers.DistributedSampler(self.dataset_train, shuffle=False)
+        # else:
+        #     sampler_train = torch.utils.data.RandomSampler(self.dataset_train)
+        sampler_train = torch.utils.data.RandomSampler(self.dataset_train)
         batch_sampler_train = torch.utils.data.BatchSampler(sampler_train, args.pcb_batch_size, drop_last=True)
 
         self.dataloader = DataLoader(self.dataset_train, batch_sampler=batch_sampler_train,
@@ -70,8 +75,8 @@ class PrototypicalCalibrationBlock:
         self.roi_pooler = ROIPooler(output_size=(1, 1), scales=(1 / 32,), sampling_ratio=(0), pooler_type="ROIAlignV2")
         self.prototypes = self.build_prototypes()
 
-        # self.exclude_cls = self.clsid_filter()
-        self.exclude_cls = []
+        self.exclude_cls = self.clsid_filter()
+        # self.exclude_cls = []
 
     def build_model(self):
         
@@ -88,6 +93,7 @@ class PrototypicalCalibrationBlock:
     def build_prototypes(self):
 
         all_features, all_labels = [], []
+        print(len(self.dataloader))
         for samples, targets in self.dataloader:
             samples = samples.tensors
             print(samples.shape)
@@ -109,10 +115,6 @@ class PrototypicalCalibrationBlock:
             # return
             samples = samples.to(self.device)
             targets = [{k: v.to(self.device) for k, v in t.items()} for t in targets]
-            
-
-
-
 
             boxes = [target['boxes'] for target in targets]
             for target in targets:
@@ -122,9 +124,12 @@ class PrototypicalCalibrationBlock:
             features = self.extract_roi_features(samples, boxes)
             all_features.append(features.cpu().data)
 
+        
+        print(len(all_features), len(all_labels))
         # concat
         all_features = torch.cat(all_features, dim=0)
         all_labels = torch.cat(all_labels, dim=0)
+        print(all_features.shape, all_labels.shape)
         assert all_features.shape[0] == all_labels.shape[0]
 
         # calculate prototype
@@ -140,6 +145,7 @@ class PrototypicalCalibrationBlock:
             features = torch.cat(features_dict[label], dim=0)
             prototypes_dict[label] = torch.mean(features, dim=0, keepdim=True)
 
+        print('prototypes length: {} '.format(len(prototypes_dict)))
         return prototypes_dict
 
     def extract_roi_features(self, imgs, boxes):
@@ -169,18 +175,17 @@ class PrototypicalCalibrationBlock:
         '''
         inputs: imgs, NCHW, input for model. model(inputs)
         dts: res after postprocess in deformable_detr.py
-        dts：[scores, labels, bboxes]
+        dts：[scores, labels, boxes]
         '''
 
         # img = cv2.imread(inputs[0]['file_name'])
 
-        ileft = (dts[0]['instances'].scores > self.args.pcb_upper).sum()
-        iright = (dts[0]['instances'].scores > self.args.pcb_lower).sum()
+        ileft = (dts[0] > self.args.pcb_upper).sum()
+        iright = (dts[0] > self.args.pcb_lower).sum()
         assert ileft <= iright
 
-
         # boxes = [dts[0]['instances'].pred_boxes[ileft:iright]]
-        boxes = [box for score, label, box in dts]
+        boxes = [s_l_b['boxes'] for s_l_b in dts]
 
         # features = self.extract_roi_features(img, boxes)
         features = self.extract_roi_features(inputs, boxes)
@@ -195,20 +200,26 @@ class PrototypicalCalibrationBlock:
         return dts
 
     def clsid_filter(self):
-        dsname = self.cfg.DATASETS.TEST[0]
+        eval_dataset = self.args.eval_dataset
         exclude_ids = []
-        if 'test_all' in dsname:
-            if 'coco' in dsname:
-                exclude_ids = [7, 9, 10, 11, 12, 13, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29,
-                               30, 31, 32, 33, 34, 35, 36, 37, 38, 40, 41, 42, 43, 44, 45,
-                               46, 47, 48, 49, 50, 51, 52, 53, 54, 55, 59, 61, 63, 64, 65,
-                               66, 67, 68, 69, 70, 71, 72, 73, 74, 75, 76, 77, 78, 79]
-            elif 'voc' in dsname:
-                exclude_ids = list(range(0, 15))
-            else:
-                raise NotImplementedError
-        return exclude_ids
+        # 只测试base的性能。不需要顾虑，所有都类别都进行评估
+        # 只有shot数据集才会使用PCB，因此base这种情况是不可能出现的
+        # if 'base' in eval_dataset :
+        #     pass
 
+        # if 'novel' in eval_dataset:
+            # 两种情况，一种是只有novel类别参与训练。0-19，这个时候不需要过滤，所有都需要使用PCB
+            # 还有一种情况是使用all class进行训练，only eval on novel classes ,这个时候只需要矫正novel class
+        # if 'all' in eval_dataset:
+            # only calibrate novel classes
+        ### 综上分析：
+        if 'coco' in self.args.dataset_name and self.args.num_classes == 80:
+            exclude_ids = list(range(0, 60))
+            # exclude_ids = [7, 9, 10, 11, 12, 13, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29,
+            #                 30, 31, 32, 33, 34, 35, 36, 37, 38, 40, 41, 42, 43, 44, 45,
+            #                 46, 47, 48, 49, 50, 51, 52, 53, 54, 55, 59, 61, 63, 64, 65,
+            #                 66, 67, 68, 69, 70, 71, 72, 73, 74, 75, 76, 77, 78, 79]
+        return exclude_ids
 
 @torch.no_grad()
 def concat_all_gather(tensor):

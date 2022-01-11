@@ -82,7 +82,7 @@ def train_one_epoch(model: torch.nn.Module, criterion: torch.nn.Module,
 
 
 @torch.no_grad()
-def evaluate(model, criterion, postprocessors, data_loader, base_ds, device, output_dir, dataset_name=None, class_nums = 80, args = None):
+def evaluate(model, criterion, postprocessors, data_loader, base_ds, device, output_dir, dataset_name=None, class_nums=80, args=None):
     model.eval()
     criterion.eval()
 
@@ -97,8 +97,6 @@ def evaluate(model, criterion, postprocessors, data_loader, base_ds, device, out
     pcb = None
     if args is not None and args.pcb_enable :
         pcb = PrototypicalCalibrationBlock(args)
-
-
 
 
 

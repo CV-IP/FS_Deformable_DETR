@@ -149,12 +149,14 @@ def make_coco_transforms(image_set):
 
     # if image_set == 'val':
     if 'val' in image_set :
+        # print('val [800]')
         return T.Compose([
             T.RandomResize([800], max_size=1333),
             normalize,
         ])
     
-
+    
+    # print('train [800]')
     return T.Compose([
         T.RandomHorizontalFlip(),
         T.RandomSelect(
