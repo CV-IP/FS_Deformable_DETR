@@ -146,6 +146,7 @@ class PrototypicalCalibrationBlock:
             prototypes_dict[label] = torch.mean(features, dim=0, keepdim=True)
 
         print('prototypes length: {} '.format(len(prototypes_dict)))
+        # print(prototypes_dict[0].shape) # torch.Size([1, 1000])
         return prototypes_dict
 
     def extract_roi_features(self, imgs, boxes):
@@ -182,21 +183,26 @@ class PrototypicalCalibrationBlock:
         # features = self.extract_roi_features(img, boxes)
         # print(inputs.tensors.shape, len(boxes))
         features = self.extract_roi_features(inputs.tensors, boxes)
-        print(boxes[0].shape[0] + boxes[1].shape[0])
-        print('inputs shape: {}, dts length:{}, features shape : {}'.format(inputs.tensors.shape, len(dts), features.shape))
-        return dts
+        # print(boxes[0].shape[0] + boxes[1].shape[0]) # 如果没有矿，会造成错误。
+        # print('inputs shape: {}, dts length:{}, features shape : {}'.format(inputs.tensors.shape, len(dts), features.shape))
+        # return dts
+        # print(self.prototypes.shape)
         for j in range(len(dts)): # batch-size
+            # print(dts[j]['scores']) # 从大到小的顺序
+            
             ileft = (dts[j]['scores'] > self.args.pcb_upper).sum()
             iright = (dts[j]['scores'] > self.args.pcb_lower).sum()
+            # print(ileft, iright)
             assert ileft <= iright, 'ileft({}) > iright({})'.format(ileft, iright)
             for i in range(ileft, iright):
                 tmp_class = int(dts[j]['labels'][i])
                 if tmp_class in self.exclude_cls:
                     continue
-                tmp_cos = cosine_similarity(features[j][i - ileft].cpu().data.numpy().reshape((1, -1)),
+                tmp_cos = cosine_similarity(features[j * self.args.num_queries + i - ileft].cpu().data.numpy().reshape((1, -1)),
                                             self.prototypes[tmp_class].cpu().data.numpy())[0][0]
-                dts[0]['instances'].scores[i] = dts[0]['instances'].scores[i] * self.alpha + tmp_cos * (1 - self.alpha)
-            return dts
+                dts[j]['scores'][i] = dts[j]['scores'][i] * self.alpha + tmp_cos * (1 - self.alpha)
+        
+        return dts
 
     def clsid_filter(self):
         eval_dataset = self.args.eval_dataset
