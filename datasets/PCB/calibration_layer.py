@@ -99,6 +99,7 @@ class PrototypicalCalibrationBlock:
             # print(samples.shape)
             # print(targets) #列表，元素是 单个dataset的输出的target len(targets) = batch_size
             '''
+            ###！！！ 需要注意的是，此处的box是归一化后的[0， 1]范围
             when batch_size = 2
             [
                 {
@@ -151,6 +152,7 @@ class PrototypicalCalibrationBlock:
 
     def extract_roi_features(self, imgs, boxes):
         """
+        ###!!! boxes 必须不是归一化后的坐标，不是[0, 1]，而是相对于原图的坐标。！！！
         :param imgs: shape：BCHW
             x (list[Tensor]): A list of feature maps of NCHW shape, with scales matching those
             used to construct this module.
@@ -198,7 +200,7 @@ class PrototypicalCalibrationBlock:
                 tmp_class = int(dts[j]['labels'][i])
                 if tmp_class in self.exclude_cls:
                     continue
-                tmp_cos = cosine_similarity(features[j * self.args.num_queries + i - ileft].cpu().data.numpy().reshape((1, -1)),
+                tmp_cos = cosine_similarity(features[j * self.args.num_queries + i].cpu().data.numpy().reshape((1, -1)),
                                             self.prototypes[tmp_class].cpu().data.numpy())[0][0]
                 dts[j]['scores'][i] = dts[j]['scores'][i] * self.alpha + tmp_cos * (1 - self.alpha)
         
