@@ -1,3 +1,15 @@
 20211214
     coco_eval 增加类别参数，用来区别coco_novel进行评估时的索引序号，可以是后20类（train class_num = 80), 也可以是前20（train class_num = 20)
-    
+20220111:
+    add pcb module done !!!
+    dubug for 1.5 week about , of course with intern work
+    'j * self.args.num_queries + i - ileft' in function 'execute_calibration()' FS_Deformable_DETR/datasets/PCB/calibration_layer.py
+    exp on coco_all_seed_0_10_shot  : 
+        --eval_dataset coco_novel
+            if use 'j * self.args.num_queries + i - ileft'  mAP 0.141 -> 0.164
+            if use 'j * self.args.num_queries + i;          mAP 0.141 -> 0.16
+            i do not know why j * self.args.num_queries + i - ileft, study ing...
+        --eval_dataset coco_novel
+            if use 'j * self.args.num_queries + i - ileft'  mAP 0.279 -> 0.285
+            if use 'j * self.args.num_queries + i - '       mAP 0.279 -> 0.285 
+            the same as each other
