@@ -14,6 +14,7 @@ from pathlib import Path
 import datasets.samplers as samplers
 from torch.utils.data import DataLoader, dataset
 import util.misc as utils
+from util.box_ops import box_cxcywh_to_xyxy
 # from defrcn.dataloader import build_detection_test_loader
 
 import sys
@@ -97,7 +98,7 @@ class PrototypicalCalibrationBlock:
         for samples, targets in self.dataloader:
             samples = samples.tensors
             '''
-            ###！！！ 需要注意的是，此处的box是相对于batch的hw而言，[0, w], [0, w]
+            ###！！！ 需要注意的是，此处的box是normalization之后的坐标，[0, 1]， （cx, cy, w, h)
             when batch_size = 2
             [
                 {
@@ -113,38 +114,34 @@ class PrototypicalCalibrationBlock:
             '''
             samples = samples.to(self.device)
             targets = [{k: v.to(self.device) for k, v in t.items()} for t in targets]
-
-            boxes = [target['boxes'] for target in targets]
-            '''
+            # boxes = [box_cxcywh_to_xyxy(target['boxes']) for target in targets]
+            
+            boxes = []
+            vis = False # visualization for check
+                
             for idx, target in enumerate(targets):
-                box = target['boxes']
-                # aug_h, aug_w = target['size'][0], target['size'][1]
-                # print(aug_h, aug_w)
-                # scale_t = torch.tensor([aug_w, aug_h, aug_w, aug_h,]).to(self.device)
-                # print(scale_t)
-                # print(box)
-                # box = (box * scale_t).int()
-                # print(box.type())
-                # print(box)
+
+                all_labels.append(target['labels'].cpu().data)
+
+                box = box_cxcywh_to_xyxy(target['boxes'])
+                aug_h, aug_w = target['size'][0], target['size'][1]
+                scale_t = torch.tensor([aug_w, aug_h, aug_w, aug_h,]).to(self.device)
+                box = (box * scale_t)
                 boxes.append(box)
 
-                
-                # visualization for check
-                
-                img = samples[idx]
-                # img = img.permute(1, 2, 0).cpu().type(torch.uint8).numpy()[:,:,::-1]
-                img = img.mul_(255).add_(0.5).clamp_(0, 255).permute(1, 2, 0).cpu().type(torch.uint8).numpy()[:, :, ::-1]
-                
-                print(img.shape, type(img))
-                img2 = img.copy()
-                for j in range(box.shape[0]):
-                    cv2.rectangle(img2, (int(box[j][0]), int(box[j][1])), (int(box[j][2]), int(box[j][3])), (0, 255, 0))
-                
-                cv2.imwrite(str(idx)+'.jpg', img2)
-            '''
-
-            for target in targets:
-                all_labels.append(target['labels'].cpu().data)
+                if vis:
+                    print(box)
+                    img = samples[idx]
+                    img = img.mul_(255).add_(0.5).clamp_(0, 255).permute(1, 2, 0).cpu().type(torch.uint8).numpy()
+                    print(img.shape, type(img)) # (800, 1199, 3) <class 'numpy.ndarray'>
+                    print(aug_h, aug_w)
+                    img2 = img.copy()
+                    for j in range(box.shape[0]):
+                        cv2.rectangle(img2, (int(box[j][0] + 0.5), int(box[j][1] + 0.5)), (int(box[j][2] + 0.5), int(box[j][3] + 0.5)), (0, 0, 255))
+                    
+                    cv2.imwrite(str(idx)+'.jpg', img2)
+            if vis:
+                sys.exit()
 
             # extract roi features
             features = self.extract_roi_features(samples, boxes)
@@ -177,7 +174,7 @@ class PrototypicalCalibrationBlock:
 
     def extract_roi_features(self, imgs, boxes):
         """
-        ###!!! boxes 必须不是归一化后的坐标，不是[0, 1]，而是相对于原图的坐标。！！！
+        ###!!! boxes 必须不是归一化后的坐标，不是[0, 1]，而是相对于原图的坐标。！！！ (x1, y1, x2, y2) format
         :param imgs: shape：BCHW
             x (list[Tensor]): A list of feature maps of NCHW shape, with scales matching those
             used to construct this module.
@@ -197,20 +194,48 @@ class PrototypicalCalibrationBlock:
 
         return activation_vectors
 
-    def execute_calibration(self, inputs, dts):
+    def execute_calibration(self, inputs, dts, scale):
         '''
-        inputs: imgs, NCHW, input for model. model(inputs)
+        inputs: tensor, imgs, NCHW, input for model. model(inputs)
         dts: res after postprocess in deformable_detr.py
         dts ：[{scores: ,  labels:, boxes:}] list of dict
+        original_size: input for postprocess in FS_Deformable_DETR/models/deformable_detr.py 
+            用来消除postprocess 中对预测box的scale操作，将相对于origin  尺寸的box变换为相对于aug后，也就是batch_size的坐标。
         '''
 
         # boxes = [dts[0]['instances'].pred_boxes[ileft:iright]]
-        boxes = [s_l_b['boxes'] for s_l_b in dts]
+        # boxes = [s_l_b['boxes'] for s_l_b in dts]
+        assert len(dts) == inputs.shape[0], 'len(dts) != inputs.shape, len(dts): {}, inputs.shape: {}'.format(len(dts), inputs.shape)
+        assert scale.shape[0] == inputs.shape[0]
+        boxes = []
+        # batch_h, batch_w = inputs.shape[2:]
+        # print(batch_h, batch_w)
+        scale = scale.flip(1).repeat(1, 2)
+        
+        vis = False # for debug
+        for i in range(len(dts)):
+            # scale = (torch.tensor([batch_h, batch_w]).to(self.device) / original_size[i]).flip(0) # [h, w] -> [w, h]
+            # scale = scale.repeat(1, 2) # (h, w) ->(h, w, h, w)
+            # print(scale)
+            box = torch.clamp(dts[i]['boxes'], min=0) * scale[i]
+            boxes.append(box)
+            if vis:
+                print(box[:5])
+                img = inputs[i].clone()
+                img = img.mul_(255).add_(0.5).clamp_(0, 255).permute(1, 2, 0).cpu().type(torch.uint8).numpy()
+                print(img.shape, type(img)) # (800, 1199, 3) <class 'numpy.ndarray'>
+                img2 = img.copy()
+                # for j in range(box.shape[0]):
+                for j in range(30):
+                    cv2.rectangle(img2, (int(box[j][0] + 0.5), int(box[j][1] + 0.5)), (int(box[j][2] + 0.5), int(box[j][3] + 0.5)), (0, 0, 255))
+                
+                cv2.imwrite(str(i)+'_calibrate.jpg', img2)
+        if vis:
+            sys.exit()
 
-        # features = self.extract_roi_features(img, boxes)
         # print(inputs.tensors.shape, len(boxes))
-        features = self.extract_roi_features(inputs.tensors, boxes)
-        # print(boxes[0].shape[0] + boxes[1].shape[0]) # 如果没有矿，会造成错误。
+        features = self.extract_roi_features(inputs, boxes)
+        # print(boxes[0].shape[0] + boxes[1].shape[0]) 
         # print('inputs shape: {}, dts length:{}, features shape : {}'.format(inputs.tensors.shape, len(dts), features.shape))
         # return dts
         # print(self.prototypes.shape)
@@ -225,7 +250,7 @@ class PrototypicalCalibrationBlock:
                 tmp_class = int(dts[j]['labels'][i])
                 if tmp_class in self.exclude_cls:
                     continue
-                tmp_cos = cosine_similarity(features[j * self.args.num_queries + i].cpu().data.numpy().reshape((1, -1)),
+                tmp_cos = cosine_similarity(features[j * self.args.num_queries + i - ileft].cpu().data.numpy().reshape((1, -1)),
                                             self.prototypes[tmp_class].cpu().data.numpy())[0][0]
                 dts[j]['scores'][i] = dts[j]['scores'][i] * self.alpha + tmp_cos * (1 - self.alpha)
         

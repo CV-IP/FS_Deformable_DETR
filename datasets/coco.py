@@ -88,7 +88,7 @@ class ConvertCocoPolysToMask(object):
         classes = [obj["category_id"] for obj in anno]
         classes = torch.tensor(classes, dtype=torch.int64)
 
-        if self.return_masks:
+        if self.return_masks: # False
             segmentations = [obj["segmentation"] for obj in anno]
             masks = convert_coco_poly_to_mask(segmentations, h, w)
 
@@ -134,8 +134,8 @@ def make_coco_transforms(image_set):
 
     normalize = T.Compose([
         T.ToTensor(),
-        # T.Normalize([0.485, 0.456, 0.406], [0.229, 0.224, 0.225])
-        T.Normalize([0.0, 0.0, 0.0], [1.0, 1.0, 1.0])
+        T.Normalize([0.485, 0.456, 0.406], [0.229, 0.224, 0.225])
+        # T.Normalize([0.0, 0.0, 0.0], [1.0, 1.0, 1.0])
     ])
 
     scales = [480, 512, 544, 576, 608, 640, 672, 704, 736, 768, 800]
@@ -153,8 +153,8 @@ def make_coco_transforms(image_set):
         # print('val [800]')
         return T.Compose([
             T.RandomResize([800], max_size=1333),
-            # normalize,
-            T.ToTensor(),
+            normalize,
+            # T.ToTensor(),
         ])
     
     

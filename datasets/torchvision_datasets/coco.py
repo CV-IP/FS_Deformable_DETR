@@ -127,8 +127,6 @@ class FsCocoDetection(VisionDataset):
 
         from pycocotools.coco import COCO
         self.coco = COCO(annFile)
-        
-        
         img_ids = list(sorted(self.coco.imgs.keys()))
         # ann_ids = self.coco.getAnnIds(imgIds=img_ids)
 

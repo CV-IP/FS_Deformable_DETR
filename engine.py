@@ -135,7 +135,9 @@ def evaluate(model, criterion, postprocessors, data_loader, base_ds, device, out
         
         ### insert PCB module !!!
         if pcb is not None:
-            results = pcb.execute_calibration(samples, results)
+            aug_size = torch.stack([t["size"] for t in targets], dim=0)
+            scale = aug_size / orig_target_sizes
+            results = pcb.execute_calibration(samples.tensors, results, scale)
 
 
         res = {target['image_id'].item(): output for target, output in zip(targets, results)}
