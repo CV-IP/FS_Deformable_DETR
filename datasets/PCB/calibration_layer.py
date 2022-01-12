@@ -16,7 +16,7 @@ from torch.utils.data import DataLoader, dataset
 import util.misc as utils
 # from defrcn.dataloader import build_detection_test_loader
 
-
+import sys
 
 '''
 settings in DeFRCN
@@ -31,7 +31,6 @@ _CC.TEST.PCB_LOWER = 0.05
 class PrototypicalCalibrationBlock:
     '''
     base train do not need PCB
-
 
     '''
 
@@ -91,15 +90,14 @@ class PrototypicalCalibrationBlock:
         return imagenet_model
 
     def build_prototypes(self):
+        print('start build prototypes ...')
 
         all_features, all_labels = [], []
         # print(len(self.dataloader))
         for samples, targets in self.dataloader:
             samples = samples.tensors
-            # print(samples.shape)
-            # print(targets) #列表，元素是 单个dataset的输出的target len(targets) = batch_size
             '''
-            ###！！！ 需要注意的是，此处的box是归一化后的[0， 1]范围
+            ###！！！ 需要注意的是，此处的box是相对于batch的hw而言，[0, w], [0, w]
             when batch_size = 2
             [
                 {
@@ -113,11 +111,38 @@ class PrototypicalCalibrationBlock:
                 }
             ]
             '''
-            # return
             samples = samples.to(self.device)
             targets = [{k: v.to(self.device) for k, v in t.items()} for t in targets]
 
             boxes = [target['boxes'] for target in targets]
+            '''
+            for idx, target in enumerate(targets):
+                box = target['boxes']
+                # aug_h, aug_w = target['size'][0], target['size'][1]
+                # print(aug_h, aug_w)
+                # scale_t = torch.tensor([aug_w, aug_h, aug_w, aug_h,]).to(self.device)
+                # print(scale_t)
+                # print(box)
+                # box = (box * scale_t).int()
+                # print(box.type())
+                # print(box)
+                boxes.append(box)
+
+                
+                # visualization for check
+                
+                img = samples[idx]
+                # img = img.permute(1, 2, 0).cpu().type(torch.uint8).numpy()[:,:,::-1]
+                img = img.mul_(255).add_(0.5).clamp_(0, 255).permute(1, 2, 0).cpu().type(torch.uint8).numpy()[:, :, ::-1]
+                
+                print(img.shape, type(img))
+                img2 = img.copy()
+                for j in range(box.shape[0]):
+                    cv2.rectangle(img2, (int(box[j][0]), int(box[j][1])), (int(box[j][2]), int(box[j][3])), (0, 255, 0))
+                
+                cv2.imwrite(str(idx)+'.jpg', img2)
+            '''
+
             for target in targets:
                 all_labels.append(target['labels'].cpu().data)
 

@@ -17,6 +17,8 @@ import os.path
 import tqdm
 from io import BytesIO
 
+import shutil
+
 
 from datasets.FSOD_settings.get_fsod_data_matadata import _get_builtin_metadata
 
@@ -173,6 +175,8 @@ class FsCocoDetection(VisionDataset):
                 with open(os.path.join(self.root, path), 'rb') as f:
                     self.cache[path] = f.read()
             return Image.open(BytesIO(self.cache[path])).convert('RGB')
+        # print(os.path.join(self.root, path))
+        # shutil.copy(os.path.join(self.root, path), '/opt/tiger/minist/FS_Deformable_DETR/3.jpg')
         return Image.open(os.path.join(self.root, path)).convert('RGB')
 
     def __getitem__(self, index):
