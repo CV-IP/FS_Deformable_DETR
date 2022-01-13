@@ -1,0 +1,655 @@
+| distributed init (rank 5): env://
+| distributed init (rank 1): env://
+| distributed init (rank 3): env://
+| distributed init (rank 0): env://
+| distributed init (rank 2): env://
+| distributed init (rank 7): env://
+| distributed init (rank 6): env://
+| distributed init (rank 4): env://
+n128-097-212:588007:588007 [0] NCCL INFO Bootstrap : Using [0]eth0:10.128.97.212<0> [1]eth2:10.128.98.14<0>
+n128-097-212:588007:588007 [0] NCCL INFO NET/Plugin : No plugin found (libnccl-net.so), using internal implementation
+n128-097-212:588007:588007 [0] NCCL INFO NET/IB : Using [0]mlx5_2:1/RoCE [1]mlx5_0:1/RoCE ; OOB eth0:10.128.97.212<0>
+n128-097-212:588007:588007 [0] NCCL INFO Using network IB
+NCCL version 2.7.8+cuda10.2
+n128-097-212:588019:588019 [6] NCCL INFO Bootstrap : Using [0]eth0:10.128.97.212<0> [1]eth2:10.128.98.14<0>
+n128-097-212:588011:588011 [2] NCCL INFO Bootstrap : Using [0]eth0:10.128.97.212<0> [1]eth2:10.128.98.14<0>
+n128-097-212:588020:588020 [7] NCCL INFO Bootstrap : Using [0]eth0:10.128.97.212<0> [1]eth2:10.128.98.14<0>
+n128-097-212:588015:588015 [4] NCCL INFO Bootstrap : Using [0]eth0:10.128.97.212<0> [1]eth2:10.128.98.14<0>
+n128-097-212:588017:588017 [5] NCCL INFO Bootstrap : Using [0]eth0:10.128.97.212<0> [1]eth2:10.128.98.14<0>
+n128-097-212:588019:588019 [6] NCCL INFO NET/Plugin : No plugin found (libnccl-net.so), using internal implementation
+n128-097-212:588011:588011 [2] NCCL INFO NET/Plugin : No plugin found (libnccl-net.so), using internal implementation
+n128-097-212:588020:588020 [7] NCCL INFO NET/Plugin : No plugin found (libnccl-net.so), using internal implementation
+n128-097-212:588015:588015 [4] NCCL INFO NET/Plugin : No plugin found (libnccl-net.so), using internal implementation
+n128-097-212:588017:588017 [5] NCCL INFO NET/Plugin : No plugin found (libnccl-net.so), using internal implementation
+n128-097-212:588011:588011 [2] NCCL INFO NET/IB : Using [0]mlx5_2:1/RoCE [1]mlx5_0:1/RoCE ; OOB eth0:10.128.97.212<0>
+n128-097-212:588011:588011 [2] NCCL INFO Using network IB
+n128-097-212:588017:588017 [5] NCCL INFO NET/IB : Using [0]mlx5_2:1/RoCE [1]mlx5_0:1/RoCE ; OOB eth0:10.128.97.212<0>
+n128-097-212:588017:588017 [5] NCCL INFO Using network IB
+n128-097-212:588019:588019 [6] NCCL INFO NET/IB : Using [0]mlx5_2:1/RoCE [1]mlx5_0:1/RoCE ; OOB eth0:10.128.97.212<0>
+n128-097-212:588015:588015 [4] NCCL INFO NET/IB : Using [0]mlx5_2:1/RoCE [1]mlx5_0:1/RoCE ; OOB eth0:10.128.97.212<0>
+n128-097-212:588019:588019 [6] NCCL INFO Using network IB
+n128-097-212:588020:588020 [7] NCCL INFO NET/IB : Using [0]mlx5_2:1/RoCE [1]mlx5_0:1/RoCE ; OOB eth0:10.128.97.212<0>
+n128-097-212:588015:588015 [4] NCCL INFO Using network IB
+n128-097-212:588020:588020 [7] NCCL INFO Using network IB
+n128-097-212:588009:588009 [1] NCCL INFO Bootstrap : Using [0]eth0:10.128.97.212<0> [1]eth2:10.128.98.14<0>
+n128-097-212:588009:588009 [1] NCCL INFO NET/Plugin : No plugin found (libnccl-net.so), using internal implementation
+n128-097-212:588013:588013 [3] NCCL INFO Bootstrap : Using [0]eth0:10.128.97.212<0> [1]eth2:10.128.98.14<0>
+n128-097-212:588013:588013 [3] NCCL INFO NET/Plugin : No plugin found (libnccl-net.so), using internal implementation
+n128-097-212:588009:588009 [1] NCCL INFO NET/IB : Using [0]mlx5_2:1/RoCE [1]mlx5_0:1/RoCE ; OOB eth0:10.128.97.212<0>
+n128-097-212:588009:588009 [1] NCCL INFO Using network IB
+n128-097-212:588013:588013 [3] NCCL INFO NET/IB : Using [0]mlx5_2:1/RoCE [1]mlx5_0:1/RoCE ; OOB eth0:10.128.97.212<0>
+n128-097-212:588013:588013 [3] NCCL INFO Using network IB
+n128-097-212:588009:588587 [1] NCCL INFO threadThresholds 8/8/64 | 64/8/64 | 8/8/64
+n128-097-212:588011:588580 [2] NCCL INFO threadThresholds 8/8/64 | 64/8/64 | 8/8/64
+n128-097-212:588015:588584 [4] NCCL INFO threadThresholds 8/8/64 | 64/8/64 | 8/8/64
+n128-097-212:588013:588590 [3] NCCL INFO threadThresholds 8/8/64 | 64/8/64 | 8/8/64
+n128-097-212:588017:588581 [5] NCCL INFO threadThresholds 8/8/64 | 64/8/64 | 8/8/64
+n128-097-212:588007:588569 [0] NCCL INFO Channel 00/12 :    0   1   2   3   4   5   6   7
+n128-097-212:588019:588582 [6] NCCL INFO threadThresholds 8/8/64 | 64/8/64 | 8/8/64
+n128-097-212:588009:588587 [1] NCCL INFO Trees [0] 2/-1/-1->1->0|0->1->2/-1/-1 [1] 6/-1/-1->1->3|3->1->6/-1/-1 [2] 3/-1/-1->1->6|6->1->3/-1/-1 [3] 3/-1/-1->1->6|6->1->3/-1/-1 [4] 6/-1/-1->1->2|2->1->6/-1/-1 [5] -1/-1/-1->1->3|3->1->-1/-1/-1 [6] 2/-1/-1->1->0|0->1->2/-1/-1 [7] 6/-1/-1->1->3|3->1->6/-1/-1 [8] 3/-1/-1->1->6|6->1->3/-1/-1 [9] 3/-1/-1->1->6|6->1->3/-1/-1 [10] 6/-1/-1->1->2|2->1->6/-1/-1 [11] -1/-1/-1->1->3|3->1->-1/-1/-1
+n128-097-212:588020:588583 [7] NCCL INFO threadThresholds 8/8/64 | 64/8/64 | 8/8/64
+n128-097-212:588011:588580 [2] NCCL INFO Trees [0] 3/-1/-1->2->1|1->2->3/-1/-1 [1] 3/-1/-1->2->0|0->2->3/-1/-1 [2] 5/-1/-1->2->0|0->2->5/-1/-1 [3] -1/-1/-1->2->3|3->2->-1/-1/-1 [4] 1/-1/-1->2->3|3->2->1/-1/-1 [5] 0/-1/-1->2->5|5->2->0/-1/-1 [6] 3/-1/-1->2->1|1->2->3/-1/-1 [7] 3/-1/-1->2->0|0->2->3/-1/-1 [8] 5/-1/-1->2->0|0->2->5/-1/-1 [9] -1/-1/-1->2->3|3->2->-1/-1/-1 [10] 1/-1/-1->2->3|3->2->1/-1/-1 [11] 0/-1/-1->2->5|5->2->0/-1/-1
+n128-097-212:588015:588584 [4] NCCL INFO Trees [0] 5/-1/-1->4->3|3->4->5/-1/-1 [1] 5/-1/-1->4->6|6->4->5/-1/-1 [2] 6/-1/-1->4->7|7->4->6/-1/-1 [3] 6/-1/-1->4->5|5->4->6/-1/-1 [4] 3/-1/-1->4->5|5->4->3/-1/-1 [5] 7/-1/-1->4->-1|-1->4->7/-1/-1 [6] 5/-1/-1->4->3|3->4->5/-1/-1 [7] 5/-1/-1->4->6|6->4->5/-1/-1 [8] 6/-1/-1->4->7|7->4->6/-1/-1 [9] 6/-1/-1->4->5|5->4->6/-1/-1 [10] 3/-1/-1->4->5|5->4->3/-1/-1 [11] 7/-1/-1->4->-1|-1->4->7/-1/-1
+n128-097-212:588013:588590 [3] NCCL INFO Trees [0] 4/-1/-1->3->2|2->3->4/-1/-1 [1] 1/-1/-1->3->2|2->3->1/-1/-1 [2] -1/-1/-1->3->1|1->3->-1/-1/-1 [3] 2/-1/-1->3->1|1->3->2/-1/-1 [4] 2/-1/-1->3->4|4->3->2/-1/-1 [5] 1/-1/-1->3->0|0->3->1/-1/-1 [6] 4/-1/-1->3->2|2->3->4/-1/-1 [7] 1/-1/-1->3->2|2->3->1/-1/-1 [8] -1/-1/-1->3->1|1->3->-1/-1/-1 [9] 2/-1/-1->3->1|1->3->2/-1/-1 [10] 2/-1/-1->3->4|4->3->2/-1/-1 [11] 1/-1/-1->3->0|0->3->1/-1/-1
+n128-097-212:588007:588569 [0] NCCL INFO Channel 01/12 :    0   2   3   1   6   4   5   7
+n128-097-212:588017:588581 [5] NCCL INFO Trees [0] 6/-1/-1->5->4|4->5->6/-1/-1 [1] 7/-1/-1->5->4|4->5->7/-1/-1 [2] 7/-1/-1->5->2|2->5->7/-1/-1 [3] 4/-1/-1->5->7|7->5->4/-1/-1 [4] 4/-1/-1->5->7|7->5->4/-1/-1 [5] 2/-1/-1->5->6|6->5->2/-1/-1 [6] 6/-1/-1->5->4|4->5->6/-1/-1 [7] 7/-1/-1->5->4|4->5->7/-1/-1 [8] 7/-1/-1->5->2|2->5->7/-1/-1 [9] 4/-1/-1->5->7|7->5->4/-1/-1 [10] 4/-1/-1->5->7|7->5->4/-1/-1 [11] 2/-1/-1->5->6|6->5->2/-1/-1
+n128-097-212:588009:588587 [1] NCCL INFO Setting affinity for GPU 1 to ff,ffff0000,00ffffff
+n128-097-212:588019:588582 [6] NCCL INFO Trees [0] 7/-1/-1->6->5|5->6->7/-1/-1 [1] 4/-1/-1->6->1|1->6->4/-1/-1 [2] 1/-1/-1->6->4|4->6->1/-1/-1 [3] 1/-1/-1->6->4|4->6->1/-1/-1 [4] -1/-1/-1->6->1|1->6->-1/-1/-1 [5] 5/-1/-1->6->7|7->6->5/-1/-1 [6] 7/-1/-1->6->5|5->6->7/-1/-1 [7] 4/-1/-1->6->1|1->6->4/-1/-1 [8] 1/-1/-1->6->4|4->6->1/-1/-1 [9] 1/-1/-1->6->4|4->6->1/-1/-1 [10] -1/-1/-1->6->1|1->6->-1/-1/-1 [11] 5/-1/-1->6->7|7->6->5/-1/-1
+n128-097-212:588011:588580 [2] NCCL INFO Setting affinity for GPU 2 to ff,ffff0000,00ffffff
+n128-097-212:588015:588584 [4] NCCL INFO Setting affinity for GPU 4 to ffffff00,0000ffff,ff000000
+n128-097-212:588007:588569 [0] NCCL INFO Channel 02/12 :    0   2   5   7   4   6   1   3
+n128-097-212:588013:588590 [3] NCCL INFO Setting affinity for GPU 3 to ff,ffff0000,00ffffff
+n128-097-212:588020:588583 [7] NCCL INFO Trees [0] -1/-1/-1->7->6|6->7->-1/-1/-1 [1] -1/-1/-1->7->5|5->7->-1/-1/-1 [2] 4/-1/-1->7->5|5->7->4/-1/-1 [3] 5/-1/-1->7->0|0->7->5/-1/-1 [4] 5/-1/-1->7->0|0->7->5/-1/-1 [5] 6/-1/-1->7->4|4->7->6/-1/-1 [6] -1/-1/-1->7->6|6->7->-1/-1/-1 [7] -1/-1/-1->7->5|5->7->-1/-1/-1 [8] 4/-1/-1->7->5|5->7->4/-1/-1 [9] 5/-1/-1->7->0|0->7->5/-1/-1 [10] 5/-1/-1->7->0|0->7->5/-1/-1 [11] 6/-1/-1->7->4|4->7->6/-1/-1
+n128-097-212:588017:588581 [5] NCCL INFO Setting affinity for GPU 5 to ffffff00,0000ffff,ff000000
+n128-097-212:588019:588582 [6] NCCL INFO Setting affinity for GPU 6 to ffffff00,0000ffff,ff000000
+n128-097-212:588007:588569 [0] NCCL INFO Channel 03/12 :    0   7   5   4   6   1   3   2
+n128-097-212:588020:588583 [7] NCCL INFO Setting affinity for GPU 7 to ffffff00,0000ffff,ff000000
+n128-097-212:588007:588569 [0] NCCL INFO Channel 04/12 :    0   7   6   5   4   3   2   1
+n128-097-212:588007:588569 [0] NCCL INFO Channel 05/12 :    0   3   1   6   4   7   5   2
+n128-097-212:588007:588569 [0] NCCL INFO Channel 06/12 :    0   1   2   3   4   5   6   7
+n128-097-212:588007:588569 [0] NCCL INFO Channel 07/12 :    0   2   3   1   6   4   5   7
+n128-097-212:588007:588569 [0] NCCL INFO Channel 08/12 :    0   2   5   7   4   6   1   3
+n128-097-212:588007:588569 [0] NCCL INFO Channel 09/12 :    0   7   5   4   6   1   3   2
+n128-097-212:588007:588569 [0] NCCL INFO Channel 10/12 :    0   7   6   5   4   3   2   1
+n128-097-212:588007:588569 [0] NCCL INFO Channel 11/12 :    0   3   1   6   4   7   5   2
+n128-097-212:588007:588569 [0] NCCL INFO threadThresholds 8/8/64 | 64/8/64 | 8/8/64
+n128-097-212:588007:588569 [0] NCCL INFO Trees [0] 1/-1/-1->0->-1|-1->0->1/-1/-1 [1] 2/-1/-1->0->-1|-1->0->2/-1/-1 [2] 2/-1/-1->0->-1|-1->0->2/-1/-1 [3] 7/-1/-1->0->-1|-1->0->7/-1/-1 [4] 7/-1/-1->0->-1|-1->0->7/-1/-1 [5] 3/-1/-1->0->2|2->0->3/-1/-1 [6] 1/-1/-1->0->-1|-1->0->1/-1/-1 [7] 2/-1/-1->0->-1|-1->0->2/-1/-1 [8] 2/-1/-1->0->-1|-1->0->2/-1/-1 [9] 7/-1/-1->0->-1|-1->0->7/-1/-1 [10] 7/-1/-1->0->-1|-1->0->7/-1/-1 [11] 3/-1/-1->0->2|2->0->3/-1/-1
+n128-097-212:588007:588569 [0] NCCL INFO Setting affinity for GPU 0 to ff,ffff0000,00ffffff
+n128-097-212:588009:588587 [1] NCCL INFO Channel 00 : 1[1b000] -> 2[3d000] via P2P/IPC
+n128-097-212:588011:588580 [2] NCCL INFO Channel 00 : 2[3d000] -> 3[3e000] via P2P/IPC
+n128-097-212:588013:588590 [3] NCCL INFO Channel 00 : 3[3e000] -> 4[88000] via P2P/IPC
+n128-097-212:588007:588569 [0] NCCL INFO Channel 00 : 0[1a000] -> 1[1b000] via P2P/IPC
+n128-097-212:588017:588581 [5] NCCL INFO Channel 00 : 5[89000] -> 6[b1000] via P2P/IPC
+n128-097-212:588019:588582 [6] NCCL INFO Channel 00 : 6[b1000] -> 7[b2000] via P2P/IPC
+n128-097-212:588015:588584 [4] NCCL INFO Channel 00 : 4[88000] -> 5[89000] via P2P/IPC
+n128-097-212:588020:588583 [7] NCCL INFO Channel 00 : 7[b2000] -> 0[1a000] via P2P/IPC
+n128-097-212:588009:588587 [1] NCCL INFO Channel 00 : 1[1b000] -> 0[1a000] via P2P/IPC
+n128-097-212:588011:588580 [2] NCCL INFO Channel 00 : 2[3d000] -> 1[1b000] via P2P/IPC
+n128-097-212:588013:588590 [3] NCCL INFO Channel 00 : 3[3e000] -> 2[3d000] via P2P/IPC
+n128-097-212:588020:588583 [7] NCCL INFO Channel 00 : 7[b2000] -> 6[b1000] via P2P/IPC
+n128-097-212:588017:588581 [5] NCCL INFO Channel 00 : 5[89000] -> 4[88000] via P2P/IPC
+n128-097-212:588019:588582 [6] NCCL INFO Channel 00 : 6[b1000] -> 5[89000] via P2P/IPC
+n128-097-212:588015:588584 [4] NCCL INFO Channel 00 : 4[88000] -> 3[3e000] via P2P/IPC
+n128-097-212:588007:588569 [0] NCCL INFO Channel 01 : 0[1a000] -> 2[3d000] via P2P/IPC
+n128-097-212:588011:588580 [2] NCCL INFO Channel 01 : 2[3d000] -> 3[3e000] via P2P/IPC
+n128-097-212:588009:588587 [1] NCCL INFO Channel 01 : 1[1b000] -> 6[b1000] via P2P/IPC
+n128-097-212:588020:588583 [7] NCCL INFO Channel 01 : 7[b2000] -> 0[1a000] via P2P/IPC
+n128-097-212:588013:588590 [3] NCCL INFO Channel 01 : 3[3e000] -> 1[1b000] via P2P/IPC
+n128-097-212:588017:588581 [5] NCCL INFO Channel 01 : 5[89000] -> 7[b2000] via P2P/IPC
+n128-097-212:588019:588582 [6] NCCL INFO Channel 01 : 6[b1000] -> 4[88000] via P2P/IPC
+n128-097-212:588015:588584 [4] NCCL INFO Channel 01 : 4[88000] -> 5[89000] via P2P/IPC
+n128-097-212:588020:588583 [7] NCCL INFO Channel 01 : 7[b2000] -> 5[89000] via P2P/IPC
+n128-097-212:588011:588580 [2] NCCL INFO Channel 01 : 2[3d000] -> 0[1a000] via P2P/IPC
+n128-097-212:588009:588587 [1] NCCL INFO Channel 01 : 1[1b000] -> 3[3e000] via P2P/IPC
+n128-097-212:588013:588590 [3] NCCL INFO Channel 01 : 3[3e000] -> 2[3d000] via P2P/IPC
+n128-097-212:588017:588581 [5] NCCL INFO Channel 01 : 5[89000] -> 4[88000] via P2P/IPC
+n128-097-212:588015:588584 [4] NCCL INFO Channel 01 : 4[88000] -> 6[b1000] via P2P/IPC
+n128-097-212:588019:588582 [6] NCCL INFO Channel 01 : 6[b1000] -> 1[1b000] via P2P/IPC
+n128-097-212:588007:588569 [0] NCCL INFO Channel 02 : 0[1a000] -> 2[3d000] via P2P/IPC
+n128-097-212:588020:588583 [7] NCCL INFO Channel 02 : 7[b2000] -> 4[88000] via P2P/IPC
+n128-097-212:588011:588580 [2] NCCL INFO Channel 02 : 2[3d000] -> 5[89000] via P2P/IPC
+n128-097-212:588013:588590 [3] NCCL INFO Channel 02 : 3[3e000] -> 0[1a000] via P2P/IPC
+n128-097-212:588009:588587 [1] NCCL INFO Channel 02 : 1[1b000] -> 3[3e000] via P2P/IPC
+n128-097-212:588017:588581 [5] NCCL INFO Channel 02 : 5[89000] -> 7[b2000] via P2P/IPC
+n128-097-212:588015:588584 [4] NCCL INFO Channel 02 : 4[88000] -> 6[b1000] via P2P/IPC
+n128-097-212:588019:588582 [6] NCCL INFO Channel 02 : 6[b1000] -> 1[1b000] via P2P/IPC
+n128-097-212:588013:588590 [3] NCCL INFO Channel 02 : 3[3e000] -> 1[1b000] via P2P/IPC
+n128-097-212:588011:588580 [2] NCCL INFO Channel 02 : 2[3d000] -> 0[1a000] via P2P/IPC
+n128-097-212:588020:588583 [7] NCCL INFO Channel 02 : 7[b2000] -> 5[89000] via P2P/IPC
+n128-097-212:588009:588587 [1] NCCL INFO Channel 02 : 1[1b000] -> 6[b1000] via P2P/IPC
+n128-097-212:588017:588581 [5] NCCL INFO Channel 02 : 5[89000] -> 2[3d000] via P2P/IPC
+n128-097-212:588019:588582 [6] NCCL INFO Channel 02 : 6[b1000] -> 4[88000] via P2P/IPC
+n128-097-212:588015:588584 [4] NCCL INFO Channel 02 : 4[88000] -> 7[b2000] via P2P/IPC
+n128-097-212:588013:588590 [3] NCCL INFO Channel 03 : 3[3e000] -> 2[3d000] via P2P/IPC
+n128-097-212:588007:588569 [0] NCCL INFO Channel 03 : 0[1a000] -> 7[b2000] via P2P/IPC
+n128-097-212:588011:588580 [2] NCCL INFO Channel 03 : 2[3d000] -> 0[1a000] via P2P/IPC
+n128-097-212:588009:588587 [1] NCCL INFO Channel 03 : 1[1b000] -> 3[3e000] via P2P/IPC
+n128-097-212:588020:588583 [7] NCCL INFO Channel 03 : 7[b2000] -> 5[89000] via P2P/IPC
+n128-097-212:588017:588581 [5] NCCL INFO Channel 03 : 5[89000] -> 4[88000] via P2P/IPC
+n128-097-212:588019:588582 [6] NCCL INFO Channel 03 : 6[b1000] -> 1[1b000] via P2P/IPC
+n128-097-212:588015:588584 [4] NCCL INFO Channel 03 : 4[88000] -> 6[b1000] via P2P/IPC
+n128-097-212:588011:588580 [2] NCCL INFO Channel 03 : 2[3d000] -> 3[3e000] via P2P/IPC
+n128-097-212:588013:588590 [3] NCCL INFO Channel 03 : 3[3e000] -> 1[1b000] via P2P/IPC
+n128-097-212:588009:588587 [1] NCCL INFO Channel 03 : 1[1b000] -> 6[b1000] via P2P/IPC
+n128-097-212:588020:588583 [7] NCCL INFO Channel 03 : 7[b2000] -> 0[1a000] via P2P/IPC
+n128-097-212:588017:588581 [5] NCCL INFO Channel 03 : 5[89000] -> 7[b2000] via P2P/IPC
+n128-097-212:588015:588584 [4] NCCL INFO Channel 03 : 4[88000] -> 5[89000] via P2P/IPC
+n128-097-212:588019:588582 [6] NCCL INFO Channel 03 : 6[b1000] -> 4[88000] via P2P/IPC
+n128-097-212:588011:588580 [2] NCCL INFO Channel 04 : 2[3d000] -> 1[1b000] via P2P/IPC
+n128-097-212:588013:588590 [3] NCCL INFO Channel 04 : 3[3e000] -> 2[3d000] via P2P/IPC
+n128-097-212:588007:588569 [0] NCCL INFO Channel 04 : 0[1a000] -> 7[b2000] via P2P/IPC
+n128-097-212:588009:588587 [1] NCCL INFO Channel 04 : 1[1b000] -> 0[1a000] via P2P/IPC
+n128-097-212:588020:588583 [7] NCCL INFO Channel 04 : 7[b2000] -> 6[b1000] via P2P/IPC
+n128-097-212:588017:588581 [5] NCCL INFO Channel 04 : 5[89000] -> 4[88000] via P2P/IPC
+n128-097-212:588015:588584 [4] NCCL INFO Channel 04 : 4[88000] -> 3[3e000] via P2P/IPC
+n128-097-212:588019:588582 [6] NCCL INFO Channel 04 : 6[b1000] -> 5[89000] via P2P/IPC
+n128-097-212:588011:588580 [2] NCCL INFO Channel 04 : 2[3d000] -> 3[3e000] via P2P/IPC
+n128-097-212:588019:588582 [6] NCCL INFO Channel 04 : 6[b1000] -> 1[1b000] via P2P/IPC
+n128-097-212:588013:588590 [3] NCCL INFO Channel 04 : 3[3e000] -> 4[88000] via P2P/IPC
+n128-097-212:588009:588587 [1] NCCL INFO Channel 04 : 1[1b000] -> 2[3d000] via P2P/IPC
+n128-097-212:588020:588583 [7] NCCL INFO Channel 04 : 7[b2000] -> 0[1a000] via P2P/IPC
+n128-097-212:588017:588581 [5] NCCL INFO Channel 04 : 5[89000] -> 7[b2000] via P2P/IPC
+n128-097-212:588015:588584 [4] NCCL INFO Channel 04 : 4[88000] -> 5[89000] via P2P/IPC
+n128-097-212:588009:588587 [1] NCCL INFO Channel 04 : 1[1b000] -> 6[b1000] via P2P/IPC
+n128-097-212:588020:588583 [7] NCCL INFO Channel 04 : 7[b2000] -> 5[89000] via P2P/IPC
+n128-097-212:588011:588580 [2] NCCL INFO Channel 05 : 2[3d000] -> 0[1a000] via P2P/IPC
+n128-097-212:588007:588569 [0] NCCL INFO Channel 05 : 0[1a000] -> 3[3e000] via P2P/IPC
+n128-097-212:588013:588590 [3] NCCL INFO Channel 05 : 3[3e000] -> 1[1b000] via P2P/IPC
+n128-097-212:588015:588584 [4] NCCL INFO Channel 05 : 4[88000] -> 7[b2000] via P2P/IPC
+n128-097-212:588019:588582 [6] NCCL INFO Channel 05 : 6[b1000] -> 4[88000] via P2P/IPC
+n128-097-212:588009:588587 [1] NCCL INFO Channel 05 : 1[1b000] -> 6[b1000] via P2P/IPC
+n128-097-212:588017:588581 [5] NCCL INFO Channel 05 : 5[89000] -> 2[3d000] via P2P/IPC
+n128-097-212:588020:588583 [7] NCCL INFO Channel 05 : 7[b2000] -> 5[89000] via P2P/IPC
+n128-097-212:588007:588569 [0] NCCL INFO Channel 05 : 0[1a000] -> 2[3d000] via P2P/IPC
+n128-097-212:588013:588590 [3] NCCL INFO Channel 05 : 3[3e000] -> 0[1a000] via P2P/IPC
+n128-097-212:588009:588587 [1] NCCL INFO Channel 05 : 1[1b000] -> 3[3e000] via P2P/IPC
+n128-097-212:588011:588580 [2] NCCL INFO Channel 05 : 2[3d000] -> 5[89000] via P2P/IPC
+n128-097-212:588019:588582 [6] NCCL INFO Channel 05 : 6[b1000] -> 7[b2000] via P2P/IPC
+n128-097-212:588017:588581 [5] NCCL INFO Channel 05 : 5[89000] -> 6[b1000] via P2P/IPC
+n128-097-212:588020:588583 [7] NCCL INFO Channel 05 : 7[b2000] -> 4[88000] via P2P/IPC
+n128-097-212:588009:588587 [1] NCCL INFO Channel 06 : 1[1b000] -> 2[3d000] via P2P/IPC
+n128-097-212:588007:588569 [0] NCCL INFO Channel 06 : 0[1a000] -> 1[1b000] via P2P/IPC
+n128-097-212:588013:588590 [3] NCCL INFO Channel 06 : 3[3e000] -> 4[88000] via P2P/IPC
+n128-097-212:588020:588583 [7] NCCL INFO Channel 05 : 7[b2000] -> 6[b1000] via P2P/IPC
+n128-097-212:588011:588580 [2] NCCL INFO Channel 06 : 2[3d000] -> 3[3e000] via P2P/IPC
+n128-097-212:588015:588584 [4] NCCL INFO Channel 06 : 4[88000] -> 5[89000] via P2P/IPC
+n128-097-212:588019:588582 [6] NCCL INFO Channel 05 : 6[b1000] -> 5[89000] via P2P/IPC
+n128-097-212:588009:588587 [1] NCCL INFO Channel 06 : 1[1b000] -> 0[1a000] via P2P/IPC
+n128-097-212:588020:588583 [7] NCCL INFO Channel 06 : 7[b2000] -> 0[1a000] via P2P/IPC
+n128-097-212:588013:588590 [3] NCCL INFO Channel 06 : 3[3e000] -> 2[3d000] via P2P/IPC
+n128-097-212:588017:588581 [5] NCCL INFO Channel 06 : 5[89000] -> 6[b1000] via P2P/IPC
+n128-097-212:588011:588580 [2] NCCL INFO Channel 06 : 2[3d000] -> 1[1b000] via P2P/IPC
+n128-097-212:588019:588582 [6] NCCL INFO Channel 06 : 6[b1000] -> 7[b2000] via P2P/IPC
+n128-097-212:588015:588584 [4] NCCL INFO Channel 06 : 4[88000] -> 3[3e000] via P2P/IPC
+n128-097-212:588020:588583 [7] NCCL INFO Channel 06 : 7[b2000] -> 6[b1000] via P2P/IPC
+n128-097-212:588017:588581 [5] NCCL INFO Channel 06 : 5[89000] -> 4[88000] via P2P/IPC
+n128-097-212:588011:588580 [2] NCCL INFO Channel 07 : 2[3d000] -> 3[3e000] via P2P/IPC
+n128-097-212:588007:588569 [0] NCCL INFO Channel 07 : 0[1a000] -> 2[3d000] via P2P/IPC
+n128-097-212:588019:588582 [6] NCCL INFO Channel 06 : 6[b1000] -> 5[89000] via P2P/IPC
+n128-097-212:588009:588587 [1] NCCL INFO Channel 07 : 1[1b000] -> 6[b1000] via P2P/IPC
+n128-097-212:588013:588590 [3] NCCL INFO Channel 07 : 3[3e000] -> 1[1b000] via P2P/IPC
+n128-097-212:588020:588583 [7] NCCL INFO Channel 07 : 7[b2000] -> 0[1a000] via P2P/IPC
+n128-097-212:588015:588584 [4] NCCL INFO Channel 07 : 4[88000] -> 5[89000] via P2P/IPC
+n128-097-212:588017:588581 [5] NCCL INFO Channel 07 : 5[89000] -> 7[b2000] via P2P/IPC
+n128-097-212:588011:588580 [2] NCCL INFO Channel 07 : 2[3d000] -> 0[1a000] via P2P/IPC
+n128-097-212:588019:588582 [6] NCCL INFO Channel 07 : 6[b1000] -> 4[88000] via P2P/IPC
+n128-097-212:588013:588590 [3] NCCL INFO Channel 07 : 3[3e000] -> 2[3d000] via P2P/IPC
+n128-097-212:588020:588583 [7] NCCL INFO Channel 07 : 7[b2000] -> 5[89000] via P2P/IPC
+n128-097-212:588009:588587 [1] NCCL INFO Channel 07 : 1[1b000] -> 3[3e000] via P2P/IPC
+n128-097-212:588017:588581 [5] NCCL INFO Channel 07 : 5[89000] -> 4[88000] via P2P/IPC
+n128-097-212:588007:588569 [0] NCCL INFO Channel 08 : 0[1a000] -> 2[3d000] via P2P/IPC
+n128-097-212:588015:588584 [4] NCCL INFO Channel 07 : 4[88000] -> 6[b1000] via P2P/IPC
+n128-097-212:588011:588580 [2] NCCL INFO Channel 08 : 2[3d000] -> 5[89000] via P2P/IPC
+n128-097-212:588019:588582 [6] NCCL INFO Channel 07 : 6[b1000] -> 1[1b000] via P2P/IPC
+n128-097-212:588020:588583 [7] NCCL INFO Channel 08 : 7[b2000] -> 4[88000] via P2P/IPC
+n128-097-212:588013:588590 [3] NCCL INFO Channel 08 : 3[3e000] -> 0[1a000] via P2P/IPC
+n128-097-212:588017:588581 [5] NCCL INFO Channel 08 : 5[89000] -> 7[b2000] via P2P/IPC
+n128-097-212:588009:588587 [1] NCCL INFO Channel 08 : 1[1b000] -> 3[3e000] via P2P/IPC
+n128-097-212:588015:588584 [4] NCCL INFO Channel 08 : 4[88000] -> 6[b1000] via P2P/IPC
+n128-097-212:588019:588582 [6] NCCL INFO Channel 08 : 6[b1000] -> 1[1b000] via P2P/IPC
+n128-097-212:588013:588590 [3] NCCL INFO Channel 08 : 3[3e000] -> 1[1b000] via P2P/IPC
+n128-097-212:588011:588580 [2] NCCL INFO Channel 08 : 2[3d000] -> 0[1a000] via P2P/IPC
+n128-097-212:588020:588583 [7] NCCL INFO Channel 08 : 7[b2000] -> 5[89000] via P2P/IPC
+n128-097-212:588017:588581 [5] NCCL INFO Channel 08 : 5[89000] -> 2[3d000] via P2P/IPC
+n128-097-212:588015:588584 [4] NCCL INFO Channel 08 : 4[88000] -> 7[b2000] via P2P/IPC
+n128-097-212:588009:588587 [1] NCCL INFO Channel 08 : 1[1b000] -> 6[b1000] via P2P/IPC
+n128-097-212:588019:588582 [6] NCCL INFO Channel 08 : 6[b1000] -> 4[88000] via P2P/IPC
+n128-097-212:588007:588569 [0] NCCL INFO Channel 09 : 0[1a000] -> 7[b2000] via P2P/IPC
+n128-097-212:588013:588590 [3] NCCL INFO Channel 09 : 3[3e000] -> 2[3d000] via P2P/IPC
+n128-097-212:588011:588580 [2] NCCL INFO Channel 09 : 2[3d000] -> 0[1a000] via P2P/IPC
+n128-097-212:588020:588583 [7] NCCL INFO Channel 09 : 7[b2000] -> 5[89000] via P2P/IPC
+n128-097-212:588017:588581 [5] NCCL INFO Channel 09 : 5[89000] -> 4[88000] via P2P/IPC
+n128-097-212:588015:588584 [4] NCCL INFO Channel 09 : 4[88000] -> 6[b1000] via P2P/IPC
+n128-097-212:588009:588587 [1] NCCL INFO Channel 09 : 1[1b000] -> 3[3e000] via P2P/IPC
+n128-097-212:588019:588582 [6] NCCL INFO Channel 09 : 6[b1000] -> 1[1b000] via P2P/IPC
+n128-097-212:588011:588580 [2] NCCL INFO Channel 09 : 2[3d000] -> 3[3e000] via P2P/IPC
+n128-097-212:588020:588583 [7] NCCL INFO Channel 09 : 7[b2000] -> 0[1a000] via P2P/IPC
+n128-097-212:588013:588590 [3] NCCL INFO Channel 09 : 3[3e000] -> 1[1b000] via P2P/IPC
+n128-097-212:588017:588581 [5] NCCL INFO Channel 09 : 5[89000] -> 7[b2000] via P2P/IPC
+n128-097-212:588015:588584 [4] NCCL INFO Channel 09 : 4[88000] -> 5[89000] via P2P/IPC
+n128-097-212:588009:588587 [1] NCCL INFO Channel 09 : 1[1b000] -> 6[b1000] via P2P/IPC
+n128-097-212:588019:588582 [6] NCCL INFO Channel 09 : 6[b1000] -> 4[88000] via P2P/IPC
+n128-097-212:588011:588580 [2] NCCL INFO Channel 10 : 2[3d000] -> 1[1b000] via P2P/IPC
+n128-097-212:588007:588569 [0] NCCL INFO Channel 10 : 0[1a000] -> 7[b2000] via P2P/IPC
+n128-097-212:588020:588583 [7] NCCL INFO Channel 10 : 7[b2000] -> 6[b1000] via P2P/IPC
+n128-097-212:588013:588590 [3] NCCL INFO Channel 10 : 3[3e000] -> 2[3d000] via P2P/IPC
+n128-097-212:588017:588581 [5] NCCL INFO Channel 10 : 5[89000] -> 4[88000] via P2P/IPC
+n128-097-212:588015:588584 [4] NCCL INFO Channel 10 : 4[88000] -> 3[3e000] via P2P/IPC
+n128-097-212:588009:588587 [1] NCCL INFO Channel 10 : 1[1b000] -> 0[1a000] via P2P/IPC
+n128-097-212:588019:588582 [6] NCCL INFO Channel 10 : 6[b1000] -> 5[89000] via P2P/IPC
+n128-097-212:588011:588580 [2] NCCL INFO Channel 10 : 2[3d000] -> 3[3e000] via P2P/IPC
+n128-097-212:588013:588590 [3] NCCL INFO Channel 10 : 3[3e000] -> 4[88000] via P2P/IPC
+n128-097-212:588019:588582 [6] NCCL INFO Channel 10 : 6[b1000] -> 1[1b000] via P2P/IPC
+n128-097-212:588020:588583 [7] NCCL INFO Channel 10 : 7[b2000] -> 0[1a000] via P2P/IPC
+n128-097-212:588015:588584 [4] NCCL INFO Channel 10 : 4[88000] -> 5[89000] via P2P/IPC
+n128-097-212:588017:588581 [5] NCCL INFO Channel 10 : 5[89000] -> 7[b2000] via P2P/IPC
+n128-097-212:588009:588587 [1] NCCL INFO Channel 10 : 1[1b000] -> 2[3d000] via P2P/IPC
+n128-097-212:588020:588583 [7] NCCL INFO Channel 10 : 7[b2000] -> 5[89000] via P2P/IPC
+n128-097-212:588009:588587 [1] NCCL INFO Channel 10 : 1[1b000] -> 6[b1000] via P2P/IPC
+n128-097-212:588007:588569 [0] NCCL INFO Channel 11 : 0[1a000] -> 3[3e000] via P2P/IPC
+n128-097-212:588011:588580 [2] NCCL INFO Channel 11 : 2[3d000] -> 0[1a000] via P2P/IPC
+n128-097-212:588013:588590 [3] NCCL INFO Channel 11 : 3[3e000] -> 1[1b000] via P2P/IPC
+n128-097-212:588015:588584 [4] NCCL INFO Channel 11 : 4[88000] -> 7[b2000] via P2P/IPC
+n128-097-212:588019:588582 [6] NCCL INFO Channel 11 : 6[b1000] -> 4[88000] via P2P/IPC
+n128-097-212:588017:588581 [5] NCCL INFO Channel 11 : 5[89000] -> 2[3d000] via P2P/IPC
+n128-097-212:588009:588587 [1] NCCL INFO Channel 11 : 1[1b000] -> 6[b1000] via P2P/IPC
+n128-097-212:588020:588583 [7] NCCL INFO Channel 11 : 7[b2000] -> 5[89000] via P2P/IPC
+n128-097-212:588007:588569 [0] NCCL INFO Channel 11 : 0[1a000] -> 2[3d000] via P2P/IPC
+n128-097-212:588013:588590 [3] NCCL INFO Channel 11 : 3[3e000] -> 0[1a000] via P2P/IPC
+n128-097-212:588009:588587 [1] NCCL INFO Channel 11 : 1[1b000] -> 3[3e000] via P2P/IPC
+n128-097-212:588011:588580 [2] NCCL INFO Channel 11 : 2[3d000] -> 5[89000] via P2P/IPC
+n128-097-212:588019:588582 [6] NCCL INFO Channel 11 : 6[b1000] -> 7[b2000] via P2P/IPC
+n128-097-212:588017:588581 [5] NCCL INFO Channel 11 : 5[89000] -> 6[b1000] via P2P/IPC
+n128-097-212:588020:588583 [7] NCCL INFO Channel 11 : 7[b2000] -> 4[88000] via P2P/IPC
+n128-097-212:588009:588587 [1] NCCL INFO 12 coll channels, 16 p2p channels, 2 p2p channels per peer
+n128-097-212:588009:588587 [1] NCCL INFO comm 0x7fc258001060 rank 1 nranks 8 cudaDev 1 busId 1b000 - Init COMPLETE
+n128-097-212:588007:588569 [0] NCCL INFO 12 coll channels, 16 p2p channels, 2 p2p channels per peer
+n128-097-212:588007:588569 [0] NCCL INFO comm 0x7f06e4001060 rank 0 nranks 8 cudaDev 0 busId 1a000 - Init COMPLETE
+n128-097-212:588007:588007 [0] NCCL INFO Launch mode Parallel
+n128-097-212:588013:588590 [3] NCCL INFO 12 coll channels, 16 p2p channels, 2 p2p channels per peer
+n128-097-212:588013:588590 [3] NCCL INFO comm 0x7f48d8001060 rank 3 nranks 8 cudaDev 3 busId 3e000 - Init COMPLETE
+n128-097-212:588011:588580 [2] NCCL INFO 12 coll channels, 16 p2p channels, 2 p2p channels per peer
+n128-097-212:588011:588580 [2] NCCL INFO comm 0x7ff480001060 rank 2 nranks 8 cudaDev 2 busId 3d000 - Init COMPLETE
+n128-097-212:588015:588584 [4] NCCL INFO 12 coll channels, 16 p2p channels, 2 p2p channels per peer
+n128-097-212:588015:588584 [4] NCCL INFO comm 0x7f4a1c001060 rank 4 nranks 8 cudaDev 4 busId 88000 - Init COMPLETE
+n128-097-212:588020:588583 [7] NCCL INFO Channel 11 : 7[b2000] -> 6[b1000] via P2P/IPC
+n128-097-212:588019:588582 [6] NCCL INFO Channel 11 : 6[b1000] -> 5[89000] via P2P/IPC
+n128-097-212:588020:588583 [7] NCCL INFO 12 coll channels, 16 p2p channels, 2 p2p channels per peer
+n128-097-212:588020:588583 [7] NCCL INFO comm 0x7fbd40001060 rank 7 nranks 8 cudaDev 7 busId b2000 - Init COMPLETE
+n128-097-212:588017:588581 [5] NCCL INFO 12 coll channels, 16 p2p channels, 2 p2p channels per peer
+n128-097-212:588017:588581 [5] NCCL INFO comm 0x7fe1b0001060 rank 5 nranks 8 cudaDev 5 busId 89000 - Init COMPLETE
+n128-097-212:588019:588582 [6] NCCL INFO 12 coll channels, 16 p2p channels, 2 p2p channels per peer
+n128-097-212:588019:588582 [6] NCCL INFO comm 0x7f0f00001060 rank 6 nranks 8 cudaDev 6 busId b1000 - Init COMPLETE
+git:
+  sha: 96645531f1c891d56fbd3dcc5e7915cc509a546c, status: clean, branch: fs_deformable_detr
+
+number of params: 39742038
+data/coco/cocosplit_self/seed7/full_box_10shot_trainval.json
+id map
+{1: 60, 2: 61, 3: 62, 4: 63, 5: 64, 6: 65, 7: 66, 9: 67, 16: 68, 17: 69, 18: 70, 19: 71, 20: 72, 21: 73, 44: 74, 62: 75, 63: 76, 64: 77, 67: 78, 72: 79, 8: 0, 10: 1, 11: 2, 13: 3, 14: 4, 15: 5, 22: 6, 23: 7, 24: 8, 25: 9, 27: 10, 28: 11, 31: 12, 32: 13, 33: 14, 34: 15, 35: 16, 36: 17, 37: 18, 38: 19, 39: 20, 40: 21, 41: 22, 42: 23, 43: 24, 46: 25, 47: 26, 48: 27, 49: 28, 50: 29, 51: 30, 52: 31, 53: 32, 54: 33, 55: 34, 56: 35, 57: 36, 58: 37, 59: 38, 60: 39, 61: 40, 65: 41, 70: 42, 73: 43, 74: 44, 75: 45, 76: 46, 77: 47, 78: 48, 79: 49, 80: 50, 81: 51, 82: 52, 84: 53, 85: 54, 86: 55, 87: 56, 88: 57, 89: 58, 90: 59}
+loading annotations into memory...
+Done (t=0.01s)
+creating index...
+index created!
+dataset_name : coco_all_seed_7_10_shot, image nums : 705, anno nums : 800
+data/coco/cocosplit_self/datasplit/5k.json
+id map
+{1: 60, 2: 61, 3: 62, 4: 63, 5: 64, 6: 65, 7: 66, 9: 67, 16: 68, 17: 69, 18: 70, 19: 71, 20: 72, 21: 73, 44: 74, 62: 75, 63: 76, 64: 77, 67: 78, 72: 79, 8: 0, 10: 1, 11: 2, 13: 3, 14: 4, 15: 5, 22: 6, 23: 7, 24: 8, 25: 9, 27: 10, 28: 11, 31: 12, 32: 13, 33: 14, 34: 15, 35: 16, 36: 17, 37: 18, 38: 19, 39: 20, 40: 21, 41: 22, 42: 23, 43: 24, 46: 25, 47: 26, 48: 27, 49: 28, 50: 29, 51: 30, 52: 31, 53: 32, 54: 33, 55: 34, 56: 35, 57: 36, 58: 37, 59: 38, 60: 39, 61: 40, 65: 41, 70: 42, 73: 43, 74: 44, 75: 45, 76: 46, 77: 47, 78: 48, 79: 49, 80: 50, 81: 51, 82: 52, 84: 53, 85: 54, 86: 55, 87: 56, 88: 57, 89: 58, 90: 59}
+loading annotations into memory...
+Done (t=0.43s)
+creating index...
+index created!
+dataset_name : coco_val, image nums : 5000, anno nums : 35511
+transformer.level_embed True
+transformer.encoder.layers.0.self_attn.sampling_offsets.weight True
+transformer.encoder.layers.0.self_attn.sampling_offsets.bias True
+transformer.encoder.layers.0.self_attn.attention_weights.weight True
+transformer.encoder.layers.0.self_attn.attention_weights.bias True
+transformer.encoder.layers.0.self_attn.value_proj.weight True
+transformer.encoder.layers.0.self_attn.value_proj.bias True
+transformer.encoder.layers.0.self_attn.output_proj.weight True
+transformer.encoder.layers.0.self_attn.output_proj.bias True
+transformer.encoder.layers.0.norm1.weight True
+transformer.encoder.layers.0.norm1.bias True
+transformer.encoder.layers.0.linear1.weight True
+transformer.encoder.layers.0.linear1.bias True
+transformer.encoder.layers.0.linear2.weight True
+transformer.encoder.layers.0.linear2.bias True
+transformer.encoder.layers.0.norm2.weight True
+transformer.encoder.layers.0.norm2.bias True
+transformer.encoder.layers.1.self_attn.sampling_offsets.weight True
+transformer.encoder.layers.1.self_attn.sampling_offsets.bias True
+transformer.encoder.layers.1.self_attn.attention_weights.weight True
+transformer.encoder.layers.1.self_attn.attention_weights.bias True
+transformer.encoder.layers.1.self_attn.value_proj.weight True
+transformer.encoder.layers.1.self_attn.value_proj.bias True
+transformer.encoder.layers.1.self_attn.output_proj.weight True
+transformer.encoder.layers.1.self_attn.output_proj.bias True
+transformer.encoder.layers.1.norm1.weight True
+transformer.encoder.layers.1.norm1.bias True
+transformer.encoder.layers.1.linear1.weight True
+transformer.encoder.layers.1.linear1.bias True
+transformer.encoder.layers.1.linear2.weight True
+transformer.encoder.layers.1.linear2.bias True
+transformer.encoder.layers.1.norm2.weight True
+transformer.encoder.layers.1.norm2.bias True
+transformer.encoder.layers.2.self_attn.sampling_offsets.weight True
+transformer.encoder.layers.2.self_attn.sampling_offsets.bias True
+transformer.encoder.layers.2.self_attn.attention_weights.weight True
+transformer.encoder.layers.2.self_attn.attention_weights.bias True
+transformer.encoder.layers.2.self_attn.value_proj.weight True
+transformer.encoder.layers.2.self_attn.value_proj.bias True
+transformer.encoder.layers.2.self_attn.output_proj.weight True
+transformer.encoder.layers.2.self_attn.output_proj.bias True
+transformer.encoder.layers.2.norm1.weight True
+transformer.encoder.layers.2.norm1.bias True
+transformer.encoder.layers.2.linear1.weight True
+transformer.encoder.layers.2.linear1.bias True
+transformer.encoder.layers.2.linear2.weight True
+transformer.encoder.layers.2.linear2.bias True
+transformer.encoder.layers.2.norm2.weight True
+transformer.encoder.layers.2.norm2.bias True
+transformer.encoder.layers.3.self_attn.sampling_offsets.weight True
+transformer.encoder.layers.3.self_attn.sampling_offsets.bias True
+transformer.encoder.layers.3.self_attn.attention_weights.weight True
+transformer.encoder.layers.3.self_attn.attention_weights.bias True
+transformer.encoder.layers.3.self_attn.value_proj.weight True
+transformer.encoder.layers.3.self_attn.value_proj.bias True
+transformer.encoder.layers.3.self_attn.output_proj.weight True
+transformer.encoder.layers.3.self_attn.output_proj.bias True
+transformer.encoder.layers.3.norm1.weight True
+transformer.encoder.layers.3.norm1.bias True
+transformer.encoder.layers.3.linear1.weight True
+transformer.encoder.layers.3.linear1.bias True
+transformer.encoder.layers.3.linear2.weight True
+transformer.encoder.layers.3.linear2.bias True
+transformer.encoder.layers.3.norm2.weight True
+transformer.encoder.layers.3.norm2.bias True
+transformer.encoder.layers.4.self_attn.sampling_offsets.weight True
+transformer.encoder.layers.4.self_attn.sampling_offsets.bias True
+transformer.encoder.layers.4.self_attn.attention_weights.weight True
+transformer.encoder.layers.4.self_attn.attention_weights.bias True
+transformer.encoder.layers.4.self_attn.value_proj.weight True
+transformer.encoder.layers.4.self_attn.value_proj.bias True
+transformer.encoder.layers.4.self_attn.output_proj.weight True
+transformer.encoder.layers.4.self_attn.output_proj.bias True
+transformer.encoder.layers.4.norm1.weight True
+transformer.encoder.layers.4.norm1.bias True
+transformer.encoder.layers.4.linear1.weight True
+transformer.encoder.layers.4.linear1.bias True
+transformer.encoder.layers.4.linear2.weight True
+transformer.encoder.layers.4.linear2.bias True
+transformer.encoder.layers.4.norm2.weight True
+transformer.encoder.layers.4.norm2.bias True
+transformer.encoder.layers.5.self_attn.sampling_offsets.weight True
+transformer.encoder.layers.5.self_attn.sampling_offsets.bias True
+transformer.encoder.layers.5.self_attn.attention_weights.weight True
+transformer.encoder.layers.5.self_attn.attention_weights.bias True
+transformer.encoder.layers.5.self_attn.value_proj.weight True
+transformer.encoder.layers.5.self_attn.value_proj.bias True
+transformer.encoder.layers.5.self_attn.output_proj.weight True
+transformer.encoder.layers.5.self_attn.output_proj.bias True
+transformer.encoder.layers.5.norm1.weight True
+transformer.encoder.layers.5.norm1.bias True
+transformer.encoder.layers.5.linear1.weight True
+transformer.encoder.layers.5.linear1.bias True
+transformer.encoder.layers.5.linear2.weight True
+transformer.encoder.layers.5.linear2.bias True
+transformer.encoder.layers.5.norm2.weight True
+transformer.encoder.layers.5.norm2.bias True
+transformer.decoder.layers.0.cross_attn.sampling_offsets.weight True
+transformer.decoder.layers.0.cross_attn.sampling_offsets.bias True
+transformer.decoder.layers.0.cross_attn.attention_weights.weight True
+transformer.decoder.layers.0.cross_attn.attention_weights.bias True
+transformer.decoder.layers.0.cross_attn.value_proj.weight True
+transformer.decoder.layers.0.cross_attn.value_proj.bias True
+transformer.decoder.layers.0.cross_attn.output_proj.weight True
+transformer.decoder.layers.0.cross_attn.output_proj.bias True
+transformer.decoder.layers.0.norm1.weight True
+transformer.decoder.layers.0.norm1.bias True
+transformer.decoder.layers.0.self_attn.in_proj_weight True
+transformer.decoder.layers.0.self_attn.in_proj_bias True
+transformer.decoder.layers.0.self_attn.out_proj.weight True
+transformer.decoder.layers.0.self_attn.out_proj.bias True
+transformer.decoder.layers.0.norm2.weight True
+transformer.decoder.layers.0.norm2.bias True
+transformer.decoder.layers.0.linear1.weight True
+transformer.decoder.layers.0.linear1.bias True
+transformer.decoder.layers.0.linear2.weight True
+transformer.decoder.layers.0.linear2.bias True
+transformer.decoder.layers.0.norm3.weight True
+transformer.decoder.layers.0.norm3.bias True
+transformer.decoder.layers.1.cross_attn.sampling_offsets.weight True
+transformer.decoder.layers.1.cross_attn.sampling_offsets.bias True
+transformer.decoder.layers.1.cross_attn.attention_weights.weight True
+transformer.decoder.layers.1.cross_attn.attention_weights.bias True
+transformer.decoder.layers.1.cross_attn.value_proj.weight True
+transformer.decoder.layers.1.cross_attn.value_proj.bias True
+transformer.decoder.layers.1.cross_attn.output_proj.weight True
+transformer.decoder.layers.1.cross_attn.output_proj.bias True
+transformer.decoder.layers.1.norm1.weight True
+transformer.decoder.layers.1.norm1.bias True
+transformer.decoder.layers.1.self_attn.in_proj_weight True
+transformer.decoder.layers.1.self_attn.in_proj_bias True
+transformer.decoder.layers.1.self_attn.out_proj.weight True
+transformer.decoder.layers.1.self_attn.out_proj.bias True
+transformer.decoder.layers.1.norm2.weight True
+transformer.decoder.layers.1.norm2.bias True
+transformer.decoder.layers.1.linear1.weight True
+transformer.decoder.layers.1.linear1.bias True
+transformer.decoder.layers.1.linear2.weight True
+transformer.decoder.layers.1.linear2.bias True
+transformer.decoder.layers.1.norm3.weight True
+transformer.decoder.layers.1.norm3.bias True
+transformer.decoder.layers.2.cross_attn.sampling_offsets.weight True
+transformer.decoder.layers.2.cross_attn.sampling_offsets.bias True
+transformer.decoder.layers.2.cross_attn.attention_weights.weight True
+transformer.decoder.layers.2.cross_attn.attention_weights.bias True
+transformer.decoder.layers.2.cross_attn.value_proj.weight True
+transformer.decoder.layers.2.cross_attn.value_proj.bias True
+transformer.decoder.layers.2.cross_attn.output_proj.weight True
+transformer.decoder.layers.2.cross_attn.output_proj.bias True
+transformer.decoder.layers.2.norm1.weight True
+transformer.decoder.layers.2.norm1.bias True
+transformer.decoder.layers.2.self_attn.in_proj_weight True
+transformer.decoder.layers.2.self_attn.in_proj_bias True
+transformer.decoder.layers.2.self_attn.out_proj.weight True
+transformer.decoder.layers.2.self_attn.out_proj.bias True
+transformer.decoder.layers.2.norm2.weight True
+transformer.decoder.layers.2.norm2.bias True
+transformer.decoder.layers.2.linear1.weight True
+transformer.decoder.layers.2.linear1.bias True
+transformer.decoder.layers.2.linear2.weight True
+transformer.decoder.layers.2.linear2.bias True
+transformer.decoder.layers.2.norm3.weight True
+transformer.decoder.layers.2.norm3.bias True
+transformer.decoder.layers.3.cross_attn.sampling_offsets.weight True
+transformer.decoder.layers.3.cross_attn.sampling_offsets.bias True
+transformer.decoder.layers.3.cross_attn.attention_weights.weight True
+transformer.decoder.layers.3.cross_attn.attention_weights.bias True
+transformer.decoder.layers.3.cross_attn.value_proj.weight True
+transformer.decoder.layers.3.cross_attn.value_proj.bias True
+transformer.decoder.layers.3.cross_attn.output_proj.weight True
+transformer.decoder.layers.3.cross_attn.output_proj.bias True
+transformer.decoder.layers.3.norm1.weight True
+transformer.decoder.layers.3.norm1.bias True
+transformer.decoder.layers.3.self_attn.in_proj_weight True
+transformer.decoder.layers.3.self_attn.in_proj_bias True
+transformer.decoder.layers.3.self_attn.out_proj.weight True
+transformer.decoder.layers.3.self_attn.out_proj.bias True
+transformer.decoder.layers.3.norm2.weight True
+transformer.decoder.layers.3.norm2.bias True
+transformer.decoder.layers.3.linear1.weight True
+transformer.decoder.layers.3.linear1.bias True
+transformer.decoder.layers.3.linear2.weight True
+transformer.decoder.layers.3.linear2.bias True
+transformer.decoder.layers.3.norm3.weight True
+transformer.decoder.layers.3.norm3.bias True
+transformer.decoder.layers.4.cross_attn.sampling_offsets.weight True
+transformer.decoder.layers.4.cross_attn.sampling_offsets.bias True
+transformer.decoder.layers.4.cross_attn.attention_weights.weight True
+transformer.decoder.layers.4.cross_attn.attention_weights.bias True
+transformer.decoder.layers.4.cross_attn.value_proj.weight True
+transformer.decoder.layers.4.cross_attn.value_proj.bias True
+transformer.decoder.layers.4.cross_attn.output_proj.weight True
+transformer.decoder.layers.4.cross_attn.output_proj.bias True
+transformer.decoder.layers.4.norm1.weight True
+transformer.decoder.layers.4.norm1.bias True
+transformer.decoder.layers.4.self_attn.in_proj_weight True
+transformer.decoder.layers.4.self_attn.in_proj_bias True
+transformer.decoder.layers.4.self_attn.out_proj.weight True
+transformer.decoder.layers.4.self_attn.out_proj.bias True
+transformer.decoder.layers.4.norm2.weight True
+transformer.decoder.layers.4.norm2.bias True
+transformer.decoder.layers.4.linear1.weight True
+transformer.decoder.layers.4.linear1.bias True
+transformer.decoder.layers.4.linear2.weight True
+transformer.decoder.layers.4.linear2.bias True
+transformer.decoder.layers.4.norm3.weight True
+transformer.decoder.layers.4.norm3.bias True
+transformer.decoder.layers.5.cross_attn.sampling_offsets.weight True
+transformer.decoder.layers.5.cross_attn.sampling_offsets.bias True
+transformer.decoder.layers.5.cross_attn.attention_weights.weight True
+transformer.decoder.layers.5.cross_attn.attention_weights.bias True
+transformer.decoder.layers.5.cross_attn.value_proj.weight True
+transformer.decoder.layers.5.cross_attn.value_proj.bias True
+transformer.decoder.layers.5.cross_attn.output_proj.weight True
+transformer.decoder.layers.5.cross_attn.output_proj.bias True
+transformer.decoder.layers.5.norm1.weight True
+transformer.decoder.layers.5.norm1.bias True
+transformer.decoder.layers.5.self_attn.in_proj_weight True
+transformer.decoder.layers.5.self_attn.in_proj_bias True
+transformer.decoder.layers.5.self_attn.out_proj.weight True
+transformer.decoder.layers.5.self_attn.out_proj.bias True
+transformer.decoder.layers.5.norm2.weight True
+transformer.decoder.layers.5.norm2.bias True
+transformer.decoder.layers.5.linear1.weight True
+transformer.decoder.layers.5.linear1.bias True
+transformer.decoder.layers.5.linear2.weight True
+transformer.decoder.layers.5.linear2.bias True
+transformer.decoder.layers.5.norm3.weight True
+transformer.decoder.layers.5.norm3.bias True
+transformer.reference_points.weight True
+transformer.reference_points.bias True
+class_embed.0.weight True
+class_embed.0.bias True
+bbox_embed.0.layers.0.weight True
+bbox_embed.0.layers.0.bias True
+bbox_embed.0.layers.1.weight True
+bbox_embed.0.layers.1.bias True
+bbox_embed.0.layers.2.weight True
+bbox_embed.0.layers.2.bias True
+query_embed.weight True
+input_proj.0.0.weight True
+input_proj.0.0.bias True
+input_proj.0.1.weight True
+input_proj.0.1.bias True
+input_proj.1.0.weight True
+input_proj.1.0.bias True
+input_proj.1.1.weight True
+input_proj.1.1.bias True
+input_proj.2.0.weight True
+input_proj.2.0.bias True
+input_proj.2.1.weight True
+input_proj.2.1.bias True
+input_proj.3.0.weight True
+input_proj.3.0.bias True
+input_proj.3.1.weight True
+input_proj.3.1.bias True
+backbone.0.body.conv1.weight False
+backbone.0.body.layer1.0.conv1.weight False
+backbone.0.body.layer1.0.conv2.weight False
+backbone.0.body.layer1.0.conv3.weight False
+backbone.0.body.layer1.0.downsample.0.weight False
+backbone.0.body.layer1.1.conv1.weight False
+backbone.0.body.layer1.1.conv2.weight False
+backbone.0.body.layer1.1.conv3.weight False
+backbone.0.body.layer1.2.conv1.weight False
+backbone.0.body.layer1.2.conv2.weight False
+backbone.0.body.layer1.2.conv3.weight False
+backbone.0.body.layer2.0.conv1.weight True
+backbone.0.body.layer2.0.conv2.weight True
+backbone.0.body.layer2.0.conv3.weight True
+backbone.0.body.layer2.0.downsample.0.weight True
+backbone.0.body.layer2.1.conv1.weight True
+backbone.0.body.layer2.1.conv2.weight True
+backbone.0.body.layer2.1.conv3.weight True
+backbone.0.body.layer2.2.conv1.weight True
+backbone.0.body.layer2.2.conv2.weight True
+backbone.0.body.layer2.2.conv3.weight True
+backbone.0.body.layer2.3.conv1.weight True
+backbone.0.body.layer2.3.conv2.weight True
+backbone.0.body.layer2.3.conv3.weight True
+backbone.0.body.layer3.0.conv1.weight True
+backbone.0.body.layer3.0.conv2.weight True
+backbone.0.body.layer3.0.conv3.weight True
+backbone.0.body.layer3.0.downsample.0.weight True
+backbone.0.body.layer3.1.conv1.weight True
+backbone.0.body.layer3.1.conv2.weight True
+backbone.0.body.layer3.1.conv3.weight True
+backbone.0.body.layer3.2.conv1.weight True
+backbone.0.body.layer3.2.conv2.weight True
+backbone.0.body.layer3.2.conv3.weight True
+backbone.0.body.layer3.3.conv1.weight True
+backbone.0.body.layer3.3.conv2.weight True
+backbone.0.body.layer3.3.conv3.weight True
+backbone.0.body.layer3.4.conv1.weight True
+backbone.0.body.layer3.4.conv2.weight True
+backbone.0.body.layer3.4.conv3.weight True
+backbone.0.body.layer3.5.conv1.weight True
+backbone.0.body.layer3.5.conv2.weight True
+backbone.0.body.layer3.5.conv3.weight True
+backbone.0.body.layer4.0.conv1.weight True
+backbone.0.body.layer4.0.conv2.weight True
+backbone.0.body.layer4.0.conv3.weight True
+backbone.0.body.layer4.0.downsample.0.weight True
+backbone.0.body.layer4.1.conv1.weight True
+backbone.0.body.layer4.1.conv2.weight True
+backbone.0.body.layer4.1.conv3.weight True
+backbone.0.body.layer4.2.conv1.weight True
+backbone.0.body.layer4.2.conv2.weight True
+backbone.0.body.layer4.2.conv3.weight True
+data/coco/cocosplit_self/seed7/full_box_10shot_trainval.json
+id map
+{1: 60, 2: 61, 3: 62, 4: 63, 5: 64, 6: 65, 7: 66, 9: 67, 16: 68, 17: 69, 18: 70, 19: 71, 20: 72, 21: 73, 44: 74, 62: 75, 63: 76, 64: 77, 67: 78, 72: 79, 8: 0, 10: 1, 11: 2, 13: 3, 14: 4, 15: 5, 22: 6, 23: 7, 24: 8, 25: 9, 27: 10, 28: 11, 31: 12, 32: 13, 33: 14, 34: 15, 35: 16, 36: 17, 37: 18, 38: 19, 39: 20, 40: 21, 41: 22, 42: 23, 43: 24, 46: 25, 47: 26, 48: 27, 49: 28, 50: 29, 51: 30, 52: 31, 53: 32, 54: 33, 55: 34, 56: 35, 57: 36, 58: 37, 59: 38, 60: 39, 61: 40, 65: 41, 70: 42, 73: 43, 74: 44, 75: 45, 76: 46, 77: 47, 78: 48, 79: 49, 80: 50, 81: 51, 82: 52, 84: 53, 85: 54, 86: 55, 87: 56, 88: 57, 89: 58, 90: 59}
+loading annotations into memory...
+Done (t=0.02s)
+creating index...
+index created!
+dataset_name : coco_all_seed_7_10_shot_val, image nums : 705, anno nums : 800
+start build prototypes ...
+prototypes length: 80 
+Test:  [  0/157]  eta: 0:07:03  class_error: 55.96  loss: 21.1788 (21.1788)  loss_bbox: 0.6672 (0.6672)  loss_bbox_0: 0.7030 (0.7030)  loss_bbox_1: 0.6838 (0.6838)  loss_bbox_2: 0.6886 (0.6886)  loss_bbox_3: 0.6674 (0.6674)  loss_bbox_4: 0.6632 (0.6632)  loss_ce: 1.5904 (1.5904)  loss_ce_0: 1.5270 (1.5270)  loss_ce_1: 1.5514 (1.5514)  loss_ce_2: 1.5358 (1.5358)  loss_ce_3: 1.5406 (1.5406)  loss_ce_4: 1.5737 (1.5737)  loss_giou: 1.2742 (1.2742)  loss_giou_0: 1.3321 (1.3321)  loss_giou_1: 1.3103 (1.3103)  loss_giou_2: 1.3057 (1.3057)  loss_giou_3: 1.2887 (1.2887)  loss_giou_4: 1.2756 (1.2756)  cardinality_error_unscaled: 87.8750 (87.8750)  cardinality_error_0_unscaled: 85.6562 (85.6562)  cardinality_error_1_unscaled: 87.5312 (87.5312)  cardinality_error_2_unscaled: 88.3438 (88.3438)  cardinality_error_3_unscaled: 87.8750 (87.8750)  cardinality_error_4_unscaled: 88.1562 (88.1562)  class_error_unscaled: 55.9638 (55.9638)  loss_bbox_unscaled: 0.1334 (0.1334)  loss_bbox_0_unscaled: 0.1406 (0.1406)  loss_bbox_1_unscaled: 0.1368 (0.1368)  loss_bbox_2_unscaled: 0.1377 (0.1377)  loss_bbox_3_unscaled: 0.1335 (0.1335)  loss_bbox_4_unscaled: 0.1326 (0.1326)  loss_ce_unscaled: 0.7952 (0.7952)  loss_ce_0_unscaled: 0.7635 (0.7635)  loss_ce_1_unscaled: 0.7757 (0.7757)  loss_ce_2_unscaled: 0.7679 (0.7679)  loss_ce_3_unscaled: 0.7703 (0.7703)  loss_ce_4_unscaled: 0.7869 (0.7869)  loss_giou_unscaled: 0.6371 (0.6371)  loss_giou_0_unscaled: 0.6661 (0.6661)  loss_giou_1_unscaled: 0.6551 (0.6551)  loss_giou_2_unscaled: 0.6528 (0.6528)  loss_giou_3_unscaled: 0.6443 (0.6443)  loss_giou_4_unscaled: 0.6378 (0.6378)  time: 2.7002  data: 0.5272  max mem: 2391
+Test:  [ 10/157]  eta: 0:01:55  class_error: 47.17  loss: 19.4700 (19.6919)  loss_bbox: 0.6143 (0.6324)  loss_bbox_0: 0.6281 (0.6517)  loss_bbox_1: 0.6091 (0.6415)  loss_bbox_2: 0.6173 (0.6412)  loss_bbox_3: 0.6077 (0.6329)  loss_bbox_4: 0.6032 (0.6320)  loss_ce: 1.5221 (1.5419)  loss_ce_0: 1.4786 (1.5099)  loss_ce_1: 1.4644 (1.5114)  loss_ce_2: 1.4861 (1.5123)  loss_ce_3: 1.4941 (1.5100)  loss_ce_4: 1.5055 (1.5275)  loss_giou: 1.1107 (1.1204)  loss_giou_0: 1.1343 (1.1430)  loss_giou_1: 1.1173 (1.1197)  loss_giou_2: 1.1120 (1.1282)  loss_giou_3: 1.1025 (1.1193)  loss_giou_4: 1.1164 (1.1164)  cardinality_error_unscaled: 91.8750 (91.2869)  cardinality_error_0_unscaled: 90.5938 (89.7756)  cardinality_error_1_unscaled: 91.6562 (90.8011)  cardinality_error_2_unscaled: 92.1562 (91.3267)  cardinality_error_3_unscaled: 92.0312 (91.1534)  cardinality_error_4_unscaled: 91.9688 (91.3750)  class_error_unscaled: 55.7168 (53.3610)  loss_bbox_unscaled: 0.1229 (0.1265)  loss_bbox_0_unscaled: 0.1256 (0.1303)  loss_bbox_1_unscaled: 0.1218 (0.1283)  loss_bbox_2_unscaled: 0.1235 (0.1282)  loss_bbox_3_unscaled: 0.1215 (0.1266)  loss_bbox_4_unscaled: 0.1206 (0.1264)  loss_ce_unscaled: 0.7610 (0.7710)  loss_ce_0_unscaled: 0.7393 (0.7550)  loss_ce_1_unscaled: 0.7322 (0.7557)  loss_ce_2_unscaled: 0.7430 (0.7561)  loss_ce_3_unscaled: 0.7470 (0.7550)  loss_ce_4_unscaled: 0.7528 (0.7638)  loss_giou_unscaled: 0.5553 (0.5602)  loss_giou_0_unscaled: 0.5671 (0.5715)  loss_giou_1_unscaled: 0.5587 (0.5598)  loss_giou_2_unscaled: 0.5560 (0.5641)  loss_giou_3_unscaled: 0.5513 (0.5596)  loss_giou_4_unscaled: 0.5582 (0.5582)  time: 0.7878  data: 0.0561  max mem: 2652
+Test:  [ 20/157]  eta: 0:01:37  class_error: 50.41  loss: 19.1844 (19.3938)  loss_bbox: 0.6143 (0.6316)  loss_bbox_0: 0.6281 (0.6484)  loss_bbox_1: 0.6091 (0.6405)  loss_bbox_2: 0.6173 (0.6406)  loss_bbox_3: 0.6077 (0.6303)  loss_bbox_4: 0.6032 (0.6324)  loss_ce: 1.4774 (1.5225)  loss_ce_0: 1.4577 (1.4986)  loss_ce_1: 1.4550 (1.4947)  loss_ce_2: 1.4627 (1.4929)  loss_ce_3: 1.4600 (1.4930)  loss_ce_4: 1.4655 (1.5076)  loss_giou: 1.0985 (1.0914)  loss_giou_0: 1.1092 (1.1101)  loss_giou_1: 1.0959 (1.0873)  loss_giou_2: 1.0942 (1.0960)  loss_giou_3: 1.0889 (1.0881)  loss_giou_4: 1.0862 (1.0877)  cardinality_error_unscaled: 92.1562 (91.7336)  cardinality_error_0_unscaled: 90.4375 (89.9896)  cardinality_error_1_unscaled: 91.6562 (91.2188)  cardinality_error_2_unscaled: 92.1562 (91.7054)  cardinality_error_3_unscaled: 92.1875 (91.6265)  cardinality_error_4_unscaled: 92.1875 (91.8110)  class_error_unscaled: 55.0074 (53.9740)  loss_bbox_unscaled: 0.1229 (0.1263)  loss_bbox_0_unscaled: 0.1256 (0.1297)  loss_bbox_1_unscaled: 0.1218 (0.1281)  loss_bbox_2_unscaled: 0.1235 (0.1281)  loss_bbox_3_unscaled: 0.1215 (0.1261)  loss_bbox_4_unscaled: 0.1206 (0.1265)  loss_ce_unscaled: 0.7387 (0.7613)  loss_ce_0_unscaled: 0.7289 (0.7493)  loss_ce_1_unscaled: 0.7275 (0.7474)  loss_ce_2_unscaled: 0.7313 (0.7464)  loss_ce_3_unscaled: 0.7300 (0.7465)  loss_ce_4_unscaled: 0.7328 (0.7538)  loss_giou_unscaled: 0.5492 (0.5457)  loss_giou_0_unscaled: 0.5546 (0.5551)  loss_giou_1_unscaled: 0.5480 (0.5437)  loss_giou_2_unscaled: 0.5471 (0.5480)  loss_giou_3_unscaled: 0.5445 (0.5441)  loss_giou_4_unscaled: 0.5431 (0.5439)  time: 0.6119  data: 0.0088  max mem: 2704
+Test:  [ 30/157]  eta: 0:01:26  class_error: 56.02  loss: 18.9113 (19.2817)  loss_bbox: 0.5845 (0.6124)  loss_bbox_0: 0.6098 (0.6337)  loss_bbox_1: 0.5970 (0.6214)  loss_bbox_2: 0.6030 (0.6246)  loss_bbox_3: 0.5871 (0.6143)  loss_bbox_4: 0.5828 (0.6142)  loss_ce: 1.5453 (1.5274)  loss_ce_0: 1.5314 (1.5026)  loss_ce_1: 1.5118 (1.4978)  loss_ce_2: 1.5106 (1.4957)  loss_ce_3: 1.5159 (1.4963)  loss_ce_4: 1.5241 (1.5117)  loss_giou: 1.0410 (1.0839)  loss_giou_0: 1.0693 (1.1056)  loss_giou_1: 1.0504 (1.0843)  loss_giou_2: 1.0413 (1.0910)  loss_giou_3: 1.0368 (1.0836)  loss_giou_4: 1.0370 (1.0814)  cardinality_error_unscaled: 91.8750 (91.3911)  cardinality_error_0_unscaled: 89.7812 (89.6099)  cardinality_error_1_unscaled: 91.3438 (90.8478)  cardinality_error_2_unscaled: 91.5938 (91.4012)  cardinality_error_3_unscaled: 91.5938 (91.2510)  cardinality_error_4_unscaled: 92.0000 (91.4587)  class_error_unscaled: 55.1005 (54.6614)  loss_bbox_unscaled: 0.1169 (0.1225)  loss_bbox_0_unscaled: 0.1220 (0.1267)  loss_bbox_1_unscaled: 0.1194 (0.1243)  loss_bbox_2_unscaled: 0.1206 (0.1249)  loss_bbox_3_unscaled: 0.1174 (0.1229)  loss_bbox_4_unscaled: 0.1166 (0.1228)  loss_ce_unscaled: 0.7727 (0.7637)  loss_ce_0_unscaled: 0.7657 (0.7513)  loss_ce_1_unscaled: 0.7559 (0.7489)  loss_ce_2_unscaled: 0.7553 (0.7478)  loss_ce_3_unscaled: 0.7580 (0.7481)  loss_ce_4_unscaled: 0.7620 (0.7559)  loss_giou_unscaled: 0.5205 (0.5420)  loss_giou_0_unscaled: 0.5347 (0.5528)  loss_giou_1_unscaled: 0.5252 (0.5421)  loss_giou_2_unscaled: 0.5207 (0.5455)  loss_giou_3_unscaled: 0.5184 (0.5418)  loss_giou_4_unscaled: 0.5185 (0.5407)  time: 0.6182  data: 0.0084  max mem: 2880
+Test:  [ 40/157]  eta: 0:01:17  class_error: 63.13  loss: 19.3990 (19.5598)  loss_bbox: 0.6005 (0.6198)  loss_bbox_0: 0.6263 (0.6439)  loss_bbox_1: 0.6257 (0.6327)  loss_bbox_2: 0.6300 (0.6328)  loss_bbox_3: 0.6172 (0.6227)  loss_bbox_4: 0.6029 (0.6209)  loss_ce: 1.5453 (1.5413)  loss_ce_0: 1.5497 (1.5153)  loss_ce_1: 1.5210 (1.5112)  loss_ce_2: 1.5217 (1.5090)  loss_ce_3: 1.5185 (1.5098)  loss_ce_4: 1.5305 (1.5247)  loss_giou: 1.1413 (1.1073)  loss_giou_0: 1.1451 (1.1297)  loss_giou_1: 1.1303 (1.1090)  loss_giou_2: 1.1466 (1.1161)  loss_giou_3: 1.1381 (1.1073)  loss_giou_4: 1.1527 (1.1063)  cardinality_error_unscaled: 91.0938 (91.4070)  cardinality_error_0_unscaled: 90.0312 (89.7820)  cardinality_error_1_unscaled: 90.7500 (90.9215)  cardinality_error_2_unscaled: 91.2812 (91.4268)  cardinality_error_3_unscaled: 91.0625 (91.2858)  cardinality_error_4_unscaled: 91.1250 (91.4634)  class_error_unscaled: 56.1262 (54.9354)  loss_bbox_unscaled: 0.1201 (0.1240)  loss_bbox_0_unscaled: 0.1253 (0.1288)  loss_bbox_1_unscaled: 0.1251 (0.1265)  loss_bbox_2_unscaled: 0.1260 (0.1266)  loss_bbox_3_unscaled: 0.1234 (0.1245)  loss_bbox_4_unscaled: 0.1206 (0.1242)  loss_ce_unscaled: 0.7727 (0.7706)  loss_ce_0_unscaled: 0.7748 (0.7577)  loss_ce_1_unscaled: 0.7605 (0.7556)  loss_ce_2_unscaled: 0.7608 (0.7545)  loss_ce_3_unscaled: 0.7593 (0.7549)  loss_ce_4_unscaled: 0.7653 (0.7623)  loss_giou_unscaled: 0.5706 (0.5536)  loss_giou_0_unscaled: 0.5726 (0.5648)  loss_giou_1_unscaled: 0.5651 (0.5545)  loss_giou_2_unscaled: 0.5733 (0.5581)  loss_giou_3_unscaled: 0.5690 (0.5537)  loss_giou_4_unscaled: 0.5763 (0.5531)  time: 0.6151  data: 0.0087  max mem: 2979
+Test:  [ 50/157]  eta: 0:01:09  class_error: 56.93  loss: 19.3990 (19.3746)  loss_bbox: 0.6236 (0.6122)  loss_bbox_0: 0.6645 (0.6378)  loss_bbox_1: 0.6515 (0.6265)  loss_bbox_2: 0.6513 (0.6275)  loss_bbox_3: 0.6365 (0.6163)  loss_bbox_4: 0.6298 (0.6142)  loss_ce: 1.4918 (1.5309)  loss_ce_0: 1.4723 (1.5048)  loss_ce_1: 1.4565 (1.4996)  loss_ce_2: 1.4668 (1.4968)  loss_ce_3: 1.4603 (1.4985)  loss_ce_4: 1.4757 (1.5126)  loss_giou: 1.1126 (1.0937)  loss_giou_0: 1.1278 (1.1160)  loss_giou_1: 1.1234 (1.0963)  loss_giou_2: 1.1137 (1.1031)  loss_giou_3: 1.1012 (1.0939)  loss_giou_4: 1.1043 (1.0937)  cardinality_error_unscaled: 91.9688 (91.5282)  cardinality_error_0_unscaled: 90.8125 (90.0368)  cardinality_error_1_unscaled: 91.3438 (91.0993)  cardinality_error_2_unscaled: 91.9375 (91.5711)  cardinality_error_3_unscaled: 91.9688 (91.4246)  cardinality_error_4_unscaled: 91.9688 (91.5748)  class_error_unscaled: 56.1262 (54.5813)  loss_bbox_unscaled: 0.1247 (0.1224)  loss_bbox_0_unscaled: 0.1329 (0.1276)  loss_bbox_1_unscaled: 0.1303 (0.1253)  loss_bbox_2_unscaled: 0.1303 (0.1255)  loss_bbox_3_unscaled: 0.1273 (0.1233)  loss_bbox_4_unscaled: 0.1260 (0.1228)  loss_ce_unscaled: 0.7459 (0.7654)  loss_ce_0_unscaled: 0.7361 (0.7524)  loss_ce_1_unscaled: 0.7282 (0.7498)  loss_ce_2_unscaled: 0.7334 (0.7484)  loss_ce_3_unscaled: 0.7301 (0.7493)  loss_ce_4_unscaled: 0.7378 (0.7563)  loss_giou_unscaled: 0.5563 (0.5469)  loss_giou_0_unscaled: 0.5639 (0.5580)  loss_giou_1_unscaled: 0.5617 (0.5481)  loss_giou_2_unscaled: 0.5568 (0.5515)  loss_giou_3_unscaled: 0.5506 (0.5470)  loss_giou_4_unscaled: 0.5522 (0.5469)  time: 0.6095  data: 0.0094  max mem: 2979
+Test:  [ 60/157]  eta: 0:01:02  class_error: 51.52  loss: 18.4406 (19.3674)  loss_bbox: 0.5721 (0.6097)  loss_bbox_0: 0.5953 (0.6332)  loss_bbox_1: 0.5747 (0.6226)  loss_bbox_2: 0.5708 (0.6232)  loss_bbox_3: 0.5724 (0.6132)  loss_bbox_4: 0.5824 (0.6114)  loss_ce: 1.4895 (1.5277)  loss_ce_0: 1.4720 (1.5013)  loss_ce_1: 1.4515 (1.4984)  loss_ce_2: 1.4602 (1.4942)  loss_ce_3: 1.4575 (1.4963)  loss_ce_4: 1.4757 (1.5096)  loss_giou: 1.0523 (1.0981)  loss_giou_0: 1.0877 (1.1231)  loss_giou_1: 1.0518 (1.1016)  loss_giou_2: 1.0551 (1.1076)  loss_giou_3: 1.0456 (1.0984)  loss_giou_4: 1.0530 (1.0978)  cardinality_error_unscaled: 91.6562 (91.4908)  cardinality_error_0_unscaled: 90.0312 (89.9262)  cardinality_error_1_unscaled: 91.3750 (91.0384)  cardinality_error_2_unscaled: 91.6562 (91.5215)  cardinality_error_3_unscaled: 91.5312 (91.3683)  cardinality_error_4_unscaled: 91.7500 (91.5353)  class_error_unscaled: 52.6800 (54.5288)  loss_bbox_unscaled: 0.1144 (0.1219)  loss_bbox_0_unscaled: 0.1191 (0.1266)  loss_bbox_1_unscaled: 0.1149 (0.1245)  loss_bbox_2_unscaled: 0.1142 (0.1246)  loss_bbox_3_unscaled: 0.1145 (0.1226)  loss_bbox_4_unscaled: 0.1165 (0.1223)  loss_ce_unscaled: 0.7447 (0.7639)  loss_ce_0_unscaled: 0.7360 (0.7507)  loss_ce_1_unscaled: 0.7257 (0.7492)  loss_ce_2_unscaled: 0.7301 (0.7471)  loss_ce_3_unscaled: 0.7288 (0.7482)  loss_ce_4_unscaled: 0.7378 (0.7548)  loss_giou_unscaled: 0.5261 (0.5491)  loss_giou_0_unscaled: 0.5438 (0.5615)  loss_giou_1_unscaled: 0.5259 (0.5508)  loss_giou_2_unscaled: 0.5275 (0.5538)  loss_giou_3_unscaled: 0.5228 (0.5492)  loss_giou_4_unscaled: 0.5265 (0.5489)  time: 0.6003  data: 0.0090  max mem: 2979
+Test:  [ 70/157]  eta: 0:00:55  class_error: 49.49  loss: 19.2515 (19.3970)  loss_bbox: 0.5921 (0.6106)  loss_bbox_0: 0.6047 (0.6334)  loss_bbox_1: 0.6096 (0.6231)  loss_bbox_2: 0.6040 (0.6240)  loss_bbox_3: 0.6096 (0.6141)  loss_bbox_4: 0.6062 (0.6120)  loss_ce: 1.5066 (1.5262)  loss_ce_0: 1.4868 (1.4999)  loss_ce_1: 1.5045 (1.4970)  loss_ce_2: 1.4974 (1.4926)  loss_ce_3: 1.4835 (1.4945)  loss_ce_4: 1.5007 (1.5084)  loss_giou: 1.1042 (1.1037)  loss_giou_0: 1.1411 (1.1286)  loss_giou_1: 1.1024 (1.1075)  loss_giou_2: 1.1141 (1.1134)  loss_giou_3: 1.1066 (1.1045)  loss_giou_4: 1.1038 (1.1036)  cardinality_error_unscaled: 91.0000 (91.4340)  cardinality_error_0_unscaled: 89.3438 (89.8596)  cardinality_error_1_unscaled: 90.5938 (90.9745)  cardinality_error_2_unscaled: 90.9062 (91.4577)  cardinality_error_3_unscaled: 90.5938 (91.2989)  cardinality_error_4_unscaled: 90.7812 (91.4793)  class_error_unscaled: 51.5173 (54.4672)  loss_bbox_unscaled: 0.1184 (0.1221)  loss_bbox_0_unscaled: 0.1209 (0.1267)  loss_bbox_1_unscaled: 0.1219 (0.1246)  loss_bbox_2_unscaled: 0.1208 (0.1248)  loss_bbox_3_unscaled: 0.1219 (0.1228)  loss_bbox_4_unscaled: 0.1212 (0.1224)  loss_ce_unscaled: 0.7533 (0.7631)  loss_ce_0_unscaled: 0.7434 (0.7500)  loss_ce_1_unscaled: 0.7522 (0.7485)  loss_ce_2_unscaled: 0.7487 (0.7463)  loss_ce_3_unscaled: 0.7417 (0.7472)  loss_ce_4_unscaled: 0.7504 (0.7542)  loss_giou_unscaled: 0.5521 (0.5518)  loss_giou_0_unscaled: 0.5706 (0.5643)  loss_giou_1_unscaled: 0.5512 (0.5538)  loss_giou_2_unscaled: 0.5571 (0.5567)  loss_giou_3_unscaled: 0.5533 (0.5522)  loss_giou_4_unscaled: 0.5519 (0.5518)  time: 0.6162  data: 0.0092  max mem: 3135
+Test:  [ 80/157]  eta: 0:00:48  class_error: 50.40  loss: 19.5584 (19.4111)  loss_bbox: 0.6391 (0.6140)  loss_bbox_0: 0.6487 (0.6361)  loss_bbox_1: 0.6444 (0.6258)  loss_bbox_2: 0.6448 (0.6270)  loss_bbox_3: 0.6443 (0.6172)  loss_bbox_4: 0.6304 (0.6148)  loss_ce: 1.4860 (1.5240)  loss_ce_0: 1.4712 (1.4984)  loss_ce_1: 1.4579 (1.4953)  loss_ce_2: 1.4607 (1.4905)  loss_ce_3: 1.4558 (1.4924)  loss_ce_4: 1.4708 (1.5067)  loss_giou: 1.1158 (1.1048)  loss_giou_0: 1.1664 (1.1300)  loss_giou_1: 1.1387 (1.1090)  loss_giou_2: 1.1343 (1.1141)  loss_giou_3: 1.1176 (1.1060)  loss_giou_4: 1.1286 (1.1048)  cardinality_error_unscaled: 91.1562 (91.4556)  cardinality_error_0_unscaled: 89.8125 (89.9082)  cardinality_error_1_unscaled: 91.0000 (90.9973)  cardinality_error_2_unscaled: 91.1875 (91.4853)  cardinality_error_3_unscaled: 91.0625 (91.3295)  cardinality_error_4_unscaled: 91.2188 (91.5062)  class_error_unscaled: 51.4204 (54.0578)  loss_bbox_unscaled: 0.1278 (0.1228)  loss_bbox_0_unscaled: 0.1297 (0.1272)  loss_bbox_1_unscaled: 0.1289 (0.1252)  loss_bbox_2_unscaled: 0.1290 (0.1254)  loss_bbox_3_unscaled: 0.1289 (0.1234)  loss_bbox_4_unscaled: 0.1261 (0.1230)  loss_ce_unscaled: 0.7430 (0.7620)  loss_ce_0_unscaled: 0.7356 (0.7492)  loss_ce_1_unscaled: 0.7289 (0.7477)  loss_ce_2_unscaled: 0.7303 (0.7453)  loss_ce_3_unscaled: 0.7279 (0.7462)  loss_ce_4_unscaled: 0.7354 (0.7534)  loss_giou_unscaled: 0.5579 (0.5524)  loss_giou_0_unscaled: 0.5832 (0.5650)  loss_giou_1_unscaled: 0.5694 (0.5545)  loss_giou_2_unscaled: 0.5672 (0.5571)  loss_giou_3_unscaled: 0.5588 (0.5530)  loss_giou_4_unscaled: 0.5643 (0.5524)  time: 0.6112  data: 0.0094  max mem: 3135
+Test:  [ 90/157]  eta: 0:00:42  class_error: 65.27  loss: 19.4118 (19.4312)  loss_bbox: 0.6482 (0.6188)  loss_bbox_0: 0.6624 (0.6409)  loss_bbox_1: 0.6450 (0.6307)  loss_bbox_2: 0.6531 (0.6320)  loss_bbox_3: 0.6514 (0.6225)  loss_bbox_4: 0.6405 (0.6193)  loss_ce: 1.4800 (1.5227)  loss_ce_0: 1.4678 (1.4965)  loss_ce_1: 1.4579 (1.4938)  loss_ce_2: 1.4406 (1.4892)  loss_ce_3: 1.4513 (1.4908)  loss_ce_4: 1.4654 (1.5054)  loss_giou: 1.0804 (1.1042)  loss_giou_0: 1.1268 (1.1307)  loss_giou_1: 1.1160 (1.1095)  loss_giou_2: 1.1035 (1.1140)  loss_giou_3: 1.1088 (1.1058)  loss_giou_4: 1.0860 (1.1044)  cardinality_error_unscaled: 91.6250 (91.4557)  cardinality_error_0_unscaled: 90.0938 (89.9313)  cardinality_error_1_unscaled: 91.1875 (91.0027)  cardinality_error_2_unscaled: 91.7188 (91.4904)  cardinality_error_3_unscaled: 91.3750 (91.3321)  cardinality_error_4_unscaled: 91.7188 (91.5124)  class_error_unscaled: 51.4204 (54.0122)  loss_bbox_unscaled: 0.1296 (0.1238)  loss_bbox_0_unscaled: 0.1325 (0.1282)  loss_bbox_1_unscaled: 0.1290 (0.1261)  loss_bbox_2_unscaled: 0.1306 (0.1264)  loss_bbox_3_unscaled: 0.1303 (0.1245)  loss_bbox_4_unscaled: 0.1281 (0.1239)  loss_ce_unscaled: 0.7400 (0.7613)  loss_ce_0_unscaled: 0.7339 (0.7483)  loss_ce_1_unscaled: 0.7289 (0.7469)  loss_ce_2_unscaled: 0.7203 (0.7446)  loss_ce_3_unscaled: 0.7256 (0.7454)  loss_ce_4_unscaled: 0.7327 (0.7527)  loss_giou_unscaled: 0.5402 (0.5521)  loss_giou_0_unscaled: 0.5634 (0.5653)  loss_giou_1_unscaled: 0.5580 (0.5548)  loss_giou_2_unscaled: 0.5518 (0.5570)  loss_giou_3_unscaled: 0.5544 (0.5529)  loss_giou_4_unscaled: 0.5430 (0.5522)  time: 0.6236  data: 0.0082  max mem: 3135
+Test:  [100/157]  eta: 0:00:36  class_error: 41.04  loss: 19.3339 (19.4142)  loss_bbox: 0.6482 (0.6208)  loss_bbox_0: 0.6696 (0.6424)  loss_bbox_1: 0.6503 (0.6323)  loss_bbox_2: 0.6716 (0.6338)  loss_bbox_3: 0.6577 (0.6245)  loss_bbox_4: 0.6405 (0.6210)  loss_ce: 1.5211 (1.5236)  loss_ce_0: 1.4759 (1.4966)  loss_ce_1: 1.4861 (1.4953)  loss_ce_2: 1.4723 (1.4906)  loss_ce_3: 1.4901 (1.4917)  loss_ce_4: 1.4945 (1.5065)  loss_giou: 1.0511 (1.0989)  loss_giou_0: 1.0766 (1.1244)  loss_giou_1: 1.0770 (1.1039)  loss_giou_2: 1.0780 (1.1082)  loss_giou_3: 1.0554 (1.1005)  loss_giou_4: 1.0459 (1.0992)  cardinality_error_unscaled: 91.9375 (91.5145)  cardinality_error_0_unscaled: 89.9688 (89.9452)  cardinality_error_1_unscaled: 91.0938 (91.0483)  cardinality_error_2_unscaled: 91.9375 (91.5412)  cardinality_error_3_unscaled: 91.4688 (91.3682)  cardinality_error_4_unscaled: 91.9062 (91.5650)  class_error_unscaled: 54.1783 (53.9288)  loss_bbox_unscaled: 0.1296 (0.1242)  loss_bbox_0_unscaled: 0.1339 (0.1285)  loss_bbox_1_unscaled: 0.1301 (0.1265)  loss_bbox_2_unscaled: 0.1343 (0.1268)  loss_bbox_3_unscaled: 0.1315 (0.1249)  loss_bbox_4_unscaled: 0.1281 (0.1242)  loss_ce_unscaled: 0.7606 (0.7618)  loss_ce_0_unscaled: 0.7380 (0.7483)  loss_ce_1_unscaled: 0.7430 (0.7476)  loss_ce_2_unscaled: 0.7361 (0.7453)  loss_ce_3_unscaled: 0.7450 (0.7459)  loss_ce_4_unscaled: 0.7472 (0.7533)  loss_giou_unscaled: 0.5255 (0.5495)  loss_giou_0_unscaled: 0.5383 (0.5622)  loss_giou_1_unscaled: 0.5385 (0.5520)  loss_giou_2_unscaled: 0.5390 (0.5541)  loss_giou_3_unscaled: 0.5277 (0.5503)  loss_giou_4_unscaled: 0.5229 (0.5496)  time: 0.6349  data: 0.0088  max mem: 3135
+Test:  [110/157]  eta: 0:00:29  class_error: 55.97  loss: 19.6088 (19.4214)  loss_bbox: 0.6154 (0.6206)  loss_bbox_0: 0.6454 (0.6419)  loss_bbox_1: 0.6250 (0.6319)  loss_bbox_2: 0.6235 (0.6332)  loss_bbox_3: 0.6129 (0.6244)  loss_bbox_4: 0.6192 (0.6208)  loss_ce: 1.5444 (1.5236)  loss_ce_0: 1.5394 (1.4972)  loss_ce_1: 1.5033 (1.4944)  loss_ce_2: 1.5036 (1.4902)  loss_ce_3: 1.4971 (1.4912)  loss_ce_4: 1.5237 (1.5061)  loss_giou: 1.0853 (1.1009)  loss_giou_0: 1.0908 (1.1249)  loss_giou_1: 1.0899 (1.1059)  loss_giou_2: 1.0945 (1.1102)  loss_giou_3: 1.0916 (1.1025)  loss_giou_4: 1.0879 (1.1015)  cardinality_error_unscaled: 92.2812 (91.5971)  cardinality_error_0_unscaled: 90.2500 (90.0538)  cardinality_error_1_unscaled: 91.8125 (91.1444)  cardinality_error_2_unscaled: 92.3438 (91.6270)  cardinality_error_3_unscaled: 91.9688 (91.4606)  cardinality_error_4_unscaled: 92.3438 (91.6486)  class_error_unscaled: 54.1783 (53.8794)  loss_bbox_unscaled: 0.1231 (0.1241)  loss_bbox_0_unscaled: 0.1291 (0.1284)  loss_bbox_1_unscaled: 0.1250 (0.1264)  loss_bbox_2_unscaled: 0.1247 (0.1266)  loss_bbox_3_unscaled: 0.1226 (0.1249)  loss_bbox_4_unscaled: 0.1238 (0.1242)  loss_ce_unscaled: 0.7722 (0.7618)  loss_ce_0_unscaled: 0.7697 (0.7486)  loss_ce_1_unscaled: 0.7517 (0.7472)  loss_ce_2_unscaled: 0.7518 (0.7451)  loss_ce_3_unscaled: 0.7485 (0.7456)  loss_ce_4_unscaled: 0.7618 (0.7531)  loss_giou_unscaled: 0.5426 (0.5505)  loss_giou_0_unscaled: 0.5454 (0.5624)  loss_giou_1_unscaled: 0.5450 (0.5529)  loss_giou_2_unscaled: 0.5473 (0.5551)  loss_giou_3_unscaled: 0.5458 (0.5513)  loss_giou_4_unscaled: 0.5440 (0.5507)  time: 0.6126  data: 0.0091  max mem: 3135
+Test:  [120/157]  eta: 0:00:23  class_error: 55.13  loss: 19.1946 (19.3993)  loss_bbox: 0.6026 (0.6213)  loss_bbox_0: 0.6454 (0.6431)  loss_bbox_1: 0.6085 (0.6323)  loss_bbox_2: 0.6125 (0.6340)  loss_bbox_3: 0.6126 (0.6254)  loss_bbox_4: 0.6033 (0.6216)  loss_ce: 1.5092 (1.5222)  loss_ce_0: 1.4958 (1.4965)  loss_ce_1: 1.4772 (1.4935)  loss_ce_2: 1.4783 (1.4892)  loss_ce_3: 1.4837 (1.4903)  loss_ce_4: 1.4895 (1.5049)  loss_giou: 1.0787 (1.0970)  loss_giou_0: 1.0944 (1.1222)  loss_giou_1: 1.0899 (1.1029)  loss_giou_2: 1.0940 (1.1065)  loss_giou_3: 1.0829 (1.0989)  loss_giou_4: 1.0854 (1.0977)  cardinality_error_unscaled: 92.0312 (91.5824)  cardinality_error_0_unscaled: 90.3438 (90.0839)  cardinality_error_1_unscaled: 91.7812 (91.1506)  cardinality_error_2_unscaled: 92.2500 (91.6224)  cardinality_error_3_unscaled: 92.0938 (91.4553)  cardinality_error_4_unscaled: 92.0938 (91.6377)  class_error_unscaled: 53.0908 (53.8503)  loss_bbox_unscaled: 0.1205 (0.1243)  loss_bbox_0_unscaled: 0.1291 (0.1286)  loss_bbox_1_unscaled: 0.1217 (0.1265)  loss_bbox_2_unscaled: 0.1225 (0.1268)  loss_bbox_3_unscaled: 0.1225 (0.1251)  loss_bbox_4_unscaled: 0.1207 (0.1243)  loss_ce_unscaled: 0.7546 (0.7611)  loss_ce_0_unscaled: 0.7479 (0.7482)  loss_ce_1_unscaled: 0.7386 (0.7467)  loss_ce_2_unscaled: 0.7391 (0.7446)  loss_ce_3_unscaled: 0.7418 (0.7451)  loss_ce_4_unscaled: 0.7447 (0.7525)  loss_giou_unscaled: 0.5394 (0.5485)  loss_giou_0_unscaled: 0.5472 (0.5611)  loss_giou_1_unscaled: 0.5450 (0.5514)  loss_giou_2_unscaled: 0.5470 (0.5532)  loss_giou_3_unscaled: 0.5415 (0.5494)  loss_giou_4_unscaled: 0.5427 (0.5488)  time: 0.6099  data: 0.0090  max mem: 3135
+Test:  [130/157]  eta: 0:00:17  class_error: 55.11  loss: 18.6959 (19.3286)  loss_bbox: 0.6028 (0.6177)  loss_bbox_0: 0.6302 (0.6393)  loss_bbox_1: 0.6231 (0.6284)  loss_bbox_2: 0.6220 (0.6305)  loss_bbox_3: 0.6129 (0.6218)  loss_bbox_4: 0.6064 (0.6180)  loss_ce: 1.4907 (1.5173)  loss_ce_0: 1.4479 (1.4922)  loss_ce_1: 1.4445 (1.4892)  loss_ce_2: 1.4470 (1.4851)  loss_ce_3: 1.4641 (1.4862)  loss_ce_4: 1.4765 (1.5006)  loss_giou: 1.0490 (1.0934)  loss_giou_0: 1.0807 (1.1184)  loss_giou_1: 1.0796 (1.0988)  loss_giou_2: 1.0563 (1.1026)  loss_giou_3: 1.0516 (1.0953)  loss_giou_4: 1.0487 (1.0938)  cardinality_error_unscaled: 91.1562 (91.5689)  cardinality_error_0_unscaled: 90.0938 (90.0720)  cardinality_error_1_unscaled: 90.9375 (91.1298)  cardinality_error_2_unscaled: 91.4375 (91.6083)  cardinality_error_3_unscaled: 91.1250 (91.4425)  cardinality_error_4_unscaled: 91.1562 (91.6231)  class_error_unscaled: 53.8380 (53.7428)  loss_bbox_unscaled: 0.1206 (0.1235)  loss_bbox_0_unscaled: 0.1260 (0.1279)  loss_bbox_1_unscaled: 0.1246 (0.1257)  loss_bbox_2_unscaled: 0.1244 (0.1261)  loss_bbox_3_unscaled: 0.1226 (0.1244)  loss_bbox_4_unscaled: 0.1213 (0.1236)  loss_ce_unscaled: 0.7453 (0.7587)  loss_ce_0_unscaled: 0.7240 (0.7461)  loss_ce_1_unscaled: 0.7222 (0.7446)  loss_ce_2_unscaled: 0.7235 (0.7425)  loss_ce_3_unscaled: 0.7321 (0.7431)  loss_ce_4_unscaled: 0.7382 (0.7503)  loss_giou_unscaled: 0.5245 (0.5467)  loss_giou_0_unscaled: 0.5404 (0.5592)  loss_giou_1_unscaled: 0.5398 (0.5494)  loss_giou_2_unscaled: 0.5281 (0.5513)  loss_giou_3_unscaled: 0.5258 (0.5477)  loss_giou_4_unscaled: 0.5244 (0.5469)  time: 0.6119  data: 0.0089  max mem: 3135
+Test:  [140/157]  eta: 0:00:10  class_error: 43.90  loss: 18.8167 (19.3162)  loss_bbox: 0.6028 (0.6168)  loss_bbox_0: 0.6296 (0.6389)  loss_bbox_1: 0.6231 (0.6281)  loss_bbox_2: 0.6188 (0.6303)  loss_bbox_3: 0.6129 (0.6216)  loss_bbox_4: 0.6064 (0.6174)  loss_ce: 1.4835 (1.5151)  loss_ce_0: 1.4417 (1.4897)  loss_ce_1: 1.4424 (1.4868)  loss_ce_2: 1.4528 (1.4829)  loss_ce_3: 1.4520 (1.4838)  loss_ce_4: 1.4640 (1.4981)  loss_giou: 1.1002 (1.0937)  loss_giou_0: 1.1164 (1.1196)  loss_giou_1: 1.1021 (1.0999)  loss_giou_2: 1.1140 (1.1031)  loss_giou_3: 1.1057 (1.0960)  loss_giou_4: 1.1102 (1.0945)  cardinality_error_unscaled: 91.4375 (91.5521)  cardinality_error_0_unscaled: 89.8438 (90.0574)  cardinality_error_1_unscaled: 90.8750 (91.1119)  cardinality_error_2_unscaled: 91.3125 (91.5871)  cardinality_error_3_unscaled: 91.5000 (91.4235)  cardinality_error_4_unscaled: 91.7188 (91.6011)  class_error_unscaled: 54.6292 (53.7597)  loss_bbox_unscaled: 0.1206 (0.1234)  loss_bbox_0_unscaled: 0.1259 (0.1278)  loss_bbox_1_unscaled: 0.1246 (0.1256)  loss_bbox_2_unscaled: 0.1238 (0.1261)  loss_bbox_3_unscaled: 0.1226 (0.1243)  loss_bbox_4_unscaled: 0.1213 (0.1235)  loss_ce_unscaled: 0.7417 (0.7576)  loss_ce_0_unscaled: 0.7208 (0.7449)  loss_ce_1_unscaled: 0.7212 (0.7434)  loss_ce_2_unscaled: 0.7264 (0.7414)  loss_ce_3_unscaled: 0.7260 (0.7419)  loss_ce_4_unscaled: 0.7320 (0.7490)  loss_giou_unscaled: 0.5501 (0.5468)  loss_giou_0_unscaled: 0.5582 (0.5598)  loss_giou_1_unscaled: 0.5511 (0.5499)  loss_giou_2_unscaled: 0.5570 (0.5516)  loss_giou_3_unscaled: 0.5529 (0.5480)  loss_giou_4_unscaled: 0.5551 (0.5472)  time: 0.6113  data: 0.0086  max mem: 3135
+Test:  [150/157]  eta: 0:00:04  class_error: 61.73  loss: 18.8167 (19.2690)  loss_bbox: 0.6055 (0.6160)  loss_bbox_0: 0.6304 (0.6379)  loss_bbox_1: 0.6251 (0.6276)  loss_bbox_2: 0.6214 (0.6299)  loss_bbox_3: 0.6199 (0.6208)  loss_bbox_4: 0.6240 (0.6166)  loss_ce: 1.5240 (1.5140)  loss_ce_0: 1.4784 (1.4885)  loss_ce_1: 1.4747 (1.4861)  loss_ce_2: 1.4917 (1.4822)  loss_ce_3: 1.4827 (1.4828)  loss_ce_4: 1.4951 (1.4968)  loss_giou: 1.0776 (1.0874)  loss_giou_0: 1.1087 (1.1137)  loss_giou_1: 1.0990 (1.0937)  loss_giou_2: 1.0929 (1.0969)  loss_giou_3: 1.0873 (1.0898)  loss_giou_4: 1.0875 (1.0882)  cardinality_error_unscaled: 91.4375 (91.5437)  cardinality_error_0_unscaled: 89.8750 (90.0499)  cardinality_error_1_unscaled: 90.8750 (91.1000)  cardinality_error_2_unscaled: 91.4062 (91.5743)  cardinality_error_3_unscaled: 91.5000 (91.4139)  cardinality_error_4_unscaled: 91.7188 (91.5942)  class_error_unscaled: 55.5926 (53.8247)  loss_bbox_unscaled: 0.1211 (0.1232)  loss_bbox_0_unscaled: 0.1261 (0.1276)  loss_bbox_1_unscaled: 0.1250 (0.1255)  loss_bbox_2_unscaled: 0.1243 (0.1260)  loss_bbox_3_unscaled: 0.1240 (0.1242)  loss_bbox_4_unscaled: 0.1248 (0.1233)  loss_ce_unscaled: 0.7620 (0.7570)  loss_ce_0_unscaled: 0.7392 (0.7443)  loss_ce_1_unscaled: 0.7373 (0.7431)  loss_ce_2_unscaled: 0.7458 (0.7411)  loss_ce_3_unscaled: 0.7413 (0.7414)  loss_ce_4_unscaled: 0.7476 (0.7484)  loss_giou_unscaled: 0.5388 (0.5437)  loss_giou_0_unscaled: 0.5543 (0.5568)  loss_giou_1_unscaled: 0.5495 (0.5469)  loss_giou_2_unscaled: 0.5465 (0.5484)  loss_giou_3_unscaled: 0.5437 (0.5449)  loss_giou_4_unscaled: 0.5438 (0.5441)  time: 0.6133  data: 0.0090  max mem: 3135
+Test:  [156/157]  eta: 0:00:00  class_error: 55.60  loss: 18.1864 (19.2568)  loss_bbox: 0.5979 (0.6170)  loss_bbox_0: 0.6083 (0.6384)  loss_bbox_1: 0.5979 (0.6279)  loss_bbox_2: 0.6081 (0.6307)  loss_bbox_3: 0.6051 (0.6216)  loss_bbox_4: 0.5976 (0.6173)  loss_ce: 1.4575 (1.5132)  loss_ce_0: 1.4241 (1.4875)  loss_ce_1: 1.4273 (1.4856)  loss_ce_2: 1.4267 (1.4814)  loss_ce_3: 1.4243 (1.4821)  loss_ce_4: 1.4471 (1.4961)  loss_giou: 1.0295 (1.0854)  loss_giou_0: 1.0777 (1.1119)  loss_giou_1: 1.0396 (1.0919)  loss_giou_2: 1.0446 (1.0948)  loss_giou_3: 1.0304 (1.0877)  loss_giou_4: 1.0310 (1.0862)  cardinality_error_unscaled: 91.1250 (91.5233)  cardinality_error_0_unscaled: 89.8750 (90.0243)  cardinality_error_1_unscaled: 90.7812 (91.0736)  cardinality_error_2_unscaled: 91.4062 (91.5527)  cardinality_error_3_unscaled: 91.2812 (91.3929)  cardinality_error_4_unscaled: 91.3125 (91.5750)  class_error_unscaled: 54.4658 (53.7518)  loss_bbox_unscaled: 0.1196 (0.1234)  loss_bbox_0_unscaled: 0.1217 (0.1277)  loss_bbox_1_unscaled: 0.1196 (0.1256)  loss_bbox_2_unscaled: 0.1216 (0.1261)  loss_bbox_3_unscaled: 0.1210 (0.1243)  loss_bbox_4_unscaled: 0.1195 (0.1235)  loss_ce_unscaled: 0.7287 (0.7566)  loss_ce_0_unscaled: 0.7121 (0.7438)  loss_ce_1_unscaled: 0.7137 (0.7428)  loss_ce_2_unscaled: 0.7134 (0.7407)  loss_ce_3_unscaled: 0.7122 (0.7411)  loss_ce_4_unscaled: 0.7236 (0.7480)  loss_giou_unscaled: 0.5147 (0.5427)  loss_giou_0_unscaled: 0.5388 (0.5560)  loss_giou_1_unscaled: 0.5198 (0.5460)  loss_giou_2_unscaled: 0.5223 (0.5474)  loss_giou_3_unscaled: 0.5152 (0.5438)  loss_giou_4_unscaled: 0.5155 (0.5431)  time: 0.5881  data: 0.0090  max mem: 3135
+Test: Total time: 0:01:38 (0.6253 s / it)
+Averaged stats: class_error: 55.60  loss: 18.1864 (19.2568)  loss_bbox: 0.5979 (0.6170)  loss_bbox_0: 0.6083 (0.6384)  loss_bbox_1: 0.5979 (0.6279)  loss_bbox_2: 0.6081 (0.6307)  loss_bbox_3: 0.6051 (0.6216)  loss_bbox_4: 0.5976 (0.6173)  loss_ce: 1.4575 (1.5132)  loss_ce_0: 1.4241 (1.4875)  loss_ce_1: 1.4273 (1.4856)  loss_ce_2: 1.4267 (1.4814)  loss_ce_3: 1.4243 (1.4821)  loss_ce_4: 1.4471 (1.4961)  loss_giou: 1.0295 (1.0854)  loss_giou_0: 1.0777 (1.1119)  loss_giou_1: 1.0396 (1.0919)  loss_giou_2: 1.0446 (1.0948)  loss_giou_3: 1.0304 (1.0877)  loss_giou_4: 1.0310 (1.0862)  cardinality_error_unscaled: 91.1250 (91.5233)  cardinality_error_0_unscaled: 89.8750 (90.0243)  cardinality_error_1_unscaled: 90.7812 (91.0736)  cardinality_error_2_unscaled: 91.4062 (91.5527)  cardinality_error_3_unscaled: 91.2812 (91.3929)  cardinality_error_4_unscaled: 91.3125 (91.5750)  class_error_unscaled: 54.4658 (53.7518)  loss_bbox_unscaled: 0.1196 (0.1234)  loss_bbox_0_unscaled: 0.1217 (0.1277)  loss_bbox_1_unscaled: 0.1196 (0.1256)  loss_bbox_2_unscaled: 0.1216 (0.1261)  loss_bbox_3_unscaled: 0.1210 (0.1243)  loss_bbox_4_unscaled: 0.1195 (0.1235)  loss_ce_unscaled: 0.7287 (0.7566)  loss_ce_0_unscaled: 0.7121 (0.7438)  loss_ce_1_unscaled: 0.7137 (0.7428)  loss_ce_2_unscaled: 0.7134 (0.7407)  loss_ce_3_unscaled: 0.7122 (0.7411)  loss_ce_4_unscaled: 0.7236 (0.7480)  loss_giou_unscaled: 0.5147 (0.5427)  loss_giou_0_unscaled: 0.5388 (0.5560)  loss_giou_1_unscaled: 0.5198 (0.5460)  loss_giou_2_unscaled: 0.5223 (0.5474)  loss_giou_3_unscaled: 0.5152 (0.5438)  loss_giou_4_unscaled: 0.5155 (0.5431)
+Accumulating evaluation results...
+DONE (t=5.91s).
+IoU metric: bbox
+ Average Precision  (AP) @[ IoU=0.50:0.95 | area=   all | maxDets=100 ] = 0.138
+ Average Precision  (AP) @[ IoU=0.50      | area=   all | maxDets=100 ] = 0.213
+ Average Precision  (AP) @[ IoU=0.75      | area=   all | maxDets=100 ] = 0.152
+ Average Precision  (AP) @[ IoU=0.50:0.95 | area= small | maxDets=100 ] = 0.047
+ Average Precision  (AP) @[ IoU=0.50:0.95 | area=medium | maxDets=100 ] = 0.150
+ Average Precision  (AP) @[ IoU=0.50:0.95 | area= large | maxDets=100 ] = 0.202
+ Average Recall     (AR) @[ IoU=0.50:0.95 | area=   all | maxDets=  1 ] = 0.209
+ Average Recall     (AR) @[ IoU=0.50:0.95 | area=   all | maxDets= 10 ] = 0.344
+ Average Recall     (AR) @[ IoU=0.50:0.95 | area=   all | maxDets=100 ] = 0.358
+ Average Recall     (AR) @[ IoU=0.50:0.95 | area= small | maxDets=100 ] = 0.099
+ Average Recall     (AR) @[ IoU=0.50:0.95 | area=medium | maxDets=100 ] = 0.321
+ Average Recall     (AR) @[ IoU=0.50:0.95 | area= large | maxDets=100 ] = 0.544
