@@ -17,7 +17,7 @@ import os.path
 import tqdm
 from io import BytesIO
 
-import shutil
+from glob import glob
 
 
 from datasets.FSOD_settings.get_fsod_data_matadata import _get_builtin_metadata
@@ -205,3 +205,49 @@ class FsCocoDetection(VisionDataset):
 
     def __len__(self):
         return len(self.ids)
+
+
+
+class DetectionTest(VisionDataset):
+    """`MS Coco Detection <http://mscoco.org/dataset/#detections-challenge2016>`_ Dataset.
+    Args:
+        root (string): Root directory where images are downloaded to.
+        transform (callable, optional): A function/transform that  takes in an PIL image
+            and returns a transformed version. E.g, ``transforms.ToTensor``
+        target_transform (callable, optional): A function/transform that takes in the
+            target and transforms it.
+        transforms (callable, optional): A function/transform that takes input sample and its target as entry
+            and returns a transformed version.
+    """
+
+    def __init__(self, root, transform=None, target_transform=None, transforms=None,):
+        super(DetectionTest, self).__init__(root, transforms, transform, target_transform)
+
+        if os.path.isdir(root):
+            img_list = glob(root + '/*')
+            self.paths = list(sorted(img_list))
+
+
+    def get_image(self, abs_path):
+        return Image.open(abs_path).convert('RGB')
+
+    def __getitem__(self, index):
+        """
+        Args:
+            index (int): Index
+        Returns:
+            tuple: Tuple (image, target). target is the object returned by ``coco.loadAnns``.
+        """
+
+        path = self.paths[index]
+
+        img = self.get_image(path)
+        target = dict()
+        if self.transforms is not None: # None
+            img, target = self.transforms(img, target)
+
+        return img, target
+
+    def __len__(self):
+        return len(self.paths)
+

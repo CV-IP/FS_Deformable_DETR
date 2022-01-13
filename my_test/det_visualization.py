@@ -7,6 +7,7 @@ import random
 import time
 import os
 from pathlib import Path
+import cv2
 
 import numpy as np
 import torch
@@ -18,10 +19,13 @@ from datasets import build_dataset, get_coco_api_from_dataset
 from engine import evaluate, train_one_epoch
 from models import build_model
 
+from datasets.PCB.calibration_layer import PrototypicalCalibrationBlock
 
 
 def get_args_parser():
     parser = argparse.ArgumentParser('Deformable DETR Detector', add_help=False)
+    # test args
+    parser.add_argument('--score_thresh', default=0.5, type=float, help='score thresh')
     # PCB args 
     parser.add_argument('--pcb_enable', default=False, action='store_true', help='weather use pcb during eval')
     parser.add_argument('--pcb_model_path', default='surgery_model/resnet101-5d3b4d8f.pth',type=str, help='PCB resnet model imagenet pretrain weight path') 
@@ -100,8 +104,7 @@ def get_args_parser():
 
 
     # dataset parameters
-    parser.add_argument('--dataset_file', default='coco')
-    parser.add_argument('--coco_path', default='./data/coco', type=str)
+    parser.add_argument('--img_path', default='./data/coco', type=str)
 
 
     parser.add_argument('--save_dir', default='',
@@ -117,7 +120,7 @@ def get_args_parser():
 def main():
     parser = argparse.ArgumentParser('Deformable DETR training and evaluation script', parents=[get_args_parser()])
     args = parser.parse_args()
-    if args.output_dir:
+    if args.save_dir:
         Path(args.output_dir).mkdir(parents=True, exist_ok=True)
     device = torch.device(args.device)
 
@@ -129,3 +132,94 @@ def main():
 
     model, criterion, postprocessors = build_model(args)
     model.to(device)
+    model.eval() # model.eval() 的位置有要求吗？比如说在加载checkpoint之后？
+
+    if args.distributed:
+        if args.cache_mode:
+            sampler_train = samplers.NodeDistributedSampler(dataset_train)
+            sampler_val = samplers.NodeDistributedSampler(dataset_val, shuffle=False)
+        else:
+            sampler_train = samplers.DistributedSampler(dataset_train)
+            sampler_val = samplers.DistributedSampler(dataset_val, shuffle=False)
+    else:
+        sampler_train = torch.utils.data.RandomSampler(dataset_train)
+        sampler_val = torch.utils.data.SequentialSampler(dataset_val)
+
+    batch_sampler_train = torch.utils.data.BatchSampler(
+        sampler_train, args.batch_size, drop_last=True)
+
+    data_loader_train = DataLoader(dataset_train, batch_sampler=batch_sampler_train,
+                                   collate_fn=utils.collate_fn, num_workers=args.num_workers,
+                                   pin_memory=True)
+    data_loader_val = DataLoader(dataset_val, args.batch_size, sampler=sampler_val,
+                                 drop_last=False, collate_fn=utils.collate_fn, num_workers=args.num_workers,
+                                 pin_memory=True)
+    save_dir = Path(args.save_dir)
+
+    ### load checkpoint 
+    if args.resume:
+        if args.resume.startswith('https'):
+            checkpoint = torch.hub.load_state_dict_from_url(
+                args.resume, map_location='cpu', check_hash=True)
+        else:
+            checkpoint = torch.load(args.resume, map_location='cpu')
+        missing_keys, unexpected_keys = model.load_state_dict(checkpoint['model'], strict=False)
+        unexpected_keys = [k for k in unexpected_keys if not (k.endswith('total_params') or k.endswith('total_ops'))]
+        if len(missing_keys) > 0:
+            print('Missing Keys: {}'.format(missing_keys))
+        if len(unexpected_keys) > 0:
+            print('Unexpected Keys: {}'.format(unexpected_keys))
+        # '''
+        print('resume from {} done !'.format(args.resume))
+    
+    ### forward
+
+    model.eval()
+
+    # iou_types = tuple(k for k in ('segm', 'bbox') if k in postprocessors.keys())
+
+    # coco_evaluator.coco_eval[iou_types[0]].params.iouThrs = [0, 0.1, 0.5, 0.75]
+    ### stephen add for PCB !!!
+    pcb = None
+    if args is not None and args.pcb_enable :
+        pcb = PrototypicalCalibrationBlock(args)
+
+
+    for samples, targets in data_loader:
+        samples = samples.to(device)
+        targets = [{k: v.to(device) for k, v in t.items()} for t in targets]
+
+        outputs = model(samples)
+        orig_target_sizes = torch.stack([t["orig_size"] for t in targets], dim=0)
+        results = postprocessors['bbox'](outputs, orig_target_sizes)
+        
+        ### insert PCB module !!!
+        if pcb is not None:
+            aug_size = torch.stack([t["size"] for t in targets], dim=0)
+            scale = aug_size / orig_target_sizes
+            results = pcb.execute_calibration(samples.tensors, results, scale)
+
+        results = [[v.cpu() for k, v in t.items()] for t in targets]
+    
+        # save res for visulization
+        score_thresh = args.score_thresh
+
+        for i in range(len(results)):
+            scores, labels, boxes = results[i]
+            image_path =targets[i]['path']
+            img = cv2.imread(image_path)
+            j = 0
+            while j < args.nums_queries and scores[j] > score_thresh:
+                cv2.rectangle(img, (int(boxes[i][0]), int(boxes[j][1])), (int(boxes[i][3]), int(boxes[j][4])), (0, 0, 255), thickness=3) 
+                j = j + 1
+            save_path = os.path.join(args.save_dir, image_path.split('/')[-1])
+            cv2.imwrite(save_path, img)
+            print('save det res in {}'.format(save_path))
+
+            
+
+
+
+
+
+        # res = {target['image_id'].item(): output for target, output in zip(targets, results)}
