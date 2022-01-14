@@ -56,14 +56,7 @@ class PrototypicalCalibrationBlock:
         '''
         
         self.dataset_train = build_dataset(image_set=args.dataset_name + '_val', args=args)
-        # if args.distributed:
-        #     if args.cache_mode:
-        #         sampler_train = samplers.NodeDistributedSampler(self.dataset_train, shuffle=False)
 
-        #     else:
-        #         sampler_train = samplers.DistributedSampler(self.dataset_train, shuffle=False)
-        # else:
-        #     sampler_train = torch.utils.data.RandomSampler(self.dataset_train)
         sampler_train = torch.utils.data.RandomSampler(self.dataset_train)
         batch_sampler_train = torch.utils.data.BatchSampler(sampler_train, args.pcb_batch_size, drop_last=True)
 

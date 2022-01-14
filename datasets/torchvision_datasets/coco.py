@@ -230,7 +230,7 @@ class DetectionTest(VisionDataset):
 
         self.transforms = None 
         if transforms is not None:
-            self.transforms = transform
+            self.transforms = transforms
 
         if os.path.isdir(root):
             img_list = glob(root + '/*')
@@ -251,10 +251,8 @@ class DetectionTest(VisionDataset):
         w, h = image.size
         target = {}
 
-        target["image_id"] = None
-        target["annotations"] = None
-        target["area"] = None
-        target["iscrowd"] = None
+        target["image_id"] = torch.zeros((1,))
+        # target["annotations"] = None
         target["orig_size"] = torch.as_tensor([int(h), int(w)])
         target["size"] = torch.as_tensor([int(h), int(w)])
 

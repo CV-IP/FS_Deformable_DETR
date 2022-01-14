@@ -1,5 +1,3 @@
-
-
 import argparse
 import datetime
 import json
@@ -29,8 +27,8 @@ def get_args_parser():
 
     # test args
     parser.add_argument('--root', default='', help='abs path of dir / .txt /.jpg, each in .txt is a abs path of a image ')
-    parser.add_argument('--save_dir', default='', help='path where to save, empty for no saving')
-    parser.add_argument('--score_thresh', default=0.5, type=float, help='score thresh')
+    parser.add_argument('--save_dir', default='exps/vis_test', help='path where to save, empty for no saving')
+    parser.add_argument('--score_thresh', default=0.35, type=float, help='score thresh')
     # PCB args 
     parser.add_argument('--pcb_enable', default=False, action='store_true', help='weather use pcb during eval')
     parser.add_argument('--pcb_model_path', default='surgery_model/resnet101-5d3b4d8f.pth',type=str, help='PCB resnet model imagenet pretrain weight path') 
@@ -103,7 +101,7 @@ def get_args_parser():
                         help="Dropout applied in the transformer")
     parser.add_argument('--nheads', default=8, type=int,
                         help="Number of attention heads inside the transformer's attentions")
-    parser.add_argument('--num_queries', default=300, type=int,
+    parser.add_argument('--num_queries', default=100, type=int,
                         help="Number of query slots")
     parser.add_argument('--dec_n_points', default=4, type=int)
     parser.add_argument('--enc_n_points', default=4, type=int)
@@ -180,6 +178,11 @@ def main():
 
     
     dataset_val = DetectionTest(args.root, transforms=make_coco_transforms('val'))
+    print(len(dataset_val))
+    # sample, target = dataset_val[0]
+    # print(sample.shape)
+    # print(target)
+    # return 
     sampler_val = torch.utils.data.SequentialSampler(dataset_val)
 
 
@@ -217,7 +220,9 @@ def main():
 
     for samples, targets in dataloader_val:
         samples = samples.to(device)
-        targets = [{k: v.to(device) for k, v in t.items()} for t in targets]
+        paths = [target['path'] for target in targets]
+        targets = [{k: v.to(device) for k, v in t.items() if k != 'path'} for t in targets]
+        # paths = [target['path'] for target in targets]
 
         outputs = model(samples)
         orig_target_sizes = torch.stack([t["orig_size"] for t in targets], dim=0)
@@ -229,18 +234,20 @@ def main():
             scale = aug_size / orig_target_sizes
             results = pcb.execute_calibration(samples.tensors, results, scale)
 
-        results = [[v.cpu() for k, v in t.items()] for t in targets]
+        results = [[v.cpu() for k, v in t.items()] for t in results]
     
         # save res for visulization
         score_thresh = args.score_thresh
 
         for i in range(len(results)):
             scores, labels, boxes = results[i]
-            image_path =targets[i]['path']
+            # print(scores[:10])
+            # print(boxes[:10])
+            image_path =paths[i]
             img = cv2.imread(image_path)
             j = 0
-            while j < args.nums_queries and scores[j] > score_thresh:
-                cv2.rectangle(img, (int(boxes[i][0]), int(boxes[j][1])), (int(boxes[i][3]), int(boxes[j][4])), (0, 0, 255), thickness=3) 
+            while scores[j] > score_thresh:
+                cv2.rectangle(img, (int(boxes[j][0]), int(boxes[j][1])), (int(boxes[j][2]), int(boxes[j][3])), (0, 0, 255), thickness=1) 
                 j = j + 1
             save_path = os.path.join(args.save_dir, image_path.split('/')[-1])
             cv2.imwrite(save_path, img)
