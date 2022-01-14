@@ -18,13 +18,18 @@ import datasets.samplers as samplers
 from datasets import build_dataset, get_coco_api_from_dataset
 from engine import evaluate, train_one_epoch
 from models import build_model
+from datasets.torchvision_datasets import DetectionTest
+from datasets.coco import make_coco_transforms
 
 from datasets.PCB.calibration_layer import PrototypicalCalibrationBlock
 
 
 def get_args_parser():
     parser = argparse.ArgumentParser('Deformable DETR Detector', add_help=False)
+
     # test args
+    parser.add_argument('--root', default='', help='abs path of dir / .txt /.jpg, each in .txt is a abs path of a image ')
+    parser.add_argument('--save_dir', default='', help='path where to save, empty for no saving')
     parser.add_argument('--score_thresh', default=0.5, type=float, help='score thresh')
     # PCB args 
     parser.add_argument('--pcb_enable', default=False, action='store_true', help='weather use pcb during eval')
@@ -35,6 +40,7 @@ def get_args_parser():
     parser.add_argument('--pcb_alpha', default=0.5, type=float, help='TODO')
     parser.add_argument('--pcb_batch_size', default=2, type=int, help='batch size in pcb build proto with resnet101')
 
+    
     # stephen add argumens:
     parser.add_argument('--dataset_name', default='coco_base', type=str, help='coco_base, coco_all, coco_{novel / all}_seed_{s}_{k}_shot')
     '''
@@ -102,17 +108,55 @@ def get_args_parser():
     parser.add_argument('--dec_n_points', default=4, type=int)
     parser.add_argument('--enc_n_points', default=4, type=int)
 
+    # * Segmentation
+    parser.add_argument('--masks', action='store_true',
+                        help="Train segmentation head if the flag is provided")
+
+    # Loss
+    parser.add_argument('--no_aux_loss', dest='aux_loss', action='store_false',
+                        help="Disables auxiliary decoding losses (loss at each layer)")
+
+    # * Matcher
+    parser.add_argument('--set_cost_class', default=2, type=float,
+                        help="Class coefficient in the matching cost")
+    parser.add_argument('--set_cost_bbox', default=5, type=float,
+                        help="L1 box coefficient in the matching cost")
+    parser.add_argument('--set_cost_giou', default=2, type=float,
+                        help="giou box coefficient in the matching cost")
+
+    # * Loss coefficients
+    parser.add_argument('--mask_loss_coef', default=1, type=float)
+    parser.add_argument('--dice_loss_coef', default=1, type=float)
+    parser.add_argument('--cls_loss_coef', default=2, type=float)
+    parser.add_argument('--bbox_loss_coef', default=5, type=float)
+    parser.add_argument('--giou_loss_coef', default=2, type=float)
+    parser.add_argument('--focal_alpha', default=0.25, type=float)
 
     # dataset parameters
-    parser.add_argument('--img_path', default='./data/coco', type=str)
+    parser.add_argument('--dataset_file', default='coco')
+    parser.add_argument('--coco_path', default='./data/coco', type=str)
+    parser.add_argument('--coco_panoptic_path', type=str)
+    parser.add_argument('--remove_difficult', action='store_true')
 
-
-    parser.add_argument('--save_dir', default='',
+    parser.add_argument('--output_dir', default='',
                         help='path where to save, empty for no saving')
-    parser.add_argument('--device', default='cpu',
+    parser.add_argument('--device', default='cuda',
                         help='device to use for training / testing')
     parser.add_argument('--seed', default=42, type=int)
     parser.add_argument('--resume', default='', help='resume from checkpoint')
+    parser.add_argument('--start_epoch', default=0, type=int, metavar='N',
+                        help='start epoch')
+    parser.add_argument('--eval', action='store_true')
+    parser.add_argument('--num_workers', default=4, type=int)
+    parser.add_argument('--cache_mode', default=False, action='store_true', help='whether to cache images on memory')
+
+    return parser
+
+
+
+
+
+
 
     return parser
 
@@ -121,7 +165,7 @@ def main():
     parser = argparse.ArgumentParser('Deformable DETR training and evaluation script', parents=[get_args_parser()])
     args = parser.parse_args()
     if args.save_dir:
-        Path(args.output_dir).mkdir(parents=True, exist_ok=True)
+        Path(args.save_dir).mkdir(parents=True, exist_ok=True)
     device = torch.device(args.device)
 
     # fix the seed for reproducibility
@@ -134,27 +178,15 @@ def main():
     model.to(device)
     model.eval() # model.eval() 的位置有要求吗？比如说在加载checkpoint之后？
 
-    if args.distributed:
-        if args.cache_mode:
-            sampler_train = samplers.NodeDistributedSampler(dataset_train)
-            sampler_val = samplers.NodeDistributedSampler(dataset_val, shuffle=False)
-        else:
-            sampler_train = samplers.DistributedSampler(dataset_train)
-            sampler_val = samplers.DistributedSampler(dataset_val, shuffle=False)
-    else:
-        sampler_train = torch.utils.data.RandomSampler(dataset_train)
-        sampler_val = torch.utils.data.SequentialSampler(dataset_val)
+    
+    dataset_val = DetectionTest(args.root, transforms=make_coco_transforms('val'))
+    sampler_val = torch.utils.data.SequentialSampler(dataset_val)
 
-    batch_sampler_train = torch.utils.data.BatchSampler(
-        sampler_train, args.batch_size, drop_last=True)
 
-    data_loader_train = DataLoader(dataset_train, batch_sampler=batch_sampler_train,
-                                   collate_fn=utils.collate_fn, num_workers=args.num_workers,
-                                   pin_memory=True)
-    data_loader_val = DataLoader(dataset_val, args.batch_size, sampler=sampler_val,
+    dataloader_val = DataLoader(dataset_val, args.batch_size, sampler=sampler_val,
                                  drop_last=False, collate_fn=utils.collate_fn, num_workers=args.num_workers,
                                  pin_memory=True)
-    save_dir = Path(args.save_dir)
+    # save_dir = Path(args.save_dir)
 
     ### load checkpoint 
     if args.resume:
@@ -174,8 +206,6 @@ def main():
     
     ### forward
 
-    model.eval()
-
     # iou_types = tuple(k for k in ('segm', 'bbox') if k in postprocessors.keys())
 
     # coco_evaluator.coco_eval[iou_types[0]].params.iouThrs = [0, 0.1, 0.5, 0.75]
@@ -185,7 +215,7 @@ def main():
         pcb = PrototypicalCalibrationBlock(args)
 
 
-    for samples, targets in data_loader:
+    for samples, targets in dataloader_val:
         samples = samples.to(device)
         targets = [{k: v.to(device) for k, v in t.items()} for t in targets]
 
@@ -216,10 +246,7 @@ def main():
             cv2.imwrite(save_path, img)
             print('save det res in {}'.format(save_path))
 
-            
 
 
-
-
-
-        # res = {target['image_id'].item(): output for target, output in zip(targets, results)}
+if __name__ == "__main__":
+    main()

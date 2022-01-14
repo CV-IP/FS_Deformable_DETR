@@ -18,7 +18,7 @@ import tqdm
 from io import BytesIO
 
 from glob import glob
-
+import torch
 
 from datasets.FSOD_settings.get_fsod_data_matadata import _get_builtin_metadata
 
@@ -221,15 +221,44 @@ class DetectionTest(VisionDataset):
     """
 
     def __init__(self, root, transform=None, target_transform=None, transforms=None,):
+        '''
+        root : abs dir which contains images
+        root : abs file path , each line in this file is a abs path of a image
+
+        '''
         super(DetectionTest, self).__init__(root, transforms, transform, target_transform)
+
+        self.transforms = None 
+        if transforms is not None:
+            self.transforms = transform
 
         if os.path.isdir(root):
             img_list = glob(root + '/*')
             self.paths = list(sorted(img_list))
-
+        if os.path.isfile(root):
+            if root.endswith('.txt'):
+                f = open(root, 'r')
+                img_list = f.readlines()
+                self.paths = sorted([img.strip() for img in img_list])
+            elif root.split('.')[-1].lower() in ['jpg', 'jpeg', 'png']:
+                self.paths = [root]
 
     def get_image(self, abs_path):
         return Image.open(abs_path).convert('RGB')
+
+
+    def prepare(self, image):
+        w, h = image.size
+        target = {}
+
+        target["image_id"] = None
+        target["annotations"] = None
+        target["area"] = None
+        target["iscrowd"] = None
+        target["orig_size"] = torch.as_tensor([int(h), int(w)])
+        target["size"] = torch.as_tensor([int(h), int(w)])
+
+        return image, target
 
     def __getitem__(self, index):
         """
@@ -240,10 +269,10 @@ class DetectionTest(VisionDataset):
         """
 
         path = self.paths[index]
-
         img = self.get_image(path)
-        target = dict()
-        if self.transforms is not None: # None
+        img, target = self.prepare(img)
+        target['path'] = path
+        if self.transforms is not None :
             img, target = self.transforms(img, target)
 
         return img, target
