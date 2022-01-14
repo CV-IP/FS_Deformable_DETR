@@ -27,6 +27,8 @@ from .segmentation import (DETRsegm, PostProcessPanoptic, PostProcessSegm,
 from .deformable_transformer import build_deforamble_transformer
 import copy
 
+from .gdl import AffineLayer, decouple_layer
+
 
 def _get_clones(module, N):
     return nn.ModuleList([copy.deepcopy(module) for i in range(N)])
@@ -35,7 +37,7 @@ def _get_clones(module, N):
 class DeformableDETR(nn.Module):
     """ This is the Deformable DETR module that performs object detection """
     def __init__(self, backbone, transformer, num_classes, num_queries, num_feature_levels,
-                 aux_loss=True, with_box_refine=False, two_stage=False):
+                 aux_loss=True, with_box_refine=False, two_stage=False, transformer_bk_scale = 0.01, use_gdl=True):
         """ Initializes the model.
         Parameters:
             backbone: torch module of the backbone to be used. See backbone.py
@@ -46,17 +48,13 @@ class DeformableDETR(nn.Module):
             aux_loss: True if auxiliary decoding losses (loss at each decoder layer) are to be used.
             with_box_refine: iterative bounding box refinement
             two_stage: two-stage Deformable DETR
+            transformer_bk_scale: transformer backward scale , reference from DeFRCN, 0.01, 
+                                used for gdl module between backbone and transformer
         """
         super().__init__()
+
         self.num_queries = num_queries
         self.transformer = transformer
-        # stephen add , frozen transformer
-        # if freeze_transformer :
-        #     print('*' * 60)
-        #     print('freeze transformer !!!')
-        #     for name, parameter in self.transformer.named_parameters():
-        #         parameter.requires_grad_(False) # frozen paramaters
-
         
         hidden_dim = transformer.d_model # 256
         self.class_embed = nn.Linear(hidden_dim, num_classes)
@@ -122,6 +120,16 @@ class DeformableDETR(nn.Module):
             self.transformer.decoder.class_embed = self.class_embed
             for box_embed in self.bbox_embed:
                 nn.init.constant_(box_embed.layers[-1].bias.data[2:], 0.0)
+        
+        # stephen add for gdl
+        self.use_gdl = use_gdl
+        self.transformer_bk_scale = transformer_bk_scale
+        backbone_channels = self.backbone.num_channels # list [512, 1024, 2048] / [2048]
+        backbone_gdl_list = []
+        for channel in backbone_channels:
+            backbone_gdl_list.append(AffineLayer(num_channels=channel, bias=True) )
+        self.backbone_gdls = nn.ModuleList(backbone_gdl_list)
+
 
     def forward(self, samples: NestedTensor):
         """ The forward expects a NestedTensor, which consists of:
@@ -146,6 +154,12 @@ class DeformableDETR(nn.Module):
         masks = []
         for l, feat in enumerate(features): # # backbone 不同输出level的特征进行channel统一化
             src, mask = feat.decompose()
+            
+            # stephen add :
+            if self.use_gdl :
+                src = self.backbone_gdls[l](decouple_layer(src, self.transformer_bk_scale)) 
+
+
             srcs.append(self.input_proj[l](src))
             masks.append(mask)
             assert mask is not None
