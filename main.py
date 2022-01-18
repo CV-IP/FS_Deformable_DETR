@@ -29,6 +29,10 @@ from models import build_model
 
 def get_args_parser():
     parser = argparse.ArgumentParser('Deformable DETR Detector', add_help=False)
+    # GDL args
+    parser.add_argument('--gdl_enable', default=False, action='store_true', help='weather use gdl module')
+    parser.add_argument('--tf_bk_scale_base', default=0.75, type=float, help='TODO')
+    parser.add_argument('--tf_bk_scale_finetune', default=0.05, type=float, help='TODO')
     # PCB args 
     parser.add_argument('--pcb_enable', default=False, action='store_true', help='weather use pcb during eval')
     parser.add_argument('--pcb_model_path', default='surgery_model/resnet101-5d3b4d8f.pth',type=str, help='PCB resnet model imagenet pretrain weight path') 
@@ -329,7 +333,10 @@ def main(args):
                     'epoch': epoch,
                     'args': args,
                 }, checkpoint_path)
-        is_eval = ( ((epoch + 1) >= 70 ) and (epoch + 1) % 5 == 0) or (args.epochs - (epoch + 1) <= 15)
+        if args.num_classes in [15, 60]:
+            is_eval = (args.epochs > (args.epochs // 2) ) 
+        else:
+            is_eval = ( ((epoch + 1) >= 70 ) and (epoch + 1) % 5 == 0) or (args.epochs - (epoch + 1) <= 15)
         # is_eval = True
         if not is_eval:
             test_stats = {'is_eval': is_eval}

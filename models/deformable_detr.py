@@ -37,7 +37,7 @@ def _get_clones(module, N):
 class DeformableDETR(nn.Module):
     """ This is the Deformable DETR module that performs object detection """
     def __init__(self, backbone, transformer, num_classes, num_queries, num_feature_levels,
-                 aux_loss=True, with_box_refine=False, two_stage=False, transformer_bk_scale = 0.01, use_gdl=True):
+                 aux_loss=True, with_box_refine=False, two_stage=False, tf_bk_scale_base = 0.75, tf_bk_scale_novel= 0.05, use_gdl=True):
         """ Initializes the model.
         Parameters:
             backbone: torch module of the backbone to be used. See backbone.py
@@ -123,7 +123,13 @@ class DeformableDETR(nn.Module):
         
         # stephen add for gdl
         self.use_gdl = use_gdl
-        self.transformer_bk_scale = transformer_bk_scale
+        if num_classes in [15, 60] :
+            self.transformer_bk_scale = tf_bk_scale_base
+            print('train scale : {} '.format(self.transformer_bk_scale))
+        else :
+            self.transformer_bk_scale = tf_bk_scale_novel
+            print('novel scale : {} '.format(self.transformer_bk_scale))
+        
         backbone_channels = self.backbone.num_channels # list [512, 1024, 2048] / [2048]
         backbone_gdl_list = []
         for channel in backbone_channels:
@@ -504,6 +510,7 @@ def build(args):
         aux_loss=args.aux_loss,
         with_box_refine=args.with_box_refine,
         two_stage=args.two_stage,
+        use_gdl = args.gdl_enable
         # freeze_transformer=args.freeze_transformer
     )
     if args.freeze_transformer :
