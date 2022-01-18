@@ -293,12 +293,13 @@ def main(args):
             args.start_epoch = checkpoint['epoch'] + 1
         # '''
         # check the resumed model
+        '''
         if not args.eval:
-            # '''
             test_stats, coco_evaluator = evaluate(
                 model, criterion, postprocessors, data_loader_val, base_ds, device, args.output_dir, args.eval_dataset, args.num_classes, args
             )
-            # '''
+
+        '''
     
     if args.eval:
         test_stats, coco_evaluator = evaluate(model, criterion, postprocessors,
