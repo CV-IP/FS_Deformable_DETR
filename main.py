@@ -334,7 +334,7 @@ def main(args):
                     'args': args,
                 }, checkpoint_path)
         if args.num_classes in [15, 60]:
-            is_eval = (args.epochs > (args.epochs // 2) ) 
+            is_eval = ((epoch + 1) > (args.epochs // 2) )  or ( (epoch + 1) % 5 == 0)
         else:
             is_eval = ( ((epoch + 1) >= 70 ) and (epoch + 1) % 5 == 0) or (args.epochs - (epoch + 1) <= 15)
         # is_eval = True
