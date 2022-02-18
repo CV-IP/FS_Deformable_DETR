@@ -1,4 +1,5 @@
 # pwd: minist
+export http_proxy=10.20.47.147:3128  https_proxy=10.20.47.147:3128 no_proxy=code.byted.org
 
 git clone -b fs_deformable_detr https://github.com/StephenStorm/FS_Deformable_DETR.git
 
