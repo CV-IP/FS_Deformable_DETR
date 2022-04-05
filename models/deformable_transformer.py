@@ -58,7 +58,7 @@ class DeformableTransformer(nn.Module):
                                                           num_feature_levels, nhead, dec_n_points)
         self.decoder = DeformableTransformerDecoder(decoder_layer, num_decoder_layers, return_intermediate_dec)
 
-        self.level_embed = nn.Parameter(torch.Tensor(num_feature_levels, d_model)) # 4, 256 学习的是对于不同level进行额外位置编码的作用。
+        self.level_embed = nn.Parameter(torch.Tensor(num_feature_levels, d_model)) # 4, 256 学习的是对于不同level进行额外位置编码的作用。用来表示来自于哪一个特征图
 
         if two_stage:
             self.enc_output = nn.Linear(d_model, d_model)
@@ -167,7 +167,7 @@ class DeformableTransformer(nn.Module):
         mask_flatten = torch.cat(mask_flatten, 1)
         lvl_pos_embed_flatten = torch.cat(lvl_pos_embed_flatten, 1)
         spatial_shapes = torch.as_tensor(spatial_shapes, dtype=torch.long, device=src_flatten.device)
-        level_start_index = torch.cat((spatial_shapes.new_zeros((1, )), spatial_shapes.prod(1).cumsum(0)[:-1]))
+        level_start_index = torch.cat((spatial_shapes.new_zeros((1, )), spatial_shapes.prod(1).cumsum(0)[:-1])) # 每个特征层在flatten中的开始索引
         valid_ratios = torch.stack([self.get_valid_ratio(m) for m in masks], 1)
 
         # encoder
@@ -238,6 +238,7 @@ class DeformableTransformerEncoderLayer(nn.Module):
         return src
 
     def forward(self, src, pos, reference_points, spatial_shapes, level_start_index, padding_mask=None):
+        # forward(self, query, reference_points, input_flatten, input_spatial_shapes, input_level_start_index, input_padding_mask=None):
         # self attention
         src2 = self.self_attn(self.with_pos_embed(src, pos), reference_points, src, spatial_shapes, level_start_index, padding_mask)
         src = src + self.dropout1(src2)
@@ -252,7 +253,7 @@ class DeformableTransformerEncoderLayer(nn.Module):
 class DeformableTransformerEncoder(nn.Module):
     def __init__(self, encoder_layer, num_layers):
         super().__init__()
-        self.layers = _get_clones(encoder_layer, num_layers)
+        self.layers = _get_clones(encoder_layer, num_layers) #num_layers = 6
         self.num_layers = num_layers
     '''
     这里有一个变量valid_ratios需要解释一下，query的个数是所有的像素位置，包括不同的level， 那么每个query都需要在不同的level上采点，
@@ -262,7 +263,7 @@ class DeformableTransformerEncoder(nn.Module):
     def get_reference_points(spatial_shapes, valid_ratios, device):
         reference_points_list = []
         for lvl, (H_, W_) in enumerate(spatial_shapes):
-
+            # torch.linspace(start, end, nums) ,(0, 10, 5), 生成0-10，等差数列，长度为5
             ref_y, ref_x = torch.meshgrid(torch.linspace(0.5, H_ - 0.5, H_, dtype=torch.float32, device=device),
                                           torch.linspace(0.5, W_ - 0.5, W_, dtype=torch.float32, device=device))
             ref_y = ref_y.reshape(-1)[None] / (valid_ratios[:, None, lvl, 1] * H_)
@@ -271,7 +272,7 @@ class DeformableTransformerEncoder(nn.Module):
             reference_points_list.append(ref)
         reference_points = torch.cat(reference_points_list, 1)
         reference_points = reference_points[:, :, None] * valid_ratios[:, None]
-        return reference_points
+        return reference_points #  长度是多少？应该是所有合法的网格值。
 
     def forward(self, src, spatial_shapes, level_start_index, valid_ratios, pos=None, padding_mask=None):
         output = src

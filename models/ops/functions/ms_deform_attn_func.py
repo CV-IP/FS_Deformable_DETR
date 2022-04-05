@@ -22,6 +22,7 @@ class MSDeformAttnFunction(Function):
     @staticmethod
     def forward(ctx, value, value_spatial_shapes, value_level_start_index, sampling_locations, attention_weights, im2col_step):
         ctx.im2col_step = im2col_step
+        # 将注意力权重与value进行weighted sum ，调用cuda实现版本
         output = MSDA.ms_deform_attn_forward(
             value, value_spatial_shapes, value_level_start_index, sampling_locations, attention_weights, ctx.im2col_step)
         ctx.save_for_backward(value, value_spatial_shapes, value_level_start_index, sampling_locations, attention_weights)
@@ -39,6 +40,7 @@ class MSDeformAttnFunction(Function):
 
 
 def ms_deform_attn_core_pytorch(value, value_spatial_shapes, sampling_locations, attention_weights):
+    # 多尺度可变形注意力，根据采样点位置在多尺度value中插值采样出对应的特征图，最后和注意力权重进行weighted sum得到输出
     # for debug and test only,
     # need to use cuda version instead
     N_, S_, M_, D_ = value.shape  # batchsize， key个数， head个数， 维度
@@ -57,6 +59,7 @@ def ms_deform_attn_core_pytorch(value, value_spatial_shapes, sampling_locations,
         sampling_value_list.append(sampling_value_l_)
     # (N_, Lq_, M_, L_, P_) -> (N_, M_, Lq_, L_, P_) -> (N_, M_, 1, Lq_, L_*P_)
     attention_weights = attention_weights.transpose(1, 2).reshape(N_*M_, 1, Lq_, L_*P_)
+    # 最后就是将注意力权重和采样特征进行weighted sum：
     output = (torch.stack(sampling_value_list, dim=-2).flatten(-2) * attention_weights).sum(-1).view(N_, M_*D_, Lq_)
     return output.transpose(1, 2).contiguous()
 

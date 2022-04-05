@@ -51,11 +51,11 @@ class MSDeformAttn(nn.Module):
         self.n_levels = n_levels
         self.n_heads = n_heads
         self.n_points = n_points
-
+        # （256， 8 * 4 * 4 * 2） 乘以2 是因为x y两个坐标，为了计算相对于参考点的偏移。
         self.sampling_offsets = nn.Linear(d_model, n_heads * n_levels * n_points * 2)
         self.attention_weights = nn.Linear(d_model, n_heads * n_levels * n_points)
-        self.value_proj = nn.Linear(d_model, d_model)
-        self.output_proj = nn.Linear(d_model, d_model)
+        self.value_proj = nn.Linear(d_model, d_model) # 256 * 256
+        self.output_proj = nn.Linear(d_model, d_model) 
 
         self._reset_parameters()
 
@@ -66,6 +66,10 @@ class MSDeformAttn(nn.Module):
         grid_init = torch.stack([thetas.cos(), thetas.sin()], -1)
         grid_init = (grid_init / grid_init.abs().max(-1, keepdim=True)[0]).view(self.n_heads, 1, 1, 2).repeat(1, self.n_levels, self.n_points, 1)
         # 相当于每个level每个point偏置对应的head进行编码
+        # 同一特征层不同采样点的坐标偏移肯定不一样，这里做了处理
+        # 对于第i个采样点，在8个头部和所有特征图中，坐标偏移是：
+        # (i, 0), (i, i),(0, i), (-i, i), (-i, 0), (-i, -i), (0, -i), (i, -i)
+        # 从视觉上来看，形成的偏移是3*3， 5*5， 7*7， 9*9 的正方形卷积核，去除中心点，因为是参考点本身。
         for i in range(self.n_points):
             grid_init[:, :, i, :] *= i + 1
         with torch.no_grad():
@@ -79,6 +83,7 @@ class MSDeformAttn(nn.Module):
 
     def forward(self, query, reference_points, input_flatten, input_spatial_shapes, input_level_start_index, input_padding_mask=None):
         """
+        这里的query输入是： src + pos, 而input_flatten  = src
         :param query                       (N, Length_{query}, C)
         :param reference_points            (N, Length_{query}, n_levels, 2), range in [0, 1], top-left (0,0), bottom-right (1, 1), including padding area
                                         or (N, Length_{query}, n_levels, 4), add additional (w, h) to form reference boxes
@@ -102,6 +107,7 @@ class MSDeformAttn(nn.Module):
         if input_padding_mask is not None:
             value = value.masked_fill(input_padding_mask[..., None], float(0)) 
         value = value.view(N, Len_in, self.n_heads, self.d_model // self.n_heads) # (N, len_in, 8， 32)
+
         sampling_offsets = self.sampling_offsets(query).view(N, Len_q, self.n_heads, self.n_levels, self.n_points, 2) # 相对于采样点的偏移？
         # 每个query产生对应不同head不同level的偏置
         attention_weights = self.attention_weights(query).view(N, Len_q, self.n_heads, self.n_levels * self.n_points)

@@ -57,8 +57,10 @@ class DeformableDETR(nn.Module):
         self.transformer = transformer
         
         hidden_dim = transformer.d_model # 256
+        
         self.class_embed = nn.Linear(hidden_dim, num_classes)
         self.bbox_embed = MLP(hidden_dim, hidden_dim, 4, 3)   # (input_dim, hidden_dim, output_dim, num_layers)
+
         self.num_feature_levels = num_feature_levels # 4
         if not two_stage:
             self.query_embed = nn.Embedding(num_queries, hidden_dim*2)# (num_embeddings, embedding_dims)
@@ -72,6 +74,7 @@ class DeformableDETR(nn.Module):
                     nn.GroupNorm(32, hidden_dim),
                 ))
             for _ in range(num_feature_levels - num_backbone_outs): # 4 - 3
+                # 多余的第一特征图，通道数与最后一个特征图的通道数一致，之后的等于hidden_dim
                 input_proj_list.append(nn.Sequential(
                     nn.Conv2d(in_channels, hidden_dim, kernel_size=3, stride=2, padding=1), # 2048， 特征图缩小到原来的一半。
                     nn.GroupNorm(32, hidden_dim),
@@ -103,6 +106,7 @@ class DeformableDETR(nn.Module):
         # if two-stage, the last class_embed and bbox_embed is for region proposal generation
         # 是否使用两阶段，使用的话需要额外在encoder输出层预测proposal，否则如果box_refine则只需要在decoder的每一层预测，
         #最原始的版本是decoder输出层加上一个box检测模块就足矣
+        # if two_stage , num_pred = 7, else num_pred = 6
         num_pred = (transformer.decoder.num_layers + 1) if two_stage else transformer.decoder.num_layers
         if with_box_refine:
             self.class_embed = _get_clones(self.class_embed, num_pred)
@@ -154,6 +158,8 @@ class DeformableDETR(nn.Module):
         """
         if not isinstance(samples, NestedTensor):
             samples = nested_tensor_from_tensor_list(samples)
+        # 返回backbone的特征图：3个特征图， 不同尺度、不同通道数
+        # 及其对应的位置编码
         features, pos = self.backbone(samples)
 
         srcs = []
@@ -250,6 +256,7 @@ class SetCriterion(nn.Module):
     def __init__(self, num_classes, matcher, weight_dict, losses, focal_alpha=0.25):
         """ Create the criterion.
         Parameters:
+            # 类别数，不包含背景。
             num_classes: number of object categories, omitting the special no-object category
             matcher: module able to compute a matching between targets and proposals
             weight_dict: dict containing as key the names of the losses and as values their relative weight.
@@ -265,15 +272,24 @@ class SetCriterion(nn.Module):
 
     def loss_labels(self, outputs, targets, indices, num_boxes, log=True):
         """Classification loss (NLL)
+        
         targets dicts must contain the key "labels" containing a tensor of dim [nb_target_boxes]
+        Pytorch中，CEloss 实质上就是将Log-Softmax 操作和NLL Loss封装到了一起，如果直接使用NLL Loss，需要将预测结果做Log-Softmax
         """
         assert 'pred_logits' in outputs
         src_logits = outputs['pred_logits']
-
+        # 一个tuple， 第一个元素是各个object 的batch index ： 在当前batch中属于第几张图
+        # 第二个元素是各个object 的query index ： 图像中的第几个query对象。
+        # shape都是(num_matched_queries1 + num_matched_queries2 + )
         idx = self._get_src_permutation_idx(indices)
+        # 匹配的GT， （num_matched_targets1 + num_matched_targets2 + ...)
         target_classes_o = torch.cat([t["labels"][J] for t, (_, J) in zip(targets, indices)])
+        # (b, num_queries=100/ 300), 初始化为背景
+        # target_classes的shape今儿src_logits一致，代表每个query objects对应的GT
+        # 首先将他们全部初始化为背景，然后根据匹配的索引（idx）设置匹配的GT（target_classes_p)类别。
         target_classes = torch.full(src_logits.shape[:2], self.num_classes,
                                     dtype=torch.int64, device=src_logits.device)
+        # 匹配的预测索引对应的偏置为匹配的GT
         target_classes[idx] = target_classes_o
 
         target_classes_onehot = torch.zeros([src_logits.shape[0], src_logits.shape[1], src_logits.shape[2] + 1],
@@ -286,6 +302,7 @@ class SetCriterion(nn.Module):
 
         if log:
             # TODO this should probably be a separate loss, not hacked in this one here
+            # 计算top1精度，结果是百分数
             losses['class_error'] = 100 - accuracy(src_logits[idx], target_classes_o)[0]
         return losses
 
@@ -355,6 +372,7 @@ class SetCriterion(nn.Module):
 
     def _get_src_permutation_idx(self, indices):
         # permute predictions following indices
+        # 返回匹配的预测结果的批次索引和queries索引。
         batch_idx = torch.cat([torch.full_like(src, i) for i, (src, _) in enumerate(indices)])
         src_idx = torch.cat([src for (src, _) in indices])
         return batch_idx, src_idx
@@ -381,13 +399,28 @@ class SetCriterion(nn.Module):
              outputs: dict of tensors, see the output specification of the model for the format
              targets: list of dicts, such that len(targets) == batch_size.
                       The expected keys in each dict depends on the losses applied, see each loss' doc
+             outputs是DETR的输出，是一个dict，形式如下：
+                {
+                    'pred_logits':(b, num_queries=100, num_classes)
+                    'pred_boxes': (b, num_queries=100, 4)
+                    'aux_outputs' : [{'pred_logits':......'pred_boxes'}, {...}, ...}]
+                }
+             targets 是一个包含多个dict的list， 长度与batchsize相同，每个dict的形式如coco数据集的标注。
         """
+        # 过滤掉中间层的输出，只保留最后一层的预测结果。
         outputs_without_aux = {k: v for k, v in outputs.items() if k != 'aux_outputs' and k != 'enc_outputs'}
 
         # Retrieve the matching between the outputs of the last layer and the targets
+        '''
+            将预测结果与GT匹配，indices是一个包含多个元组的list，长度与batch_size 相等
+            没个元组为(index_i, index_j), 前者是匹配的预测索引，后者是GT索引
+            并且len(index_i) = len(index_j) = min(num_queries, num_targets_in_image);
+
+        '''
         indices = self.matcher(outputs_without_aux, targets)
 
         # Compute the average number of target boxes accross all nodes, for normalization purposes
+        # 计算这个batch的图像目标物体的数量，在所有分布式节点之间同步
         num_boxes = sum(len(t["labels"]) for t in targets)
         num_boxes = torch.as_tensor([num_boxes], dtype=torch.float, device=next(iter(outputs.values())).device)
         if is_dist_avail_and_initialized():
@@ -397,10 +430,12 @@ class SetCriterion(nn.Module):
         # Compute all the requested losses
         losses = {}
         for loss in self.losses:
+            # 计算特定类似的loss， 这里的loss变量是字符串，：‘labels', 'boxes', 'cardinality', 'masks', 表示loss类型。
             kwargs = {}
             losses.update(self.get_loss(loss, outputs, targets, indices, num_boxes, **kwargs))
 
         # In case of auxiliary losses, we repeat this process with the output of each intermediate layer.
+        # 如果模型包含了中间层输出，则一并计算对应的loss
         if 'aux_outputs' in outputs:
             for i, aux_outputs in enumerate(outputs['aux_outputs']):
                 indices = self.matcher(aux_outputs, targets)
@@ -523,7 +558,9 @@ def build(args):
 
     if args.masks: # False
         model = DETRsegm(model, freeze_detr=(args.frozen_weights is not None))
+    # 将预测结果和GT进行匹配的算法（匈牙利算法）
     matcher = build_matcher(args)
+    # 各类型loss的权重
     weight_dict = {'loss_ce': args.cls_loss_coef, 'loss_bbox': args.bbox_loss_coef}
     weight_dict['loss_giou'] = args.giou_loss_coef
     if args.masks:
@@ -533,9 +570,11 @@ def build(args):
     if args.aux_loss:
         aux_weight_dict = {}
         for i in range(args.dec_layers - 1): # 5
+            # 为中间层输出的loss也加上对应的权重。
             aux_weight_dict.update({k + f'_{i}': v for k, v in weight_dict.items()})
         aux_weight_dict.update({k + f'_enc': v for k, v in weight_dict.items()}) # enc
         weight_dict.update(aux_weight_dict)
+    # 指定计算哪些类型的loss， 其中cardinalituy是计算预测为前景的数量与GT数量的L1误差。仅用作展示，并不是真正的loss，不涉及反向传播梯度
 
     losses = ['labels', 'boxes', 'cardinality']
     if args.masks:
