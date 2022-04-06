@@ -278,6 +278,7 @@ class SetCriterion(nn.Module):
         """
         assert 'pred_logits' in outputs
         src_logits = outputs['pred_logits']
+
         # 一个tuple， 第一个元素是各个object 的batch index ： 在当前batch中属于第几张图
         # 第二个元素是各个object 的query index ： 图像中的第几个query对象。
         # shape都是(num_matched_queries1 + num_matched_queries2 + )
@@ -285,13 +286,14 @@ class SetCriterion(nn.Module):
         # 匹配的GT， （num_matched_targets1 + num_matched_targets2 + ...)
         target_classes_o = torch.cat([t["labels"][J] for t, (_, J) in zip(targets, indices)])
         # (b, num_queries=100/ 300), 初始化为背景
-        # target_classes的shape今儿src_logits一致，代表每个query objects对应的GT
+        # target_classes的shape与src_logits一致，代表每个query objects对应的GT
         # 首先将他们全部初始化为背景，然后根据匹配的索引（idx）设置匹配的GT（target_classes_p)类别。
+        # (n, 100 / 300) ,所有元素都是背景类（81）
         target_classes = torch.full(src_logits.shape[:2], self.num_classes,
                                     dtype=torch.int64, device=src_logits.device)
         # 匹配的预测索引对应的偏置为匹配的GT
         target_classes[idx] = target_classes_o
-
+        # src_logits.shape[2] + 1 ,是加上背景类。
         target_classes_onehot = torch.zeros([src_logits.shape[0], src_logits.shape[1], src_logits.shape[2] + 1],
                                             dtype=src_logits.dtype, layout=src_logits.layout, device=src_logits.device)
         target_classes_onehot.scatter_(2, target_classes.unsqueeze(-1), 1)

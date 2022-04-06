@@ -195,6 +195,8 @@ def dice_loss(inputs, targets, num_boxes):
 
 def sigmoid_focal_loss(inputs, targets, num_boxes, alpha: float = 0.25, gamma: float = 2):
     """
+    #preds:(n, 100 / 300, 80)
+    sigmoid_focal_loss(src_logits, target_classes_onehot, num_boxes, alpha=self.focal_alpha, gamma=2)
     Loss used in RetinaNet for dense detection: https://arxiv.org/abs/1708.02002.
     Args:
         inputs: A float tensor of arbitrary shape.
