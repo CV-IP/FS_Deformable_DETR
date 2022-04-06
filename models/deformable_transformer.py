@@ -355,6 +355,8 @@ class DeformableTransformerDecoder(nn.Module):
         intermediate = []
         intermediate_reference_points = []
         for lid, layer in enumerate(self.layers):
+            # 基于reference_point 生成refierence_piint_intput 作为decoder每层的输入，
+            # 如果是 iterative box refine： reference_point在每一层decoder之后都会进行更新，基于最新的output更新reference_point
             if reference_points.shape[-1] == 4:
                 reference_points_input = reference_points[:, :, None] \
                                          * torch.cat([src_valid_ratios, src_valid_ratios], -1)[:, None]

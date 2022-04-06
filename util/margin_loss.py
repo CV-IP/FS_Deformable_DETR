@@ -2,6 +2,23 @@ import torch
 import torch.nn as nn
 
 
+
+
+def margin_loss(cls_score, labels_one_hot, min_thresh = 1e-7):
+    '''
+        cls_score: (n, 100/ 300, num_classes) # 不包含bg类别
+        labels_one_hot: (n, 100 / 300, num_classes) # 不包含bg
+    '''
+    cls_prob = cls_score.sigmoid()
+    target_prob = (cls_prob * labels_one_hot).max(2) # n * 100 / 300
+    mask = ~(labels_one_hot.bool()) # n * 100/ 300 * num_classes
+    other_prob = target_prob[mask]  # n * 100 / 300 * (num_classes - 1)
+    diff = (target_prob.unsqueeze(-1) - other_prob).clamp_(min = min_thresh, max = 1)
+    margin_loss = -diff.log().mean()
+    return margin_loss
+
+
+# useless, for reference
 class SetSpecializedMarginLoss(nn.Module):
     def __init__(self,
                  num_classes,
@@ -128,104 +145,3 @@ class SetSpecializedMarginLoss(nn.Module):
         return losses
 
 
-
-def margin_loss(cls_score, labels, num_classes, ignore_neg = False, reduction = 'mean'):
-    '''
-        cls_score: (n, 100/ 300, num_classes)
-        labels: (n, )
-    
-    
-    '''
-
-
-
-    losses = dict()
-
-    num_base_classes = num_classes // 4 * 3
-    base_inds = labels < num_base_classes
-    novel_inds = (labels >= num_base_classes) & (labels < self.num_classes)
-    base_labels = labels[base_inds]
-    novel_labels = labels[novel_inds]
-    scores = cls_score.softmax(-1)
-    base_scores = scores[base_inds, base_labels]
-    novel_scores = scores[novel_inds, novel_labels]
-
-    avg_factor = max(torch.sum(label_weights > 0).float().item(), 1.)
-
-    # base margin
-    num_base = base_scores.size(0)
-    if num_base > 0:
-        loss_base_margin = []
-        for label in base_labels.unique():
-            l_inds = labels == label
-            l_scores = scores[l_inds, label]
-            l_all_scores = scores[l_inds]
-            mask = torch.ones_like(l_all_scores).bool()
-            mask[:, label] = False
-            if ignore_neg:
-                mask[:, -1] = False
-            l_other_scores = l_all_scores[mask].reshape(
-                l_scores.size(0), -1)
-            diff = l_scores[:, None] - l_other_scores
-            diff.clamp_(min=1e-7, max=self.max_diff)
-            loss_base_margin.append(-diff.log())
-        loss_base_margin = torch.cat(loss_base_margin)
-        if reduction == 'sum':
-            loss_base_margin = loss_base_margin.sum().div(avg_factor)
-        else:
-            loss_base_margin = loss_base_margin.mean()
-        loss_base_margin *= self.loss_base_margin_weight
-    else:
-        loss_base_margin = cls_score.sum() * 0.
-    losses['loss_base_margin'] = loss_base_margin
- 
-    # novel margin
-    num_novel = novel_scores.size(0)
-    if num_novel > 0:
-        loss_novel_margin = []
-        for label in novel_labels.unique():
-            l_inds = labels == label
-            l_scores = scores[l_inds, label]
-            l_all_scores = scores[l_inds]
-            mask = torch.ones_like(l_all_scores).bool()
-            mask[:, label] = False
-            if ignore_neg:
-                mask[:, -1] = False
-            l_other_scores = l_all_scores[mask].reshape(
-                l_scores.size(0), -1)
-            diff = l_scores[:, None] - l_other_scores
-            diff.clamp_(min=1e-7, max=self.max_diff)
-            loss_novel_margin.append(-diff.log())
-        loss_novel_margin = torch.cat(loss_novel_margin)
-        if reduction == 'sum':
-            loss_novel_margin = loss_novel_margin.sum().div(avg_factor)
-        else:
-            loss_novel_margin = loss_novel_margin.mean()
-        loss_novel_margin *= self.loss_novel_margin_weight
-    else:
-        loss_novel_margin = cls_score.sum() * 0.
-    losses['loss_novel_margin'] = loss_novel_margin
-
-    # neg margin
-    neg_inds = labels == self.num_classes
-    neg_scores = scores[neg_inds, -1]
-    neg_other_scores = scores[neg_inds, :-1]
-    diff = neg_scores[:, None] - neg_other_scores
-    diff.clamp_(min=1e-7, max=self.max_diff)
-    loss_neg_margin = -diff.log()
-    if self.reduction == 'sum':
-        loss_neg_margin = loss_neg_margin.sum().div(avg_factor)
-    else:
-        loss_neg_margin = loss_neg_margin.mean()
-    loss_neg_margin *= self.loss_neg_margin_weight
-    losses['loss_neg_margin'] = loss_neg_margin
-
-    if self.reduction == 'sum':
-        if 'loss_novel_margin' in losses:
-            losses['loss_novel_margin'].clamp_(max=self.max_loss)
-        if 'loss_base_margin' in losses:
-            losses['loss_base_margin'].clamp_(max=self.max_loss)
-        if 'loss_neg_margin' in losses:
-            losses['loss_neg_margin'].clamp_(max=self.max_loss)
-
-    return losses

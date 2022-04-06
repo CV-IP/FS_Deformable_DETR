@@ -170,8 +170,7 @@ class DeformableDETR(nn.Module):
             # stephen add :
             if self.use_gdl :
                 src = self.backbone_gdls[l](decouple_layer(src, self.transformer_bk_scale)) 
-
-
+                
             srcs.append(self.input_proj[l](src))
             masks.append(mask)
             assert mask is not None
