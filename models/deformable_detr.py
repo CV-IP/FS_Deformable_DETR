@@ -127,18 +127,19 @@ class DeformableDETR(nn.Module):
         
         # stephen add for gdl
         self.use_gdl = use_gdl
-        if num_classes in [15, 60] :
-            self.transformer_bk_scale = tf_bk_scale_base
-            print('train scale : {} '.format(self.transformer_bk_scale))
-        else :
-            self.transformer_bk_scale = tf_bk_scale_novel
-            print('novel scale : {} '.format(self.transformer_bk_scale))
-        
-        backbone_channels = self.backbone.num_channels # list [512, 1024, 2048] / [2048]
-        backbone_gdl_list = []
-        for channel in backbone_channels:
-            backbone_gdl_list.append(AffineLayer(num_channels=channel, bias=True) )
-        self.backbone_gdls = nn.ModuleList(backbone_gdl_list)
+        if self.use_gdl:
+            if num_classes in [15, 60] :
+                self.transformer_bk_scale = tf_bk_scale_base
+                print('train scale : {} '.format(self.transformer_bk_scale))
+            else :
+                self.transformer_bk_scale = tf_bk_scale_novel
+                print('novel scale : {} '.format(self.transformer_bk_scale))
+            
+            backbone_channels = self.backbone.num_channels # list [512, 1024, 2048] / [2048]
+            backbone_gdl_list = []
+            for channel in backbone_channels:
+                backbone_gdl_list.append(AffineLayer(num_channels=channel, bias=True) )
+            self.backbone_gdls = nn.ModuleList(backbone_gdl_list)
 
 
     def forward(self, samples: NestedTensor):
