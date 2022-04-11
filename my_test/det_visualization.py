@@ -25,6 +25,11 @@ from datasets.PCB.calibration_layer import PrototypicalCalibrationBlock
 def get_args_parser():
     parser = argparse.ArgumentParser('Deformable DETR Detector', add_help=False)
 
+    # GDL args
+    parser.add_argument('--gdl_enable', default=False, action='store_true', help='weather use gdl module')
+    parser.add_argument('--tf_bk_scale_base', default=0.75, type=float, help='TODO')
+    parser.add_argument('--tf_bk_scale_finetune', default=0.05, type=float, help='TODO')
+
     # test args
     parser.add_argument('--root', default='', help='abs path of dir / .txt /.jpg, each in .txt is a abs path of a image ')
     parser.add_argument('--save_dir', default='exps/vis_test', help='path where to save, empty for no saving')
@@ -153,12 +158,6 @@ def get_args_parser():
 
 
 
-
-
-
-    return parser
-
-
 def main():
     parser = argparse.ArgumentParser('Deformable DETR training and evaluation script', parents=[get_args_parser()])
     args = parser.parse_args()
@@ -238,6 +237,7 @@ def main():
     
         # save res for visulization
         score_thresh = args.score_thresh
+
 
         for i in range(len(results)):
             scores, labels, boxes = results[i]

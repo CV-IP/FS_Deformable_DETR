@@ -1,0 +1,1 @@
+python3 my_test/det_visualization.py --root /opt/tiger/minist/datasets/fewshot_logo/test/images --num_classes 50 --resume /opt/tiger/minist/DETReg_self/exps/DETReg_fine_tune_trademark/checkpoint0239.pth

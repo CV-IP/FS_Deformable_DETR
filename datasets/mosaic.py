@@ -8,8 +8,11 @@ import cv2
 import numpy as np
 import torch
 from torch.utils.data.dataset import Dataset
-from datasets.mosaic_utils import random_perspective, adjust_box_anns, box_candidates
+from .mosaic_utils import random_perspective, adjust_box_anns, box_candidates
 import torchvision.transforms.functional as F
+
+vis_dir = '/opt/tiger/minist/FS_Deformable_DETR/exps/vis'
+import os
 
 
 
@@ -106,6 +109,7 @@ class MosaicDetection(Dataset):
                 if iscrowds == None:
                     iscrowds = iscrowd
                 else :
+                # if iscrowd is not None :
                     iscrowds = torch.cat([iscrowds, iscrowd])
                 # print('in mosaic.py , img shape {}， labels size : {}'.format(img.shape, _labels.shape))
                 # img, _labels : n * 5, n 个框，每一行，前四个是还未norm的box坐标（xyxy），第五个是class_label
@@ -163,7 +167,10 @@ class MosaicDetection(Dataset):
                 border=[-input_h // 2, -input_w // 2],
                 iscrowds = iscrowds
             )  # border to remove
-
+            # print('shape in mosaic func')
+            # print(mosaic_labels.shape, iscrowds.shape)
+            # print(mosaic_labels)
+            # print(iscrowds)
             # -----------------------------------------------------------------
             # CopyPaste: https://arxiv.org/abs/2012.07177
             # -----------------------------------------------------------------
@@ -173,15 +180,18 @@ class MosaicDetection(Dataset):
                 and random.random() < self.mixup_prob
             ):
                 mosaic_img, mosaic_labels, iscrowds = self.mixup(mosaic_img, mosaic_labels, self.input_dim, iscrowds=iscrowds)# check
+                # print(mosaic_labels.shape, iscrowds.shape)
             mix_img, padded_labels = self.preproc(mosaic_img, mosaic_labels, self.input_dim)
             padded_labels = torch.from_numpy(padded_labels)
             # print(mix_img.shape) # (640, 640, 3) (h,w,c)
-            cv2.imwrite('/opt/tiger/bytedetection/tools/tmp/mixup.jpg', mix_img[:, :, ::-1])
+            # cv2.imwrite(os.path.join(vis_dir, 'mixup.jpg'), mix_img[:, :, ::-1])
+            mix_img_t = mix_img
             mix_img = F.to_tensor(mix_img)
             # print(mix_img.shape) # (3, 640, 640) (c,h,w)
             # print(type(padded_labels)) # ndarray
-            print(iscrowds.shape)
-            print(padded_labels.shape)
+            # print(iscrowds.shape)
+            # print(padded_labels.shape)
+            
 
             target = {
                 'boxes' : padded_labels[:, 1:],
@@ -192,33 +202,20 @@ class MosaicDetection(Dataset):
                 'orig_size' : None,
                 'size': mix_img.shape[1:]
             }
-            print(target)
-            # return mix_img, padded_labels, img_info, np.array([idx])
-            # padded_labels[:, 3:] = padded_labels[:, 1:3] + padded_labels[:, 3:]
-            # if True:
-            #     nums, col = mosaic_labels.shape
-            #     for i in range(nums):
-            #         if mosaic_labels[i, -1] != 0.0:
-            #             cv2.rectangle(mosaic_img, 
-            #                 (int(mosaic_labels[i, 0] ), int(mosaic_labels[i, 1] )),  # top left
-            #                 (int(mosaic_labels[i, 2] ), int(mosaic_labels[i, 3] )),  # bottom right
-            #                 (0, 0, 255),  # color
-            #                 1 # thickness
-            #             )
-            '''
+            # '''
             if True:
                 nums, col = padded_labels.shape
                 for i in range(nums):
                     if padded_labels[i, -1] != 0.0:
-                        cv2.rectangle(mix_img, 
+                        cv2.rectangle(mix_img_t, 
                             (int(padded_labels[i, 1] - padded_labels[i, 3] / 2), int(padded_labels[i, 2] - padded_labels[i, 4] / 2)),  # top left
                             (int(padded_labels[i, 1] + padded_labels[i, 3] / 2), int(padded_labels[i, 2] + padded_labels[i, 4] / 2)),  # bottom right
                             (0, 0, 255),  # color
-                            1 # thickness
+                            1, # thickness
                         )
 
-            cv2.imwrite('/opt/tiger/minist/FS_Deformable_DETR/data/mixup.jpg', mix_img[:, :, ::-1])
-            '''
+            cv2.imwrite(os.path.join(vis_dir, 'mixup_with_label.jpg'), mix_img_t[:, :, ::-1])
+            # '''
             return mix_img, target
 
         else:
@@ -237,6 +234,7 @@ class MosaicDetection(Dataset):
             img = np.asarray(img)
             bboxes = target['boxes']
             classes = target['labels']
+            iscrowd = target['iscrowd']
             cp_labels = torch.cat([bboxes, classes.view(-1, 1).float()], dim = 1).numpy()
 
         if len(img.shape) == 3:
@@ -266,6 +264,9 @@ class MosaicDetection(Dataset):
 
         origin_h, origin_w = cp_img.shape[:2]
         target_h, target_w = origin_img.shape[:2]
+        # debug only
+        # print(origin_h, origin_w, target_h, target_w)
+
         padded_img = np.zeros(
             (max(origin_h, target_h), max(origin_w, target_w), 3), dtype=np.uint8
         )
@@ -295,6 +296,9 @@ class MosaicDetection(Dataset):
             cp_bboxes_transformed_np[:, 1::2] - y_offset, 0, target_h
         )
         keep_list = box_candidates(cp_bboxes_origin_np.T, cp_bboxes_transformed_np.T, 5)
+        
+        # print(keep_list)
+        # print(cp_labels.shape, cp_bboxes_transformed_np.shape)
 
         if keep_list.sum() >= 1.0:
             cls_labels = cp_labels[keep_list, 4:5].copy()
@@ -304,7 +308,10 @@ class MosaicDetection(Dataset):
             origin_img = origin_img.astype(np.float32)
             origin_img = 0.5 * origin_img + 0.5 * padded_cropped_img.astype(np.float32)
             
-            iscrowds = iscrowds[keep_list]
+            iscrowd = iscrowd[keep_list]
+            # print(iscrowd.shape)
+            iscrowds = torch.cat((iscrowds, iscrowd))
+            # print(iscrowds.shape)
             
 
         return origin_img.astype(np.uint8), origin_labels, iscrowds
